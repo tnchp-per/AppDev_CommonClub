@@ -1,4 +1,4 @@
-import styles from "@/components/profileStyles";
+import styles from "@/components/ProfileStyles";
 import React from "react";
 import {
   Image,
