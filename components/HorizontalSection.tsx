@@ -5,6 +5,7 @@ type HangoutItem = {
   title: string;
   location: string;
   time: string;
+  image: any;
 };
 
 type HorizontalSectionProps = {
@@ -23,6 +24,7 @@ export default function HorizontalSection({
           fontSize: 22,
           fontWeight: "bold",
           marginBottom: 15,
+
         }}
       >
         {title}
@@ -38,7 +40,8 @@ export default function HorizontalSection({
             title={item.title}
             location={item.location}
             time={item.time}
-          />
+            image={item.image}
+            />
         ))}
       </ScrollView>
     </View>
