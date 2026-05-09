@@ -109,4 +109,30 @@ router.put("/:hangoutId/manage-request", async (req, res) => {
   }
 });
 
+// Get Dashboard Data (Upcoming + Recommended)
+router.get("/dashboard/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // 1. Get Upcoming: Joined by user + Date is today or later + Sorted by nearest
+    const upcoming = await Hangout.find({
+      $or: [{ host: userId }, { acceptedParticipants: userId }],
+      date: { $gte: new Date() } // Date is Greater Than or Equal to "Now"
+    })
+    .sort({ date: 1 }) // 1 = Ascending (closest first)
+    .populate("host", "name");
+
+    // 2. Get Recommended: Not joined by user + Randomly sampled
+    const recommended = await Hangout.find({
+      host: { $ne: userId },
+      acceptedParticipants: { $ne: userId }
+    })
+    .limit(5); // Just grab 5 random-ish ones
+
+    res.json({ upcoming, recommended });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;

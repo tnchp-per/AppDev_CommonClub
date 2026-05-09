@@ -1,59 +1,34 @@
-
 const mongoose = require("mongoose");
 
 const hangoutSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
+  title: { type: String, required: true },
+  location: { type: String, required: true },
+  description: { type: String, required: true },
+  
+  // The person who created the hangout
+  host: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "User", 
+    required: true 
   },
 
-  description: {
-    type: String,
-    required: true,
-  },
+  // People who have been approved to join
+  acceptedParticipants: [{ 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "User" 
+  }],
 
-  location: {
-    type: String,
-    required: true,
-  },
+  // People who have requested to join but aren't approved yet
+  pendingParticipants: [{ 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "User" 
+  }],
 
-  date: {
-    type: String,
-    required: true,
-  },
-
-  time: {
-    type: String,
-    required: true,
-  },
-
-  image: {
-    type: String,
-    required: true,
-  },
-
-  maxParticipants: {
-    type: Number,
-    required: true,
-  },
-
-  host: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-
-  participants: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-  ],
-
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  // General list (if you use this instead of accepted)
+  participants: [{ 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "User" 
+  }]
+}, { timestamps: true }); // This adds createdAt and updatedAt automatically
 
 module.exports = mongoose.model("Hangout", hangoutSchema);

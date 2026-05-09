@@ -1,83 +1,95 @@
-import { useEffect, useState } from "react";
-import { ScrollView, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { fetchDashboardData } from "../../api/hangoutApi";
+import { styles } from "../../components/homeStyles";
+import { HorizontalSection } from "../../components/HorizontalSection";
 
-import HomeHeader from "@/components/HomeHeader";
-import HorizontalSection from "@/components/HorizontalSection";
+// 1. Define the Hangout interface to keep TypeScript happy
+interface Hangout {
+  _id: string;
+  title: string;
+  location: string;
+  description: string;
+  image?: string;
+  time?: string;
+  date: string;
+}
 
+export default function HomeScreen() {
+  const [upcoming, setUpcoming] = useState<Hangout[]>([]);
+  const [recommended, setRecommended] = useState<Hangout[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  // REPLACE THIS with a real User ID from your MongoDB 'users' collection
+  const TEMP_USER_ID = "65f1234567890abcdef12345"; 
 
-export default function Home() {
-
-  const [hangouts, setHangouts] = useState([]);
   useEffect(() => {
-  fetch("http://localhost:5001/hangouts")
-    .then((res) => res.json())
-    .then((data) => {
-      setHangouts(data);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+    const loadData = async () => {
+      try {
+        setIsLoading(true);
+        // Call the new dashboard API function
+        const data = await fetchDashboardData(TEMP_USER_ID);
+        
+        setUpcoming(data.upcoming || []);
+        setRecommended(data.recommended || []);
+        setError(null);
+      } catch (err) {
+        setError("Could not sync with the club server.");
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
   }, []);
 
-  
-  const upcoming = [
-  {
-    title: "Golf",
-    location: "RBSC Golf Course",
-    time: "3:00 PM",
-    image: require("../../assets/images/logo.png"),
-  },
-  {
-    title: "Morning Run",
-    location: "Lumphini Park",
-    time: "7:00 AM",
-    image: require("../../assets/images/run.jpg"),
-  },
-
-  {
-    title: "Pilates Class",
-    location: "Virgin Active @SiamDiscovery",
-    time: "9:00 AM",
-    image: require("../../assets/images/pilates.jpg"),
-  },
-];
-
-  const recommended = [
-    {
-      title: "Tennis",
-      location: "RBSC Tennis Court",
-      time: "6:00 PM",
-      image: require("../../assets/images/logo.png"),
-    },
-    {
-      title: "Coffee Hangout",
-      location: "cafe",
-      time: "8:00 AM",
-      image: require("../../assets/images/logo.png"),
-    },
-  ];
+  if (isLoading) {
+    return (
+      <View style={styles.centerContainer}>
+        <ActivityIndicator size="large" color="#FF6B6B" />
+        <Text style={{ marginTop: 10, color: "#666" }}>Loading your club life...</Text>
+      </View>
+    );
+  }
 
   return (
-    <ScrollView
-      style={{
-        flex: 1,
-       
-      }}
-    >
-      <View style={{ paddingHorizontal: 20 }}>
-        <HomeHeader />
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#f5f5f5" }}>
+      <ScrollView 
+        contentContainerStyle={[styles.container, { paddingBottom: 40 }]}
+        showsVerticalScrollIndicator={false}
+      >
+        {error && (
+          <View style={styles.card}>
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        )}
 
-        <HorizontalSection
-          title="Upcoming Events"
-          data={upcoming}
+        {/* SECTION 1: UPCOMING (Joined/Hosted by User) */}
+        <HorizontalSection 
+          title="Your Upcoming Events" 
+          data={upcoming} 
         />
 
-        <HorizontalSection
-          title="Recommended Hangouts"
-          data={recommended}
+        {/* Space between sections */}
+        <View style={{ height: 25 }} />
+
+        {/* SECTION 2: RECOMMENDED (New events to discover) */}
+        <HorizontalSection 
+          title="Recommended for You" 
+          data={recommended} 
         />
-      </View>
-    </ScrollView>
+
+        {/* Empty State Feedback */}
+        {upcoming.length === 0 && recommended.length === 0 && (
+          <View style={styles.centerContainer}>
+            <Text style={{ color: "#999", textAlign: "center", marginTop: 40 }}>
+              It's quiet in here...{"\n"}Try creating an event in Postman!
+            </Text>
+          </View>
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
