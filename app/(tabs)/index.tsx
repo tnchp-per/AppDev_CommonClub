@@ -1,32 +1,60 @@
+import { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
 
 import HomeHeader from "@/components/HomeHeader";
 import HorizontalSection from "@/components/HorizontalSection";
 
+
+
 export default function Home() {
+
+  const [hangouts, setHangouts] = useState([]);
+  useEffect(() => {
+  fetch("http://localhost:5001/hangouts")
+    .then((res) => res.json())
+    .then((data) => {
+      setHangouts(data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }, []);
+
+  
   const upcoming = [
-    {
-      title: "Cafe Meetup",
-      location: "Siam",
-      time: "7:00 PM",
-    },
-    {
-      title: "Movie Night",
-      location: "Central World",
-      time: "9:00 PM",
-    },
-  ];
+  {
+    title: "Golf",
+    location: "RBSC Golf Course",
+    time: "3:00 PM",
+    image: require("../../assets/images/logo.png"),
+  },
+  {
+    title: "Morning Run",
+    location: "Lumphini Park",
+    time: "7:00 AM",
+    image: require("../../assets/images/run.jpg"),
+  },
+
+  {
+    title: "Pilates Class",
+    location: "Virgin Active @SiamDiscovery",
+    time: "9:00 AM",
+    image: require("../../assets/images/pilates.jpg"),
+  },
+];
 
   const recommended = [
     {
-      title: "Gym Session",
-      location: "อโศก",
+      title: "Tennis",
+      location: "RBSC Tennis Court",
       time: "6:00 PM",
+      image: require("../../assets/images/logo.png"),
     },
     {
-      title: "Board Game Cafe",
-      location: "ทองหล่อ",
-      time: "8:00 PM",
+      title: "Coffee Hangout",
+      location: "cafe",
+      time: "8:00 AM",
+      image: require("../../assets/images/logo.png"),
     },
   ];
 
@@ -34,7 +62,7 @@ export default function Home() {
     <ScrollView
       style={{
         flex: 1,
-        backgroundColor: "#F5F5F5",
+       
       }}
     >
       <View style={{ paddingHorizontal: 20 }}>

@@ -1,6 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Tabs, router } from "expo-router";
-import { Platform, Text, TouchableOpacity, View } from "react-native";
+import { Image, Platform, Text, TouchableOpacity, View } from "react-native";
 
 function WebSidebar() {
   return (
@@ -8,10 +8,12 @@ function WebSidebar() {
       style={{
         flexDirection: "row",
         flex: 1,
-        backgroundColor: "#F5F5F5",
+        
       }}
     >
       {/* Sidebar */}
+      
+
       <View
         style={{
           width: 280,
@@ -22,11 +24,20 @@ function WebSidebar() {
           borderColor: "#E5E5E5",
         }}
       >
+        <Image
+          source={require("../../assets/images/logo.png")}
+          style={{
+            width: 50,
+            height: 50,
+            marginBottom: 10,
+          }}
+        />  
         <Text
           style={{
             fontSize: 30,
             fontWeight: "700",
             marginBottom: 40,
+      
           }}
         >
           CommonClub
@@ -117,15 +128,15 @@ function SidebarButton({
       <Ionicons
         name={icon}
         size={20}
-        color="#333"
+        
       />
 
       <Text
         style={{
           marginLeft: 12,
           fontSize: 16,
-          color: "#333",
           fontWeight: "500",
+         
         }}
       >
         {title}
