@@ -1,10 +1,10 @@
-// styles/homeStyles.ts
+
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: { 
     padding: 20,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#FAF9F1",
     flexGrow: 1,
   },
   centerContainer: { 
@@ -17,6 +17,7 @@ export const styles = StyleSheet.create({
     fontWeight: "bold", 
     marginBottom: 20,
     marginTop: 40,
+    color: "#1A3C22"
   },
   card: { 
     backgroundColor: "white", 
@@ -31,11 +32,13 @@ export const styles = StyleSheet.create({
   title: { 
     fontSize: 18, 
     fontWeight: "bold", 
-    marginBottom: 8 
+    marginBottom: 8,
+    color: "#1A3C22"
   },
   errorText: { 
     color: "red", 
     fontSize: 16,
     fontWeight: "bold"
+    
   }
 });

@@ -12,8 +12,9 @@ export const styles = StyleSheet.create({
     textAlign: "center", 
     marginTop: 50, 
     marginBottom: 30, 
-    letterSpacing: 2, 
+    letterSpacing: 0.5, 
     color: '#1A3C22',
+    fontFamily: "Georgia",
   },
   inputGroup: { gap: 12 },
   label: { 

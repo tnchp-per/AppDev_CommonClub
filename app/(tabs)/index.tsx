@@ -65,7 +65,7 @@ export default function HomeScreen() {
             <Text style={styles.errorText}>{error}</Text>
           </View>
         )}
-
+        <Text style={styles.header}>Welcome Back, Hong!</Text>
         {/* SECTION 1: UPCOMING (Joined/Hosted by User) */}
         <HorizontalSection 
           title="Your Upcoming Events" 

@@ -22,7 +22,7 @@ const hangoutCardStyle = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "700",
-    color: "#111111",
+    //color: "#1A3C22",
     marginTop: 16,
     marginLeft: 12,
     marginBottom: 6

@@ -21,7 +21,7 @@ function WebSidebar() {
           paddingTop: 40,
           paddingHorizontal: 20,
           borderRightWidth: 1,
-          borderColor: "#E5E5E5",
+          //borderColor: "#E5E5E5",
         }}
       >
         <Image
@@ -37,7 +37,7 @@ function WebSidebar() {
             fontSize: 30,
             fontWeight: "700",
             marginBottom: 40,
-      
+            //color: "#F5F5F5",
           }}
         >
           CommonClub
@@ -128,7 +128,7 @@ function SidebarButton({
       <Ionicons
         name={icon}
         size={20}
-        
+        //color="#F5F5F5"
       />
 
       <Text
@@ -136,7 +136,7 @@ function SidebarButton({
           marginLeft: 12,
           fontSize: 16,
           fontWeight: "500",
-         
+          //color: "#F5F5F5"
         }}
       >
         {title}

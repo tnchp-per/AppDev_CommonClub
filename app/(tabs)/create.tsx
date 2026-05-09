@@ -67,7 +67,7 @@ export default function CreateHangout() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 60 }}>
-      <Text style={styles.header}>CREATE HANGOUTS</Text>
+      <Text style={styles.header}>Create Hangout</Text>
 
       <View style={styles.inputGroup}>
         <Text style={styles.label}>NAME OF EVENT</Text>
