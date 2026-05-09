@@ -23,6 +23,20 @@ export const fetchDashboardData = async (userId) => {
     throw error;
   }
 };
-// Later, you can easily add more functions here!
-// export const createHangout = async (hangoutData) => { ... }
-// export const joinHangout = async (hangoutId, userId) => { ... }
+
+export const createHangout = async (hangoutData) => {
+  try {
+    const response = await fetch(`${BASE_URL}/hangouts`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(hangoutData),
+    });
+    if (!response.ok) throw new Error("Failed to create hangout");
+    return await response.json();
+  } catch (error) {
+    console.error("Create Hangout Error:", error);
+    throw error;
+  }
+};

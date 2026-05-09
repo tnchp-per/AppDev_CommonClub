@@ -24,7 +24,7 @@ export const HorizontalSection = ({ title, data }: Props) => {
         {data.map((item) => (
           <View key={item._id} style={hangoutCardStyle.card}>
             <Image 
-              source={{ uri: item.image || 'https://via.placeholder.com/280x160' }} 
+              source={{ uri: item.image || '../../assets/images/logo.png' }} 
               style={hangoutCardStyle.image} 
             />
             <Text style={hangoutCardStyle.title}>{item.title}</Text>

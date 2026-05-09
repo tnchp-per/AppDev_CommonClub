@@ -5,30 +5,44 @@ const hangoutSchema = new mongoose.Schema({
   location: { type: String, required: true },
   description: { type: String, required: true },
   
-  // The person who created the hangout
+  // --- NEW FIELDS ADDED HERE ---
+  category: { 
+    type: String, 
+    required: true,
+    //enum: ["Social", "Sports", "Study", "Food"] // Optional: limits to these choices
+  },
+  date: { 
+    type: Date, 
+    required: true 
+  },
+  endTime: { 
+    type: Date, 
+    required: true 
+  }, 
+  duration: { type: String }, 
+
+  maxParticipants: { 
+    type: Number, 
+    default: 5 
+  },
+
   host: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: "User", 
     required: true 
   },
-
-  // People who have been approved to join
   acceptedParticipants: [{ 
     type: mongoose.Schema.Types.ObjectId, 
     ref: "User" 
   }],
-
-  // People who have requested to join but aren't approved yet
   pendingParticipants: [{ 
     type: mongoose.Schema.Types.ObjectId, 
     ref: "User" 
   }],
-
-  // General list (if you use this instead of accepted)
   participants: [{ 
     type: mongoose.Schema.Types.ObjectId, 
     ref: "User" 
   }]
-}, { timestamps: true }); // This adds createdAt and updatedAt automatically
+}, { timestamps: true });
 
 module.exports = mongoose.model("Hangout", hangoutSchema);

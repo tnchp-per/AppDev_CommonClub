@@ -135,4 +135,14 @@ router.get("/dashboard/:userId", async (req, res) => {
   }
 });
 
+router.post("/", async (req, res) => {
+  try {
+    const newHangout = new Hangout(req.body);
+    const savedHangout = await newHangout.save();
+    res.status(201).json(savedHangout);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
 module.exports = router;
