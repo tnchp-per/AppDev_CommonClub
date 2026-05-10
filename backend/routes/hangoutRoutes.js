@@ -27,16 +27,14 @@ router.post("/", async (req, res) => {
     const newHangout = new Hangout(req.body);
     const savedHangout = await newHangout.save();
 
-    // Automatically add this hangout to the host's "createdHangouts" array
+    // Find the User (the host) and push this new hangout ID into their array
     await User.findByIdAndUpdate(req.body.host, {
-      $push: { createdHangouts: savedHangout._id }
+      $push: { createdEvents: savedHangout._id }
     });
 
     res.status(201).json(savedHangout);
   } catch (error) {
-    res.status(400).json({
-      message: error.message,
-    });
+    res.status(400).json({ message: error.message });
   }
 });
 

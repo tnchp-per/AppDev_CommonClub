@@ -1,35 +1,35 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose"); // <--- Add this!
 
 const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
+  name: { 
+    type: String, 
+    required: true 
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
+  email: { 
+    type: String, 
+    required: true, unique: true 
   },
-  profileImage: {
-    type: String,
-    default: "",
+  password: { 
+    type: String, 
+    required: true 
+  }, // In a real app, we encrypt this!
+  username: { 
+    type: String, 
+    unique: true 
   },
-  interests: {
-    type: [String],
-    default: [],
-  },
-  createdHangouts: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Hangout",
-    },
-  ],
-  joinedHangouts: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Hangout",
-    },
-  ],
-});
+  bio: String,
+  image: String,
+  interests: [String],
+
+  createdEvents: [{ 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Hangout' 
+  }],
+
+  joinedEvents: [{ 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Hangout' 
+  }]
+}, { timestamps: true });
 
 module.exports = mongoose.model("User", userSchema);

@@ -6,6 +6,7 @@ import { Alert, Image, ScrollView, Text, TextInput, TouchableOpacity, View } fro
 import { Calendar } from 'react-native-calendars';
 import { createHangout } from "../../api/hangoutApi";
 import { styles } from "../../components/createHangoutStyles";
+import { useAuth } from "../../context/AuthContext";
 
 export default function CreateHangout() {
   const router = useRouter();
@@ -13,6 +14,7 @@ export default function CreateHangout() {
   const [startTime, setStartTime] = useState('09:00');
   const [endTime, setEndTime] = useState('10:00');
   const [image, setImage] = useState<string | null>(null);
+  const { user } = useAuth();
   
   const [formData, setFormData] = useState({
     title: "",
@@ -32,6 +34,11 @@ export default function CreateHangout() {
   };
 
   const handleSubmit = async () => {
+    if (!user) {
+      Alert.alert("Error", "You must be logged in to create an event.");
+      return;
+    }
+
     if (!formData.title || !formData.location || !startTime || !endTime) {
       Alert.alert("Please fill in the name, location, and times.");
       return;
@@ -53,10 +60,10 @@ export default function CreateHangout() {
 
       const finalData = {
         ...formData,
+        host: user.id,
         date: startISO,
         endTime: endISO,
         maxParticipants: parseInt(formData.maxParticipants) || 0,
-        host: "65f1234567890abcdef12345", // REPLACE WITH ACTUAL USER ID
         image: image || "logo.png"
       };
 
