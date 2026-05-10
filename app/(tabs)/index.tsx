@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ActivityIndicator, RefreshControl, SafeAreaView, ScrollView, Text, View } from "react-native";
 import { fetchDashboardData } from "../../api/hangoutApi"; // Ensure this points to Port 5001
 import { styles } from "../../components/homeStyles";
-import { HorizontalSection } from "../../components/HorizontalSection";
+import HorizontalSection from "../../components/HorizontalSection";
 import { useAuth } from "../../context/AuthContext";
 
 // 1. Define the Hangout interface
