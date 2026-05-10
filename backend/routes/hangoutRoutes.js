@@ -5,29 +5,34 @@ const Hangout = require("../models/hangout"); // Matched to your Hangout.js file
 const User = require("../models/User");       // Added User model for the accept logic
 
 // GET all hangouts
-router.get("/", async (req, res) => {
-  try {
-    // Adding .populate() lets us see the actual user details, not just their IDs
-    const hangouts = await Hangout.find()
-      .populate("host", "username profileImage") 
-      .populate("pendingParticipants", "username profileImage")
-      .populate("acceptedParticipants", "username profileImage");
+router.get("/dashboard/:userId", async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const allHangouts = await Hangout.find();
 
-    res.json(hangouts);
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
-  }
+        // Use .toString() to ensure we aren't comparing an Object to a String
+        const upcoming = allHangouts.filter(h => 
+            h.host && h.host.toString() === userId.toString()
+        );
+
+        const recommended = allHangouts.filter(h => 
+            h.host && h.host.toString() !== userId.toString()
+        );
+
+        console.log(`User: ${userId} | Upcoming: ${upcoming.length} | Recs: ${recommended.length}`);
+        
+        res.json({ upcoming, recommended });
+    } catch (err) {
+        console.error("Dashboard error:", err);
+        res.status(500).json({ message: err.message });
+    }
 });
-
 // CREATE new hangout
 router.post("/", async (req, res) => {
   try {
     const newHangout = new Hangout(req.body);
     const savedHangout = await newHangout.save();
 
-    // Find the User (the host) and push this new hangout ID into their array
     await User.findByIdAndUpdate(req.body.host, {
       $push: { createdEvents: savedHangout._id }
     });

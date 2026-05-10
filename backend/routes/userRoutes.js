@@ -18,11 +18,11 @@ router.post("/", async (req, res) => {
 // URL: GET /api/users/
 router.get("/:id", async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
-    if (!user) {
-      console.log("User not found for ID:", req.params.id); // Add this log to your backend!
-      return res.status(404).json({ message: "No user exists with this ID" });
-    }
+    // .populate('createdEvents') tells Mongo to go find the actual 
+    // Hangout data associated with those IDs!
+    const user = await User.findById(req.params.id).populate('createdEvents');
+    
+    if (!user) return res.status(404).json({ message: "User not found" });
     res.json(user);
   } catch (err) {
     res.status(500).json({ message: err.message });

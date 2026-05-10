@@ -85,7 +85,9 @@ export default function Profile() {
         </View>
 
         <View style={styles.statCard}>
-          <Text style={styles.statNumber}>{userData.createdEvents?.length || 0}</Text>
+          <Text style={styles.statNumber}>
+            {userData.createdEvents ? userData.createdEvents.length : 0}
+          </Text>
           <Text style={styles.statLabel}>Created</Text>
         </View>
       </View>
