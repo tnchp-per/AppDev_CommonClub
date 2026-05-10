@@ -71,5 +71,33 @@ export const styles = StyleSheet.create({
     marginTop: 30, 
     alignItems: "center" 
   },
+  imageUploadBox: {
+    width: '100%',
+    height: 180,
+    backgroundColor: '#FAF9F1', // Matches your theme
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#1A3C22',
+    borderStyle: 'dashed',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    overflow: 'hidden',
+  },
+  uploadedImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  imagePlaceholder: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  imagePlaceholderText: {
+    color: '#1A3C22',
+    fontWeight: 'bold',
+    fontSize: 14,
+    letterSpacing: 1,
+  },
   submitBtnText: { color: "#FAF9F1", fontWeight: "bold", fontSize: 18 }
 });

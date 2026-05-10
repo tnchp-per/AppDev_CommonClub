@@ -32,5 +32,4 @@ const userSchema = new mongoose.Schema({
   ],
 });
 
-// This line matches the variable name 'userSchema' above
 module.exports = mongoose.model("User", userSchema);

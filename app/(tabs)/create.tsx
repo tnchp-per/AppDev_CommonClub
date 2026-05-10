@@ -1,7 +1,8 @@
 import { Picker } from "@react-native-picker/picker"; // FIXED IMPORT
+import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Calendar } from 'react-native-calendars';
 import { createHangout } from "../../api/hangoutApi";
 import { styles } from "../../components/createHangoutStyles";
@@ -11,13 +12,15 @@ export default function CreateHangout() {
   const [selectedDay, setSelectedDay] = useState('2026-05-09');
   const [startTime, setStartTime] = useState('09:00');
   const [endTime, setEndTime] = useState('10:00');
+  const [image, setImage] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     location: "",
     category: "Social",
-    maxParticipants: ""
+    maxParticipants: "",
+    image: ""
   });
 
   const handleTimeChange = (text: string, setter: (val: string) => void) => {
@@ -53,7 +56,8 @@ export default function CreateHangout() {
         date: startISO,
         endTime: endISO,
         maxParticipants: parseInt(formData.maxParticipants) || 0,
-        host: "65f1234567890abcdef12345" // REPLACE WITH ACTUAL USER ID
+        host: "65f1234567890abcdef12345", // REPLACE WITH ACTUAL USER ID
+        image: image || "logo.png"
       };
 
       await createHangout(finalData);
@@ -62,6 +66,28 @@ export default function CreateHangout() {
       ]);
     } catch (err) {
       Alert.alert("Server Error", "Could not connect to the database.");
+    }
+  };
+
+  const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission Denied', 'We need photo access to upload images.');
+      return;
+    }
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [16, 9], // Perfect for hangout banners
+      quality: 0.3,    // Keep this low for Base64!
+      base64: true,   // This is the magic line
+    });
+
+    if (!result.canceled) {
+      // We create a Data URI string: "data:image/jpeg;base64,/9j/4AAQSk..."
+      const base64Image = `data:image/jpeg;base64,${result.assets[0].base64}`;
+      setImage(base64Image);
     }
   };
 
@@ -85,23 +111,7 @@ export default function CreateHangout() {
           onChangeText={(val) => setFormData({...formData, description: val})}
         />
 
-        <Text style={styles.label}>CATEGORY</Text>
-        <View style={styles.dropdownContainer}>
-          <Picker
-            selectedValue={formData.category}
-            onValueChange={(itemValue) => setFormData({...formData, category: itemValue})}
-          >
-            <Picker.Item label="Cafe Hopping" value="Cafe Hopping" />
-            <Picker.Item label="Food" value="Food" />
-            <Picker.Item label="Movie" value="Movie" />
-            <Picker.Item label="Photography" value="Photography" />
-            <Picker.Item label="Social" value="Social" />
-            <Picker.Item label="Sports" value="Sports" />
-            <Picker.Item label="Study" value="Study" />
-            <Picker.Item label="Other" value="Other" />
-            
-          </Picker>
-        </View>
+        
 
         <Text style={styles.label}>LOCATION</Text>
         <TextInput 
@@ -152,6 +162,35 @@ export default function CreateHangout() {
           keyboardType="numeric"
           onChangeText={(val) => setFormData({...formData, maxParticipants: val})}
         />
+
+        <Text style={styles.label}>CATEGORY</Text>
+        <View style={styles.dropdownContainer}>
+          <Picker
+            selectedValue={formData.category}
+            onValueChange={(itemValue) => setFormData({...formData, category: itemValue})}
+          >
+            <Picker.Item label="Cafe Hopping" value="Cafe Hopping" />
+            <Picker.Item label="Food" value="Food" />
+            <Picker.Item label="Movie" value="Movie" />
+            <Picker.Item label="Photography" value="Photography" />
+            <Picker.Item label="Social" value="Social" />
+            <Picker.Item label="Sports" value="Sports" />
+            <Picker.Item label="Study" value="Study" />
+            <Picker.Item label="Other" value="Other" />
+            
+          </Picker>
+        </View>
+
+        {/* IMAGE UPLOAD SECTION */}
+      <TouchableOpacity style={styles.imageUploadBox} onPress={pickImage}>
+        {image ? (
+          <Image source={{ uri: image }} style={styles.uploadedImage} />
+        ) : (
+          <View style={styles.imagePlaceholder}>
+            <Text style={styles.imagePlaceholderText}>+ ADD PHOTO (OPTIONAL)</Text>
+          </View>
+        )}
+      </TouchableOpacity>
 
         <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
           <Text style={styles.submitBtnText}>CREATE HANGOUT</Text>
