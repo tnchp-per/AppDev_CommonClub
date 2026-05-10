@@ -5,12 +5,12 @@ import { ActivityIndicator, Image, ScrollView, Text, TouchableOpacity, View } fr
 import { useAuth } from "../../context/AuthContext";
 
 export default function Profile() {
-  const { user: authUser, logout } = useAuth(); // Get the logged-in user's ID
+  const { user: authUser, logout } = useAuth();
   const [userData, setUserData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  // Replace with your computer's local IP (e.g., 192.168.1.50)
-  const API_URL = "http://localhost:5001/api/users";
+  // เปลี่ยน localhost เป็น IP แล้ว (เผื่อในอนาคตจะเปิดใช้ API จริง)
+  const API_URL = "http://192.168.1.37:5001/api/users";
 
   useEffect(() => {
     if (authUser?.id) {
@@ -39,45 +39,47 @@ export default function Profile() {
     }
   };
 
-  // 1. Show spinner while data is traveling from MongoDB
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#FAF9F1" }}>
-        <ActivityIndicator size="large" color="#1A3C22" />
+        <ActivityIndicator size="large" color="#042917" />
       </View>
     );
   }
 
-  // 2. Safety check if user doesn't exist
   if (!userData) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>User not found.</Text>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#FAF9F1" }}>
+        <Text style={{ color: "#042917" }}>User not found.</Text>
       </View>
     );
   }
 
   return (
     <ScrollView style={styles.container}>
-      {/* Header */}
+      {/* Top Header Placeholder */}
+      <View style={styles.topHeader}>
+        <Text style={styles.pageTitle}>USER</Text>
+      </View>
+
+      {/* Header Info */}
       <View style={styles.header}>
         <Image
-          // Use Base64 from Mongo, or fallback to a local image if empty
           source={userData.image ? { uri: userData.image } : require('../../assets/images/hong.jpg')}
           style={styles.avatar}
         />
 
-        <Text style={styles.name}>{userData.name}</Text>
+        <Text style={styles.name}>{userData.name?.toUpperCase()}</Text>
         <Text style={styles.username}>@{userData.username}</Text>
 
-        <Text style={styles.bio}>{userData.bio || "No bio yet"}</Text>
+        <Text style={styles.bio}>{userData.bio || "Open minded, and looking for new friends to go out to events."}</Text>
 
         <TouchableOpacity style={styles.editButton}>
-          <Text style={styles.editButtonText}>Edit Profile</Text>
+          <Text style={styles.editButtonText}>EDIT PROFILE</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Stats - Now using .length of the arrays we set up in Mongo */}
+      {/* Stats */}
       <View style={styles.statsContainer}>
         <View style={styles.statCard}>
           <Text style={styles.statNumber}>{userData.joinedEvents?.length || 0}</Text>
@@ -92,32 +94,47 @@ export default function Profile() {
         </View>
       </View>
 
-      {/* Interests - Mapping from Mongo array */}
+      {/* Interests */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Interests</Text>
+        <Text style={styles.sectionTitle}>Interest</Text>
         <View style={styles.interestsContainer}>
           {userData.interests && userData.interests.length > 0 ? (
             userData.interests.map((interest: string, index: number) => (
               <View key={index} style={styles.tag}>
-                <Text style={styles.tagText}>{interest}</Text>
+                <Text style={styles.tagText}>{interest.toUpperCase()}</Text>
               </View>
             ))
           ) : (
-            <Text style={{ color: "gray" }}>No interests yet.</Text>
+            <Text style={styles.emptyText}>No interests yet.</Text>
           )}
         </View>
       </View>
 
-      {/* Menu */}
+      {/* Action Buttons */}
       <View style={styles.section}>
-        <TouchableOpacity style={styles.menuItem}>
-          <Text style={styles.menuText}>My Events</Text>
+        <Text style={styles.sectionTitle}>My hangout</Text>
+        <TouchableOpacity style={styles.primaryBlockButton}>
+          <Text style={styles.blockButtonText}>VIEW MY HANGOUT</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem} onPress={logout}>
-          <Text style={[styles.menuText, { color: "red" }]}>Logout</Text>
+        <Text style={styles.sectionTitle}>My request</Text>
+        <TouchableOpacity style={styles.secondaryBlockButton}>
+          <Text style={styles.blockButtonText}>VIEW MY REQUEST</Text>
+        </TouchableOpacity>
+
+        <Text style={styles.sectionTitle}>Saved Activities</Text>
+        <TouchableOpacity style={styles.secondaryBlockButton}>
+          <Text style={styles.blockButtonText}>VIEW MY SAVED ACTIVITIES</Text>
+        </TouchableOpacity>
+
+        {/* Logout Button (Kept at the bottom for functionality) */}
+        <TouchableOpacity style={styles.logoutButton} onPress={logout}>
+          <Text style={styles.logoutButtonText}>LOGOUT</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Bottom padding to ensure you can scroll past the last button */}
+      <View style={{ height: 40 }} />
     </ScrollView>
   );
 }

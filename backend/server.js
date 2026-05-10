@@ -9,13 +9,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-
 const userRoutes = require("./routes/userRoutes");
 const hangoutRoutes = require("./routes/hangoutRoutes");
 
 app.use("/api/users", userRoutes);
 app.use("/api/hangouts", hangoutRoutes);
-
 
 // MongoDB connection
 mongoose
@@ -26,7 +24,6 @@ mongoose
   .catch((error) => {
     console.log(error);
   });
-
 
 // Server
 const PORT = process.env.PORT || 5001;
