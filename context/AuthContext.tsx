@@ -47,8 +47,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(null);
   };
 
+  const signUp = async (name: string, email: string, password: string) => {
+    setIsLoading(true);
+    try {
+      // จำลองการสมัครสมาชิก (ในอนาคตเปลี่ยนเป็น axios.post ไปที่ API ของคุณ)
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          const newUser = {
+            id: Math.random().toString(), // จำลอง ID
+            name: name,
+            email: email,
+          };
+          setUser(newUser); // สมัครเสร็จแล้วให้ Login เข้าไปเลย
+          resolve(newUser);
+        }, 1000);
+      });
+    } catch (error) {
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // อย่าลืมส่ง signUp ออกไปใน Provider value
   return (
-    <AuthContext.Provider value={{ user, setUser, login, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, setUser, login, logout, signUp, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

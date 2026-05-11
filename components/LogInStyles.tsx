@@ -18,7 +18,6 @@ export default StyleSheet.create({
         fontSize: 26,
         fontWeight: "bold",
         color: "#042917",
-        letterSpacing: 1,
     },
     subText: {
         fontSize: 14,

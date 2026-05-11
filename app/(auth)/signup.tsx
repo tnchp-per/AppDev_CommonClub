@@ -1,0 +1,88 @@
+import styles from "@/components/LogInStyles"; // ใช้ style เดิมได้เลย
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import {
+    ActivityIndicator,
+    Image, KeyboardAvoidingView, Platform, ScrollView,
+    Text, TextInput, TouchableOpacity,
+    View
+} from "react-native";
+import { useAuth } from "../../context/AuthContext";
+
+export default function SignUp() {
+    const router = useRouter();
+    const { signUp } = useAuth();
+
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const handleSignUp = async () => {
+        console.log("Button Pressed!"); // ใส่ไว้เช็คว่าปุ่มทำงานไหม
+        if (!name || !email || !password) {
+            alert("Please fill in all fields");
+            return;
+        }
+
+        try {
+            setLoading(true);
+            await signUp(name, email, password);
+            // ถ้า signUp สำเร็จ user จะไม่เป็น null -> ยามใน _layout จะพาไปหน้าหลักเอง
+        } catch (error: any) {
+            alert(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+    return (
+        <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={styles.container}
+        >
+            <ScrollView contentContainerStyle={styles.scrollContent}>
+                <View style={styles.headerArea}>
+                    <Image source={require("../../assets/images/logo_transparent.png")}
+                        style={{ width: 80, height: 80, alignSelf: "center", marginBottom: 10, marginTop: 20 }}
+                    />
+                    <Text style={styles.welcomeText}>CREATE ACCOUNT</Text>
+                    <Text style={styles.subText}>Join Common Club today</Text>
+                </View>
+
+                <View style={styles.formContainer}>
+                    <View style={styles.inputWrapper}>
+                        <Text style={styles.inputLabel}>FULL NAME</Text>
+                        <TextInput style={styles.input} placeholder="John Doe" value={name} onChangeText={setName} />
+                    </View>
+
+                    <View style={styles.inputWrapper}>
+                        <Text style={styles.inputLabel}>EMAIL</Text>
+                        <TextInput style={styles.input} placeholder="example@mail.com" value={email} onChangeText={setEmail} autoCapitalize="none" />
+                    </View>
+
+                    <View style={styles.inputWrapper}>
+                        <Text style={styles.inputLabel}>PASSWORD</Text>
+                        <TextInput style={styles.input} placeholder="••••••••" value={password} onChangeText={setPassword} secureTextEntry />
+                    </View>
+
+                    <View style={styles.inputWrapper}>
+                        <Text style={styles.inputLabel}>CONFIRM PASSWORD</Text>
+                        <TextInput style={styles.input} placeholder="••••••••" value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry />
+                    </View>
+
+                    <TouchableOpacity style={styles.loginButton} onPress={handleSignUp} disabled={loading}>
+                        {loading ? <ActivityIndicator color="#FAF9F1" /> : <Text style={styles.loginButtonText}>SIGN UP</Text>}
+                    </TouchableOpacity>
+
+                    <View style={styles.footer}>
+                        <Text style={styles.footerText}>Already have an account? </Text>
+                        <TouchableOpacity onPress={() => router.push("/(auth)/login")}>
+                            <Text style={styles.signupText}>LOGIN</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </ScrollView>
+        </KeyboardAvoidingView>
+    );
+}

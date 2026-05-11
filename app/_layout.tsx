@@ -22,12 +22,12 @@ function RootLayoutNav() {
     // ถ้ายังโหลดไม่เสร็จ หรือแอปยัง Mount ไม่เสร็จ ให้หยุดรอก่อน
     if (isLoading || !isReady) return;
 
-    const inAuthGroup = segments[0] === 'login';
+    const inAuthGroup = segments[0] === '(auth)';
 
     if (!user && !inAuthGroup) {
       // ใช้ setTimeout เล็กน้อยเพื่อให้แน่ใจว่า Navigator พร้อมแล้วจริงๆ
       const timeout = setTimeout(() => {
-        router.replace('/login');
+        router.replace('/(auth)/login');
       }, 1);
       return () => clearTimeout(timeout);
     } else if (user && inAuthGroup) {

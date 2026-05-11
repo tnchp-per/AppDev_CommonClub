@@ -1,4 +1,5 @@
 import styles from "@/components/LogInStyles";
+import { router } from "expo-router";
 import React, { useState } from "react";
 import {
     ActivityIndicator,
@@ -11,7 +12,7 @@ import {
     TouchableOpacity,
     View
 } from "react-native";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -44,13 +45,9 @@ export default function Login() {
             <ScrollView contentContainerStyle={styles.scrollContent}>
                 {/* Logo / Illustration Area */}
                 <View style={styles.headerArea}>
-                    <Image source={require("../assets/images/logo_transparent.png")}
-                        style={{
-                            width: 100,
-                            height: 100,
-                            alignSelf: "center",
-                            marginBottom: 5,
-                        }}
+                    <Image
+                        source={require("../../assets/images/logo_transparent.png")}
+                        style={{ width: 100, height: 100, alignSelf: "center", marginBottom: 5, }}
                     />
                     <Text style={styles.welcomeText}>WELCOME TO</Text>
                     <Text style={styles.welcomeText}>COMMON CLUB</Text>
@@ -102,7 +99,7 @@ export default function Login() {
 
                     <View style={styles.footer}>
                         <Text style={styles.footerText}>Don't have an account? </Text>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => router.push("/(auth)/signup")}> {/* ต้องมีบรรทัดนี้ */}
                             <Text style={styles.signupText}>SIGN UP</Text>
                         </TouchableOpacity>
                     </View>
