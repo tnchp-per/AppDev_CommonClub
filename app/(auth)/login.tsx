@@ -47,7 +47,7 @@ export default function Login() {
                 <View style={styles.headerArea}>
                     <Image
                         source={require("../../assets/images/logo_transparent.png")}
-                        style={{ width: 100, height: 100, alignSelf: "center", marginBottom: 5, }}
+                        style={{ width: 80, height: 80, alignSelf: "center", marginBottom: 5, }}
                     />
                     <Text style={styles.welcomeText}>WELCOME TO</Text>
                     <Text style={styles.welcomeText}>COMMON CLUB</Text>

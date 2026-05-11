@@ -44,7 +44,7 @@ export default function SignUp() {
             <ScrollView contentContainerStyle={styles.scrollContent}>
                 <View style={styles.headerArea}>
                     <Image source={require("../../assets/images/logo_transparent.png")}
-                        style={{ width: 80, height: 80, alignSelf: "center", marginBottom: 10, marginTop: 20 }}
+                        style={{ width: 80, height: 80, alignSelf: "center", marginBottom: 5, marginTop: 20 }}
                     />
                     <Text style={styles.welcomeText}>CREATE ACCOUNT</Text>
                     <Text style={styles.subText}>Join Common Club today</Text>

@@ -1,44 +1,71 @@
 import styles from "@/components/ProfileStyles";
+import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
+import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useAuth } from "../../context/AuthContext";
 
 export default function Profile() {
-  const { user: authUser, logout } = useAuth();
+  const { user, logout } = useAuth();
+  const router = useRouter();
   const [userData, setUserData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  // เปลี่ยน localhost เป็น IP แล้ว (เผื่อในอนาคตจะเปิดใช้ API จริง)
-  const API_URL = "http://localhost:5001/api/users";
+  const API_URL = "http://localhost:5001/api/users"; // อย่าลืมเปลี่ยนเป็น IP จริงถ้าใช้เครื่องจริงเทส
 
+  // ย้าย useEffect มาไว้ตรงนี้ (ก่อน if return) ตามกฎของ React Hooks
   useEffect(() => {
-    if (authUser?.id) {
+    // ดึงข้อมูลเฉพาะตอนที่มี user เท่านั้น
+    if (user?.id) {
       fetchUserData();
+    } else {
+      // ถ้าไม่มี user ให้เคลียร์ข้อมูลเก่าออก (เผื่อกด logout)
+      setUserData(null);
     }
-  }, [authUser]);
+  }, [user]);
 
   const fetchUserData = async () => {
     try {
       setLoading(true);
-      // LOG 1: What URL are we actually hitting?
-      console.log("Full Request URL:", `${API_URL}/${authUser.id}`);
-
-      const response = await axios.get(`${API_URL}/${authUser.id}`);
-
-      // LOG 2: What did the database send back?
-      console.log("Backend Response:", response.data);
-
+      const response = await axios.get(`${API_URL}/${user.id}`);
       setUserData(response.data);
     } catch (error: any) {
-      // LOG 3: Why did it fail?
-      console.log("Error Status:", error.response?.status);
-      console.log("Error Message:", error.response?.data?.message || error.message);
+      console.log("Fetch error, using context data instead.");
+      // ถ้าหาใน DB ไม่เจอ ให้ดึงข้อมูลจาก Context มาโชว์แก้ขัด
+      setUserData({
+        name: user.name || "User",
+        email: user.email,
+        username: user.name?.replace(/\s+/g, '').toLowerCase() || "user",
+        bio: "Welcome to my profile!",
+        image: "https://via.placeholder.com/150",
+        interests: ["Hangout"],
+        joinedEvents: [],
+        createdEvents: []
+      });
     } finally {
       setLoading(false);
     }
   };
 
+  // --- 1. เช็คว่าเป็น Guest หรือไม่ ---
+  if (!user) {
+    return (
+      <View style={styles.guestContainer}>
+        <Ionicons name="lock-closed" size={80} color="#042917" style={{ opacity: 0.2 }} />
+        <Text style={styles.title}>JOIN COMMON CLUB</Text>
+        <Text style={styles.subTitle}>Login to see your profile and activities</Text>
+        <TouchableOpacity
+          style={styles.loginButton}
+          onPress={() => router.push('/(auth)/login')}
+        >
+          <Text style={styles.buttonText}>LOGIN / SIGN UP</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  // --- 2. เช็คสถานะ Loading ---
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#FAF9F1" }}>
@@ -47,31 +74,23 @@ export default function Profile() {
     );
   }
 
-  if (!userData) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#FAF9F1" }}>
-        <Text style={{ color: "#042917" }}>User not found.</Text>
-      </View>
-    );
-  }
+  // --- 3. ป้องกันหน้าขาว ---
+  if (!userData) return null;
 
+  // --- 4. แสดงผลหน้า Profile จริง ---
   return (
     <ScrollView style={styles.container}>
-      {/* Top Header Placeholder */}
       <View style={styles.topHeader}>
         <Text style={styles.pageTitle}>USER</Text>
       </View>
 
-      {/* Header Info */}
       <View style={styles.header}>
         <Image
-          source={{ uri: userData.image }}
+          source={{ uri: userData.image || "https://via.placeholder.com/150" }}
           style={styles.avatar}
         />
-
         <Text style={styles.name}>{userData.name?.toUpperCase()}</Text>
         <Text style={styles.username}>@{userData.username}</Text>
-
         <Text style={styles.bio}>{userData.bio}</Text>
 
         <TouchableOpacity style={styles.editButton}>
@@ -79,17 +98,13 @@ export default function Profile() {
         </TouchableOpacity>
       </View>
 
-      {/* Stats */}
       <View style={styles.statsContainer}>
         <View style={styles.statCard}>
           <Text style={styles.statNumber}>{userData.joinedEvents?.length || 0}</Text>
           <Text style={styles.statLabel}>Joined</Text>
         </View>
-
         <View style={styles.statCard}>
-          <Text style={styles.statNumber}>
-            {userData.createdEvents ? userData.createdEvents.length : 0}
-          </Text>
+          <Text style={styles.statNumber}>{userData.createdEvents?.length || 0}</Text>
           <Text style={styles.statLabel}>Created</Text>
         </View>
       </View>

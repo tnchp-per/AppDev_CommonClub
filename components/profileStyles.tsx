@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     },
     section: {
         marginTop: 30,
-        paddingHorizontal: 25,
+        paddingHorizontal: 20,
     },
     sectionTitle: {
         fontSize: 14,
@@ -137,7 +137,40 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 'bold',
         textDecorationLine: 'underline',
-    }
+    },
+    guestContainer: {
+        flex: 1,
+        backgroundColor: '#FAF9F1',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#042917',
+        marginTop: 20,
+        marginBottom: 10,
+    },
+    subTitle: {
+        fontSize: 16,
+        color: '#666',
+        textAlign: 'center',
+        marginBottom: 30,
+    },
+    loginButton: {
+        backgroundColor: '#042917',
+        paddingVertical: 15,
+        paddingHorizontal: 40,
+        borderRadius: 12,
+        width: '80%',
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: '#FAF9F1',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
 });
 
 export default styles;
