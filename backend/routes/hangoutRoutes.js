@@ -148,4 +148,13 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.get("/", async (req, res) => {
+    try {
+        const allHangouts = await Hangout.find().sort({ date: 1 });
+        res.json(allHangouts); // This sends an ARRAY directly to the frontend
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 module.exports = router;

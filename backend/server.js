@@ -9,6 +9,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+
 const userRoutes = require("./routes/userRoutes");
 const hangoutRoutes = require("./routes/hangoutRoutes");
 
@@ -26,8 +27,8 @@ mongoose
   });
 
 // Server
-const PORT = process.env.PORT || 5001;
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+const PORT = 5001;
+// Adding '0.0.0.0' tells the server to accept external connections
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running on http://0.0.0.0:${PORT}`);
 });

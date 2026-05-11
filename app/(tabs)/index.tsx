@@ -1,6 +1,7 @@
+import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, RefreshControl, SafeAreaView, ScrollView, Text, View } from "react-native";
-import { fetchDashboardData } from "../../api/hangoutApi"; // Ensure this points to Port 5001
+import { ActivityIndicator, RefreshControl, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { fetchAllHangouts, fetchDashboardData } from "../../api/hangoutApi";
 import { styles } from "../../components/homeStyles";
 import HorizontalSection from "../../components/HorizontalSection";
 import { useAuth } from "../../context/AuthContext";
@@ -19,6 +20,7 @@ interface Hangout {
 
 export default function HomeScreen() {
   const { user } = useAuth(); 
+  const router = useRouter();
   
   const [upcoming, setUpcoming] = useState<Hangout[]>([]);
   const [recommended, setRecommended] = useState<Hangout[]>([]);
@@ -26,32 +28,39 @@ export default function HomeScreen() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // 3. Function to fetch data from your Node.js Backend
+  // 2. Logic to load data based on Auth status
   const loadData = async () => {
-    if (!user?.id) return;
-
     try {
+      setIsLoading(true); // Ensure loading shows
       setError(null);
-      // Calls your API (e.g., http://localhost:5001/api/hangouts/dashboard/USER_ID)
-      const data = await fetchDashboardData(user.id);
-      
-      setUpcoming(data.upcoming || []);
-      setRecommended(data.recommended || []);
+
+      console.log("Current User ID:", user?.id); // Debug check
+
+      if (user?.id) {
+        const data = await fetchDashboardData(user.id);
+        setUpcoming(data.upcoming || []);
+        setRecommended(data.recommended || []);
+      } else {
+        // Ensure this function name matches what is in your hangoutApi.js
+        const allEvents = await fetchAllHangouts(); 
+        console.log("Fetched all events:", allEvents?.length);
+        
+        setUpcoming([]); 
+        setRecommended(allEvents || []);
+      }
     } catch (err: any) {
-      setError("Unable to connect to the club server.");
-      console.error("Dashboard Fetch Error:", err.message);
+      // CHANGE THIS: Let's see what the actual error is!
+      setError(`Connection Error: ${err.message}`);
+      console.error("Home Load Error Detail:", err);
     } finally {
       setIsLoading(false);
       setIsRefreshing(false);
     }
   };
-
-  // 4. Load data when the component mounts or when the user changes
   useEffect(() => {
     loadData();
   }, [user?.id]);
 
-  // 5. Handle Pull-to-Refresh
   const onRefresh = () => {
     setIsRefreshing(true);
     loadData();
@@ -61,7 +70,7 @@ export default function HomeScreen() {
     return (
       <View style={styles.centerContainer}>
         <ActivityIndicator size="large" color="#FF6B6B" />
-        <Text style={{ marginTop: 10, color: "#666" }}>Loading your club life...</Text>
+        <Text style={{ marginTop: 10, color: "#666" }}>Loading club life...</Text>
       </View>
     );
   }
@@ -75,38 +84,80 @@ export default function HomeScreen() {
           <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
         }
       >
+        {/* Error Banner */}
         {error && (
-          <View style={[styles.card, { backgroundColor: '#FFE5E5' }]}>
-            <Text style={[styles.errorText, { color: '#D8000C' }]}>{error}</Text>
+          <View style={[styles.card, { backgroundColor: '#FFE5E5', marginBottom: 15 }]}>
+            <Text style={{ color: '#D8000C', textAlign: 'center' }}>{error}</Text>
           </View>
         )}
 
-        {/* Dynamic Header based on AuthContext */}
-        <Text style={styles.header}>Welcome Back, {user?.name || "Member"}!</Text>
+        {/* Dynamic Header */}
+        <View style={{ marginBottom: 20 }}>
+          <Text style={styles.header}>
+            {user ? `Welcome Back, ${user.name}!` : "Explore the Club! 🥂"}
+          </Text>
+          
+          {!user && (
+            <TouchableOpacity onPress={() => router.push("/login")}>
+              <Text style={{ color: "#FF6B6B", fontWeight: "600", fontSize: 16, marginTop: 4 }}>
+                Sign in to join or host events →
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
 
-        {/* SECTION 1: UPCOMING (Events Hong Hosted or Joined) */}
+        {/* SECTION 1: UPCOMING (Only show for logged in users with events) */}
+        {user && upcoming.length > 0 && (
+          <>
+            <HorizontalSection 
+              title="Your Upcoming Events" 
+              data={upcoming} 
+            />
+            <View style={{ height: 25 }} />
+          </>
+        )}
+
+        {/* SECTION 2: DISCOVER/RECOMMENDED (Visible to everyone) */}
         <HorizontalSection 
-          title="Your Upcoming Events" 
-          data={upcoming} 
-        />
-
-        <View style={{ height: 25 }} />
-
-        {/* SECTION 2: RECOMMENDED (Events hosted by others) */}
-        <HorizontalSection 
-          title="Recommended for You" 
+          title={user ? "Recommended for You" : "All Hangouts"} 
           data={recommended} 
         />
 
-        {/* Empty State */}
+        {/* Empty State for Guests or New Users */}
         {upcoming.length === 0 && recommended.length === 0 && !error && (
-          <View style={styles.centerContainer}>
-            <Text style={{ color: "#999", textAlign: "center", marginTop: 40 }}>
-              No hangouts found nearby.{"\n"}Why not create one?
+          <View style={{ marginTop: 60, alignItems: 'center' }}>
+            <Text style={{ color: "#999", textAlign: "center" }}>
+              The club is quiet right now.{"\n"}
+              {user ? "Why not create the first event?" : "Login and start the party!"}
             </Text>
           </View>
         )}
       </ScrollView>
+
+      {/* Floating Action Button: Only for logged-in users */}
+      {user && (
+        <TouchableOpacity 
+          style={{
+            position: 'absolute',
+            right: 20,
+            bottom: 30,
+            width: 56,
+            height: 56,
+            borderRadius: 28,
+            backgroundColor: '#FF6B6B',
+            justifyContent: 'center',
+            alignItems: 'center',
+            shadowColor: '#000',
+            shadowOpacity: 0.2,
+            shadowRadius: 6,
+            shadowOffset: { width: 0, height: 3 },
+            elevation: 5,
+          }}
+          onPress={() => router.push("/create")}
+        >
+          <Text style={{ color: '#fff', fontSize: 28, lineHeight: 32 }}>+</Text>
+        </TouchableOpacity>
+      )}
     </SafeAreaView>
   );
 }
