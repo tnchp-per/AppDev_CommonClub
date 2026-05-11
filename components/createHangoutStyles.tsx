@@ -99,5 +99,68 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     letterSpacing: 1,
   },
-  submitBtnText: { color: "#FAF9F1", fontWeight: "bold", fontSize: 18 }
+  submitBtnText: { color: "#FAF9F1", fontWeight: "bold", fontSize: 18 },
+
+  guestContainer: {
+    flex: 1,
+    backgroundColor: '#FDFCF0', // Match your home background
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  guestCard: {
+    backgroundColor: 'white',
+    padding: 40,
+    borderRadius: 24,
+    alignItems: 'center',
+    width: '100%',
+    // Shadow for depth
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 5,
+  },
+  guestLogoImage: {
+    width: 180,
+    height: 80,
+    marginBottom: 20,
+  },
+  guestEmoji: {
+    fontSize: 50,
+    marginBottom: 20,
+  },
+  guestTitle: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: '#1A3C22', // Match your Calendar theme color
+    marginBottom: 10,
+  },
+  guestSubtitle: {
+    textAlign: 'center',
+    color: '#666',
+    lineHeight: 22,
+    fontSize: 16,
+    marginBottom: 30,
+  },
+  guestLoginBtn: {
+    backgroundColor: '#1A3C22', // Your primary action color
+    paddingVertical: 16,
+    paddingHorizontal: 30,
+    borderRadius: 14,
+    width: '100%',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  guestLoginBtnText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
+  guestBackText: {
+    color: '#999',
+    fontWeight: '600',
+    fontSize: 14,
+    marginTop: 10,
+  }
 });

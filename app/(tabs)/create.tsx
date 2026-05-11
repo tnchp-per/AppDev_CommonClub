@@ -98,6 +98,35 @@ export default function CreateHangout() {
     }
   };
 
+  if (!user) {
+    return (
+      <View style={styles.guestContainer}>
+        <View style={styles.guestCard}>
+          <Image 
+            source={require("../../assets/images/logo_transparent.png")} 
+            style={styles.guestLogoImage} 
+            resizeMode="contain" 
+          />
+          <Text style={styles.guestTitle}>Host a Hangout</Text>
+          <Text style={styles.guestSubtitle}>
+            Connect with people nearby! You need to be a member to create and manage events.
+          </Text>
+          
+          <TouchableOpacity 
+            style={styles.guestLoginBtn} 
+            onPress={() => router.push("/login")}
+          >
+            <Text style={styles.guestLoginBtnText}>Login / Sign Up</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => router.back()}>
+            <Text style={styles.guestBackText}>Maybe later</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 60 }}>
       <Text style={styles.header}>Create Hangout</Text>
