@@ -1,9 +1,9 @@
-import styles from "@/components/ProfileStyles";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import styles from "../../components/ProfileStyles";
 import { useAuth } from "../../context/AuthContext";
 
 export default function Profile() {
@@ -12,11 +12,9 @@ export default function Profile() {
   const [userData, setUserData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
-  const API_URL = "http://localhost:5001/api/users"; // อย่าลืมเปลี่ยนเป็น IP จริงถ้าใช้เครื่องจริงเทส
+  const API_URL = "http://localhost:5001/api/users"; 
 
-  // ย้าย useEffect มาไว้ตรงนี้ (ก่อน if return) ตามกฎของ React Hooks
   useEffect(() => {
-    // ดึงข้อมูลเฉพาะตอนที่มี user เท่านั้น
     if (user?.id) {
       fetchUserData();
     } else {

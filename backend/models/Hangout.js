@@ -28,8 +28,7 @@ const hangoutSchema = new mongoose.Schema({
   },
   image: { 
     type: String, 
-    // Replace the URL below with your actual hosted logo URL
-    default: Default_logo
+    default: ""
   },
   host: { 
     type: mongoose.Schema.Types.ObjectId, 

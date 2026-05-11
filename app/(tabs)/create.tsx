@@ -63,8 +63,8 @@ export default function CreateHangout() {
         host: user.id,
         date: startISO,
         endTime: endISO,
-        maxParticipants: parseInt(formData.maxParticipants) || 0,
-        image: image || "logo.png"
+        maxParticipants: parseInt(formData.maxParticipants) || 5,
+        ...(image && { image: image })
       };
 
       await createHangout(finalData);

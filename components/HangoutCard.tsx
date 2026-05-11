@@ -15,38 +15,34 @@ export default function HangoutCard({
   title,
   location,
   time,
-  image
+  image // This is usually a string from MongoDB
 }: HangoutCardProps) {
   const router = useRouter();
 
+  // 1. Determine the source
+  // If image is a string starting with "data:", it's our Base64.
+  // If it's empty or null, use the local logo.
+  const imageSource = (typeof image === 'string' && image.startsWith('data:image')) 
+    ? { uri: image } 
+    : require('../assets/images/logo.png'); 
+
   const handlePress = () => {
-    // This pushes the user to /hangout/69ff...
     router.push(`/hangout/${id}`);
   };
 
   return (
     <Pressable 
       onPress={handlePress}
-      style={({ pressed }) => [
-        { opacity: pressed ? 0.7 : 1 } // Gives a nice "click" feedback
-      ]}
+      style={({ pressed }) => [{ opacity: pressed ? 0.7 : 1 }]}
     >
       <View style={hangoutCardStyle.card}>
           <Image
-              source={image}
+              source={imageSource} 
               style={hangoutCardStyle.image}
           />
-          <Text style={hangoutCardStyle.title}>
-              {title}
-          </Text>
-
-          <Text style={hangoutCardStyle.location}>
-              {location}
-          </Text>
-
-          <Text style={hangoutCardStyle.time}>
-              {time}
-           </Text>
+          <Text style={hangoutCardStyle.title}>{title}</Text>
+          <Text style={hangoutCardStyle.location}>{location}</Text>
+          <Text style={hangoutCardStyle.time}>{time}</Text>
       </View>
     </Pressable>
   );
