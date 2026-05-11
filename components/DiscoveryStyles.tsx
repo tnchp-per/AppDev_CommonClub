@@ -15,7 +15,6 @@ export default StyleSheet.create({
         fontSize: 24,
         fontWeight: "bold",
         color: "#042917",
-        letterSpacing: 3,
     },
     searchContainer: {
         flexDirection: "row",
@@ -64,7 +63,7 @@ export default StyleSheet.create({
         color: "#FFFFFF",
         fontSize: 20,
         fontWeight: "bold",
-        letterSpacing: 2,
+        letterSpacing: 1,
         textShadowColor: 'rgba(0, 0, 0, 0.5)',
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 3,

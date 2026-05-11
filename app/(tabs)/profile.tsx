@@ -10,7 +10,7 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
 
   // เปลี่ยน localhost เป็น IP แล้ว (เผื่อในอนาคตจะเปิดใช้ API จริง)
-  const API_URL = "http://192.168.1.37:5001/api/users";
+  const API_URL = "http://localhost:5001/api/users";
 
   useEffect(() => {
     if (authUser?.id) {
@@ -65,14 +65,14 @@ export default function Profile() {
       {/* Header Info */}
       <View style={styles.header}>
         <Image
-          source={userData.image ? { uri: userData.image } : require('../../assets/images/hong.jpg')}
+          source={{ uri: userData.image }}
           style={styles.avatar}
         />
 
         <Text style={styles.name}>{userData.name?.toUpperCase()}</Text>
         <Text style={styles.username}>@{userData.username}</Text>
 
-        <Text style={styles.bio}>{userData.bio || "Open minded, and looking for new friends to go out to events."}</Text>
+        <Text style={styles.bio}>{userData.bio}</Text>
 
         <TouchableOpacity style={styles.editButton}>
           <Text style={styles.editButtonText}>EDIT PROFILE</Text>
@@ -112,12 +112,12 @@ export default function Profile() {
 
       {/* Action Buttons */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>My hangout</Text>
+        <Text style={styles.sectionTitle}>My Hangout</Text>
         <TouchableOpacity style={styles.primaryBlockButton}>
           <Text style={styles.blockButtonText}>VIEW MY HANGOUT</Text>
         </TouchableOpacity>
 
-        <Text style={styles.sectionTitle}>My request</Text>
+        <Text style={styles.sectionTitle}>My Request</Text>
         <TouchableOpacity style={styles.secondaryBlockButton}>
           <Text style={styles.blockButtonText}>VIEW MY REQUEST</Text>
         </TouchableOpacity>

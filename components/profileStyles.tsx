@@ -3,18 +3,18 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FAF9F1', // Light cream background
+        backgroundColor: '#FAF9F1',
+        paddingHorizontal: 20,
     },
     topHeader: {
-        alignItems: 'center',
-        paddingTop: 60, // Adjust based on your phone's notch/safe area
-        paddingBottom: 10,
+        marginTop: 60,
+        marginBottom: 20,
+        alignItems: "center",
     },
     pageTitle: {
-        fontSize: 16,
+        fontSize: 24,
         fontWeight: '700',
         color: '#042917',
-        letterSpacing: 1,
     },
     header: {
         alignItems: 'center',
@@ -32,7 +32,6 @@ const styles = StyleSheet.create({
         fontSize: 22,
         color: '#042917',
         fontWeight: 'bold',
-        letterSpacing: 1.5,
     },
     username: {
         fontSize: 14,
@@ -57,7 +56,6 @@ const styles = StyleSheet.create({
         color: '#FAF9F1',
         fontWeight: 'bold',
         fontSize: 12,
-        letterSpacing: 1,
     },
     statsContainer: {
         flexDirection: 'row',
@@ -105,7 +103,6 @@ const styles = StyleSheet.create({
         color: '#FAF9F1',
         fontSize: 11,
         fontWeight: 'bold',
-        letterSpacing: 1,
     },
     emptyText: {
         color: '#A5A198',
@@ -130,7 +127,6 @@ const styles = StyleSheet.create({
         color: '#FAF9F1',
         fontSize: 12,
         fontWeight: 'bold',
-        letterSpacing: 1,
     },
     logoutButton: {
         marginTop: 20,

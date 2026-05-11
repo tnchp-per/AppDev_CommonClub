@@ -10,17 +10,17 @@ export default function Discovery() {
     {
       id: "1",
       title: "WORKOUT",
-      image: require("../../assets/images/workout.jpg")
+      image: require("../../assets/images/excs.jpg")
     },
     {
       id: "2",
       title: "STUDY SESSION",
-      image: require("../../assets/images/study.jpg")
+      image: require("../../assets/images/work.jpg")
     },
     {
       id: "3",
       title: "CAFE HOPPING",
-      image: require("../../assets/images/cafe.jpg")
+      image: require("../../assets/images/cafe2.jpg")
     },
   ];
 
