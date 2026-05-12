@@ -53,8 +53,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-// --- NEW ROUTES FOR PARTICIPATION MANAGEMENT ---
-
 // 1. REQUEST TO JOIN A HANGOUT
 router.post("/:hangoutId/join", async (req, res) => {
   try {
@@ -123,9 +121,6 @@ router.put("/:hangoutId/manage-request", async (req, res) => {
 });
 
 // Get Dashboard Data (Upcoming + Recommended)
-
-
-
 router.post("/", async (req, res) => {
   try {
     const newHangout = new Hangout(req.body);
@@ -145,4 +140,21 @@ router.get("/", async (req, res) => {
     }
 });
 
+
+router.get("/:id", async (req, res) => {
+  try {
+    const hangout = await Hangout.findById(req.params.id)
+      .populate("host", "name image username") // This pulls host details instead of just their ID
+      .populate("acceptedParticipants", "name image");
+
+    if (!hangout) {
+      return res.status(404).json({ message: "Hangout not found in database" });
+    }
+
+    res.json(hangout);
+  } catch (err) {
+    console.error("Error fetching hangout by ID:", err);
+    res.status(500).json({ message: "Invalid ID format or Server Error" });
+  }
+});
 module.exports = router;
