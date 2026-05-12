@@ -35,18 +35,15 @@ const hangoutSchema = new mongoose.Schema({
     ref: "User", 
     required: true 
   },
-  acceptedParticipants: [{ 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: "User" 
-  }],
+  acceptedParticipants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   pendingParticipants: [{ 
     type: mongoose.Schema.Types.ObjectId, 
     ref: "User" 
   }],
-  participants: [{ 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: "User" 
-  }]
+  //participants: [{ 
+   // type: mongoose.Schema.Types.ObjectId, 
+   // ref: "User" 
+  //}]
 }, { timestamps: true });
 
 module.exports = mongoose.model("Hangout", hangoutSchema);

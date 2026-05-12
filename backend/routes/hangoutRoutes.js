@@ -4,20 +4,30 @@ const router = express.Router();
 const Hangout = require("../models/hangout"); // Matched to your Hangout.js file
 const User = require("../models/User");       // Added User model for the accept logic
 
+const mongoose = require('mongoose'); // Add this at the top of your routes file
+
+
 // GET all hangouts
 router.get("/dashboard/:userId", async (req, res) => {
     try {
         const userId = req.params.userId;
-        const allHangouts = await Hangout.find();
+        const allHangouts = await Hangout.find().lean(); // Use .lean() for easier comparison
 
-        // Use .toString() to ensure we aren't comparing an Object to a String
-        const upcoming = allHangouts.filter(h => 
-            h.host && h.host.toString() === userId.toString()
-        );
+        // Fix: Check host OR acceptedParticipants
+        const upcoming = allHangouts.filter(h => {
+            const isHost = h.host && h.host.toString() === userId;
+            const isGuest = h.acceptedParticipants && h.acceptedParticipants.some(id => id.toString() === userId);
+            
+            return isHost || isGuest;
+        });
 
-        const recommended = allHangouts.filter(h => 
-            h.host && h.host.toString() !== userId.toString()
-        );
+        // Recommended: Events where you are NOT the host AND NOT a participant
+        const recommended = allHangouts.filter(h => {
+            const isHost = h.host && h.host.toString() === userId;
+            const isGuest = h.acceptedParticipants && h.acceptedParticipants.some(id => id.toString() === userId);
+            
+            return !isHost && !isGuest;
+        });
 
         console.log(`User: ${userId} | Upcoming: ${upcoming.length} | Recs: ${recommended.length}`);
         
@@ -113,30 +123,8 @@ router.put("/:hangoutId/manage-request", async (req, res) => {
 });
 
 // Get Dashboard Data (Upcoming + Recommended)
-router.get("/dashboard/:userId", async (req, res) => {
-  try {
-    const { userId } = req.params;
 
-    // 1. Get Upcoming: Joined by user + Date is today or later + Sorted by nearest
-    const upcoming = await Hangout.find({
-      $or: [{ host: userId }, { acceptedParticipants: userId }],
-      date: { $gte: new Date() } // Date is Greater Than or Equal to "Now"
-    })
-    .sort({ date: 1 }) // 1 = Ascending (closest first)
-    .populate("host", "name");
 
-    // 2. Get Recommended: Not joined by user + Randomly sampled
-    const recommended = await Hangout.find({
-      host: { $ne: userId },
-      acceptedParticipants: { $ne: userId }
-    })
-    .limit(5); // Just grab 5 random-ish ones
-
-    res.json({ upcoming, recommended });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
 
 router.post("/", async (req, res) => {
   try {
