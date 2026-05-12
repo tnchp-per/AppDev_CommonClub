@@ -4,7 +4,7 @@ const Default_logo = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAB4AAAAQ4CAIA
 const hangoutSchema = new mongoose.Schema({
   title: { type: String, required: true },
   location: { type: String, required: true },
-  description: { type: String, required: true },
+  description: { type: String},
   
   // --- NEW FIELDS ADDED HERE ---
   category: { 

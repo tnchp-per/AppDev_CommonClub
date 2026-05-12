@@ -42,7 +42,7 @@ const HorizontalSection = ({ title, data }: { title: string; data: any[] }) => {
   return (
     <View style={styles.sectionContainer}>
       <Text style={styles.sectionTitle}>{title}</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContainer}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={true} contentContainerStyle={styles.scrollContainer}>
         {data.map((item) => {
           // 1. Setup Dates
           const eventDate = new Date(item.date);

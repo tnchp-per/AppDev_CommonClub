@@ -37,10 +37,12 @@ export const createHangout = async (hangoutData) => {
       },
       body: JSON.stringify(hangoutData),
     });
-    if (!response.ok) throw new Error("Failed to create hangout");
-    return await response.json();
-  } catch (error) {
-    console.error("Create Hangout Error:", error);
-    throw error;
+    if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Failed to create hangout");
   }
-};
+  return await response.json();
+} catch (error) {
+  console.error("Error creating hangout:", error);
+  throw error; // Let the screen handle the error
+}};

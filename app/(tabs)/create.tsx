@@ -15,11 +15,13 @@ export default function CreateHangout() {
   const [endTime, setEndTime] = useState('10:00');
   const [image, setImage] = useState<string | null>(null);
   const { user } = useAuth();
+
+  const [invalidMsg, setInvalidMsg] = useState('');
   
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    location: "",
+    location: "-",
     category: "Social",
     maxParticipants: "",
     image: ""
@@ -34,47 +36,54 @@ export default function CreateHangout() {
   };
 
   const handleSubmit = async () => {
-    if (!user) {
-      Alert.alert("Error", "You must be logged in to create an event.");
-      return;
-    }
+    let error = ""; // Local variable for immediate checking
 
-    if (!formData.title || !formData.location || !startTime || !endTime) {
-      Alert.alert("Please fill in the name, location, and times.");
-      return;
-    }
+  // Validation Logic
+  if (!formData.title.trim()) {
+    error = 'Please enter an event name';
+  } else if (!formData.location || formData.location === "-") {
+    error = 'Please enter a location';
+  } else if (!selectedDay) {
+    error = 'Please select a date';
+  } else if (new Date(selectedDay) <= new Date()) {
+    error = 'Date must be in the future';
+  }
+
+  // Update the UI state so the user sees the message
+  setInvalidMsg(error);
 
     const [startHours, startMins] = startTime.split(':').map(Number);
     const [endHours, endMins] = endTime.split(':').map(Number);
     const totalStartMinutes = startHours * 60 + startMins;
     const totalEndMinutes = endHours * 60 + endMins;
 
-    if (totalEndMinutes <= totalStartMinutes) {
-      Alert.alert("Time Error", "End time must be after start time.");
-      return;
-    }
-
+    if (error === "") {
     try {
       const startISO = new Date(`${selectedDay}T${startTime}:00`).toISOString();
       const endISO = new Date(`${selectedDay}T${endTime}:00`).toISOString();
 
       const finalData = {
         ...formData,
-        host: user.id,
+        description: formData.description || "",
+        host: user._id || user.id, // Adjust based on your user object structure
         date: startISO,
         endTime: endISO,
         maxParticipants: parseInt(formData.maxParticipants) || 5,
-        ...(image && { image: image })
+        image: image || ""
       };
 
       await createHangout(finalData);
-      Alert.alert("Success!", "Your event is scheduled.", [
-        { text: "Awesome", onPress: () => router.push("/") }
-      ]);
+
+      // Reset everything on success
+      setFormData({ title: "", description: "-", location: "", category: "Social", maxParticipants: "5", image: "" });
+      setImage(null);
+      alert("Hangout Created!");
+      window.location.reload();
     } catch (err) {
-      Alert.alert("Server Error", "Could not connect to the database.");
-    }
-  };
+      alert("Error, Submission failed");
+    } 
+  } else alert(error);
+};
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
