@@ -182,8 +182,8 @@ router.delete('/:id', async (req, res) => {
     // 2. Remove this Hangout ID from all Users' hosted and joined arrays
     // $pull removes the specific ID from the arrays
     await User.updateMany(
-      { $or: [{ hangoutsJoined: hangoutId }, { hangoutsHosted: hangoutId }] },
-      { $pull: { hangoutsJoined: hangoutId, hangoutsHosted: hangoutId } }
+      { $or: [{ joinedEvents: hangoutId }, { createdEvents: hangoutId }] },
+      { $pull: { joinedEvents: hangoutId, createdEvents: hangoutId } }
     );
 
     // 3. Delete the hangout itself
