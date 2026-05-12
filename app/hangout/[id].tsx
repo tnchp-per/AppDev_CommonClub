@@ -44,6 +44,7 @@ export default function HangoutDetails() {
 
       if (response.ok) {
         Alert.alert("Success", "Request sent! Wait for the host to accept.");
+        fetchHangoutDetails();
       } else {
         Alert.alert("Notice", data.message || "Something went wrong");
       }
@@ -53,6 +54,8 @@ export default function HangoutDetails() {
     } finally {
       setIsSubmitting(false);
     }
+
+    
   };
 
   const fetchHangoutDetails = async () => {
@@ -87,6 +90,15 @@ export default function HangoutDetails() {
     hour: '2-digit',
     minute: '2-digit',
   });
+
+  const userId = user?._id || user?.id;
+  const isHost = hangout?.host?._id === userId || hangout?.host === userId;
+  const isAlreadyJoined = hangout?.acceptedParticipants?.some(
+    (p: any) => (p._id || p) === userId
+  );
+  const isPending = hangout?.pendingParticipants?.some(
+    (p: any) => (p._id || p) === userId
+  );
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -137,18 +149,38 @@ export default function HangoutDetails() {
         </View>
       </ScrollView>
 
-      {/* STICKY JOIN BUTTON */}
       <View style={styles.footer}>
-        <TouchableOpacity 
-          style={[styles.Button, isSubmitting && { opacity: 0.6 }]} 
-          onPress={handleJoinRequest}
-          disabled={isSubmitting}
-        >
-          <Text style={styles.ButtonText}>
-            {isSubmitting ? "SENDING..." : "REQUEST TO JOIN"}
-          </Text>
-        </TouchableOpacity>
+        {isHost ? (
+          /* HOST VIEW: Review Requests */
+          <TouchableOpacity 
+            style={styles.Button} 
+            onPress={() => router.push(`/manage_requests/${id}`)}
+          >
+            <Text style={styles.ButtonText}>REVIEW REQUESTS</Text>
+          </TouchableOpacity>
+        ) : isAlreadyJoined ? (
+          /* PARTICIPANT VIEW: Already In */
+          <View style={[styles.Button, { backgroundColor: '#E0E0E0' }]}>
+            <Text style={[styles.ButtonText, { color: '#666' }]}>ALREADY JOINED</Text>
+          </View>
+        ) : isPending ? (
+          /* PARTICIPANT VIEW: Waiting */
+          <View style={[styles.Button, { backgroundColor: '#E0E0E0' }]}>
+            <Text style={[styles.ButtonText, { color: '#666' }]}>REQUEST PENDING</Text>
+          </View>
+        ) : (
+          /* PUBLIC VIEW: Join Button */
+          <TouchableOpacity 
+            style={[styles.Button, isSubmitting && { opacity: 0.6 }]} 
+            onPress={handleJoinRequest}
+            disabled={isSubmitting}
+          >
+            <Text style={styles.ButtonText}>
+              {isSubmitting ? "SENDING..." : "REQUEST TO JOIN"}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
-    </SafeAreaView>
+          </SafeAreaView>
   );
 }

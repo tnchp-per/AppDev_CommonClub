@@ -12,9 +12,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 30,
-    height:40, // Much thinner
-    //  marginTop: Platform.OS === 'ios' ? 0 : 18   ,
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#EEE',
   },
   backButton: {
     position: 'absolute',
@@ -22,20 +22,11 @@ const styles = StyleSheet.create({
     top: Platform.OS === 'ios' ? 10 : 16 ,
     zIndex: 10,
   },
-  logo: {
-    width: 50,
-    height: 60,
-    resizeMode: 'contain',
-  },
   headerTitle: {
-    fontSize: 22, 
-    fontWeight: "400", 
-    textAlign: "center", 
-    marginTop: 80, 
-    marginBottom: 80, 
-    letterSpacing: 0.5, 
-    color: '#1A3C22',
-    fontFamily: "Georgia",
+    fontSize: 16, 
+    fontWeight: 'bold', 
+    color: '#1A3C22', 
+    letterSpacing: 1
   },
 
   mainTitle: {

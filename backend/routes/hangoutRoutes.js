@@ -54,26 +54,37 @@ router.post("/", async (req, res) => {
 });
 
 // 1. REQUEST TO JOIN A HANGOUT
-router.post("/:hangoutId/join", async (req, res) => {
+router.post("/:id/join", async (req, res) => {
   try {
-    const { hangoutId } = req.params;
-    const { userId } = req.body; 
+    const { userId } = req.body;
+    const hangoutId = req.params.id;
 
+    // 1. Find the hangout
     const hangout = await Hangout.findById(hangoutId);
-    if (!hangout) return res.status(404).json({ message: "Hangout not found" });
 
-    // Prevent joining if already pending or accepted
-    if (hangout.pendingParticipants.includes(userId) || hangout.acceptedParticipants.includes(userId)) {
-      return res.status(400).json({ message: "You have already requested to join this hangout." });
+    if (!hangout) {
+      return res.status(404).json({ message: "Hangout not found" });
     }
 
-    // Add user to the pending list
-    hangout.pendingParticipants.push(userId);
-    await hangout.save();
+    // 2. Check if user is already the host
+    if (hangout.host.toString() === userId) {
+      return res.status(400).json({ message: "You are the host of this event" });
+    }
 
-    res.status(200).json({ message: "Join request sent successfully!", hangout });
+    // 3. Check if user is already an accepted participant
+    if (hangout.acceptedParticipants.includes(userId)) {
+      return res.status(400).json({ message: "You have already joined this event" });
+    }
+
+    // 4. Add to pendingParticipants using $addToSet (prevents duplicates)
+    await Hangout.findByIdAndUpdate(hangoutId, {
+      $addToSet: { pendingParticipants: userId }
+    });
+
+    res.status(200).json({ message: "Request sent to pending list!" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
