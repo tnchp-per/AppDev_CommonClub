@@ -12,7 +12,7 @@ export default function Profile() {
   const [userData, setUserData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
-  const API_URL = "http://localhost:5001/api/users"; 
+  const API_URL = "http://localhost:5001/api/users";
 
   useEffect(() => {
     if (user?.id) {
@@ -91,7 +91,10 @@ export default function Profile() {
         <Text style={styles.username}>@{userData.username}</Text>
         <Text style={styles.bio}>{userData.bio}</Text>
 
-        <TouchableOpacity style={styles.editButton}>
+        <TouchableOpacity
+          style={styles.editButton}
+          onPress={() => router.push('/(tabs)/editProfile')}
+        >
           <Text style={styles.editButtonText}>EDIT PROFILE</Text>
         </TouchableOpacity>
       </View>

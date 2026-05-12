@@ -10,7 +10,7 @@ export default function Discovery() {
     {
       id: "1",
       title: "WORKOUT",
-      image: require("../../assets/images/excs.jpg")
+      image: require("../../assets/images/tennis.jpg")
     },
     {
       id: "2",
