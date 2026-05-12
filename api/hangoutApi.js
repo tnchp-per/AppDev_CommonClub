@@ -46,3 +46,20 @@ export const createHangout = async (hangoutData) => {
   console.error("Error creating hangout:", error);
   throw error; // Let the screen handle the error
 }};
+
+export const deleteHangout = async (id) => {
+  const response = await fetch(`${BASE_URL}/hangouts/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to delete hangout');
+  }
+
+  return await response.json();
+};
+

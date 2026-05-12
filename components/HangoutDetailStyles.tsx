@@ -127,6 +127,10 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     marginTop: 0
  },
+ actionContainer: {
+  padding: 20,
+  width: '100%',
+},
 });
 
 export default styles;
