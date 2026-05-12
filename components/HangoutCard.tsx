@@ -3,10 +3,11 @@ import { Image, Pressable, Text, View } from "react-native";
 import hangoutCardStyle from "./HangoutCardStyle";
 
 type HangoutCardProps = {
-  id: string; // <--- Add this!
+  id: string;
   title: string;
   location: string;
-  time: string;
+  date: string; // Accepts "Today", "Tomorrow", etc.
+  time: string; // Accepts "15:45"
   image: any;
 };
 
@@ -14,6 +15,7 @@ export default function HangoutCard({
   id,
   title,
   location,
+  date,
   time,
   image // This is usually a string from MongoDB
 }: HangoutCardProps) {
@@ -42,7 +44,7 @@ export default function HangoutCard({
           />
           <Text style={hangoutCardStyle.title}>{title}</Text>
           <Text style={hangoutCardStyle.location}>{location}</Text>
-          <Text style={hangoutCardStyle.time}>{time}</Text>
+          <Text style={hangoutCardStyle.time}>{date} at {time}</Text>
       </View>
     </Pressable>
   );
