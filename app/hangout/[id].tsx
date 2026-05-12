@@ -1,6 +1,8 @@
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import styles from "../../components/HangoutDetailStyles"; // Adjust path as needed
 import { useAuth } from "../../context/AuthContext"; // Path to your context
 
 
@@ -12,6 +14,10 @@ export default function HangoutDetails() {
   const { user } = useAuth(); // Get the logged-in user
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const isImageValid = hangout?.image && (hangout.image.startsWith('http') || hangout.image.startsWith('data:image'));
+  const imageSource = isImageValid 
+  ? { uri: hangout.image } 
+  : require('../../assets/images/logo.png'); // Local fallback
 
   // Replace with your actual IP address
   const BASE_URL = "http://localhost:5001/api/hangouts";
@@ -28,7 +34,7 @@ export default function HangoutDetails() {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch(`http://192.168.1.XX:5001/api/hangouts/${id}/join`, {
+      const response = await fetch(`http://localhost:5001/api/hangouts/${id}/join`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: user.id || user._id }), // Handle different ID naming
@@ -61,13 +67,7 @@ export default function HangoutDetails() {
     }
   };
 
-  if (loading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#1A3C22" />
-      </View>
-    );
-  }
+  if (loading) return <View style={styles.center}><ActivityIndicator size="large" /></View>;
 
   if (!hangout) {
     return (
@@ -75,69 +75,80 @@ export default function HangoutDetails() {
         <Text>Hangout not found.</Text>
       </View>
     );
-  }
+  };
+
+  const eventDate = hangout?.date ? new Date(hangout.date) : null;
+  const formattedDate = eventDate?.toLocaleDateString('en-GB', {
+    weekday: 'short',
+    day: '2-digit',
+    month: 'short',
+  });
+  const formattedTime = eventDate?.toLocaleTimeString('en-GB', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 
   return (
-    <ScrollView style={styles.container}>
-      <Stack.Screen options={{ title: hangout.title, headerBackTitle: "Back" }} />
-      
-      {hangout.image && (
-        <Image source={{ uri: hangout.image }} style={styles.image} />
-      )}
+    <SafeAreaView style={styles.safeArea}>
+      {/* HEADER SECTION */}
+      <View style={styles.headerNav}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={28} color="#1A3C22" />
+        </TouchableOpacity>
+        <View style={{ alignItems: 'center' }}>
+          <Text style={styles.headerTitle}>EVENT DESCRIPTION</Text>
+        </View>
+      </View>
 
-      <View style={styles.content}>
-        <Text style={styles.title}>{hangout.title}</Text>
-        <Text style={styles.category}>{hangout.category}</Text>
+      <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
         
-        <View style={styles.section}>
-          <Text style={styles.label}>Location</Text>
-          <Text style={styles.value}>{hangout.location}</Text>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.label}>Date & Time</Text>
-          <Text style={styles.value}>
-            {new Date(hangout.date).toLocaleDateString()} at {new Date(hangout.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        <View>
+          <Image source={imageSource} style={styles.image} />  
+          {/* DYNAMIC TITLE */}
+          <Text style={styles.mainTitle}>{hangout?.title}</Text>
+        
+          <Text style={styles.dateTimeText}>
+            {formattedDate} • {formattedTime}
           </Text>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.label}>Description</Text>
-          <Text style={styles.value}>{hangout.description || "No description provided."}</Text>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.label}>Participants</Text>
-          <Text style={styles.value}>
-            {hangout.acceptedParticipants?.length || 0} / {hangout.maxParticipants} joined
+          
+      
+          <View style={styles.locationRow}>
+            <Ionicons name="location-sharp" size={16} color="#1A3C22" />
+            <Text style={styles.locationText}>{hangout?.location}</Text>
+          </View>
+        
+          <Text style={styles.participantText}>
+            Participant: {hangout?.acceptedParticipants?.length || 0}/{hangout?.maxParticipants || 0}
           </Text>
-        </View>
 
+          <Text style={styles.aboutHeader}>About this event</Text>
+          
+          {/* DYNAMIC HOST */}
+          <View style={styles.hostRow}>
+            <Image 
+               source={{ uri: hangout?.host?.image }} 
+               style={styles.hostAvatar} 
+            />
+            <Text style={styles.hostName}>{hangout?.host?.name || "Host"}</Text>
+          </View>
+
+          {/* DYNAMIC DESCRIPTION */}
+          <Text style={styles.descriptionText}>{hangout?.description}</Text>
+        </View>
+      </ScrollView>
+
+      {/* STICKY JOIN BUTTON */}
+      <View style={styles.footer}>
         <TouchableOpacity 
-          style={[styles.joinButton, isSubmitting && { opacity: 0.7 }]} 
+          style={[styles.Button, isSubmitting && { opacity: 0.6 }]} 
           onPress={handleJoinRequest}
           disabled={isSubmitting}
         >
-          <Text style={styles.joinButtonText}>
+          <Text style={styles.ButtonText}>
             {isSubmitting ? "SENDING..." : "REQUEST TO JOIN"}
           </Text>
         </TouchableOpacity>
       </View>
-    </ScrollView>
+    </SafeAreaView>
   );
 }
-
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#FDFCF0" },
-  center: { flex: 1, justifyContent: "center", alignItems: "center" },
-  image: { width: '100%', height: 250 },
-  content: { padding: 20 },
-  title: { fontSize: 24, fontWeight: "bold", color: "#1A3C22" },
-  category: { fontSize: 14, color: "#666", marginBottom: 20, fontStyle: 'italic' },
-  section: { marginBottom: 15 },
-  label: { fontSize: 12, color: "#888", textTransform: 'uppercase', marginBottom: 4 },
-  value: { fontSize: 16, color: "#333" },
-  joinButton: { backgroundColor: "#1A3C22", paddingVertical: 14, borderRadius: 10, marginTop: 10 },
-  joinButtonText: { color: "#FFF", fontWeight: "bold", textAlign: "center" },
-});
