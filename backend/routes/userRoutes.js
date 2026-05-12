@@ -46,7 +46,7 @@ router.post("/login", async (req, res) => { // Changed 'app' to 'router' and pat
         image: user.image
       });
     } else {
-      res.status(401).json({ message: "Invalid credentials" });
+      res.status(401).json({ message: "Wrong username or password" });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });

@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 
 const BASE_URL = "http://localhost:5001/api/users"; // CHANGE THIS to your actual backend URL (e.g., http://
@@ -26,6 +26,23 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null); // เริ่มต้นเป็น null เสมอ
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const checkPersistedUser = async () => {
+      try {
+        const savedUser = await AsyncStorage.getItem('user');
+        if (savedUser) {
+          setUser(JSON.parse(savedUser));
+        }
+      } catch (error) {
+        console.error("Error loading persisted user:", error);
+      } finally {
+        setIsLoading(false); // Stop loading regardless of result
+      }
+    };
+
+    checkPersistedUser();
+  }, []);
 
   const login = async (email: string, password: string) => {
     try {

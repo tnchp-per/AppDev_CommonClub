@@ -1,5 +1,6 @@
 import { Stack, useRouter, useSegments } from 'expo-router';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, View } from 'react-native';
 import { AuthProvider, useAuth } from "../context/AuthContext";
 
 function RootLayoutNav() {
@@ -25,6 +26,14 @@ function RootLayoutNav() {
     // สังเกตว่าเราจะไม่เขียนเงื่อนไข "if (!user) { router.replace... }" แล้ว
     // เพื่อปล่อยให้หน้า Profile/Create แสดง UI ของตัวเองออกมา
   }, [user, isLoading, segments, isReady]);
+
+  if (isLoading || !isReady) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' }}>
+        <ActivityIndicator size="large" color="#000" />
+      </View>
+    );
+  }
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
