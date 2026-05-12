@@ -1,11 +1,17 @@
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useAuth } from "../../context/AuthContext"; // Path to your context
+
+
 
 export default function HangoutDetails() {
   const { id } = useLocalSearchParams();
   const [hangout, setHangout] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth(); // Get the logged-in user
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   // Replace with your actual IP address
   const BASE_URL = "http://localhost:5001/api/hangouts";
@@ -13,6 +19,35 @@ export default function HangoutDetails() {
   useEffect(() => {
     fetchHangoutDetails();
   }, [id]);
+
+  const handleJoinRequest = async () => {
+    if (!user) {
+      Alert.alert("Error", "You must be logged in to join.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(`http://192.168.1.XX:5001/api/hangouts/${id}/join`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id || user._id }), // Handle different ID naming
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Alert.alert("Success", "Request sent! Wait for the host to accept.");
+      } else {
+        Alert.alert("Notice", data.message || "Something went wrong");
+      }
+    } catch (error) {
+      console.error("Join Error:", error);
+      Alert.alert("Error", "Could not connect to server.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const fetchHangoutDetails = async () => {
     try {
@@ -77,10 +112,21 @@ export default function HangoutDetails() {
             {hangout.acceptedParticipants?.length || 0} / {hangout.maxParticipants} joined
           </Text>
         </View>
+
+        <TouchableOpacity 
+          style={[styles.joinButton, isSubmitting && { opacity: 0.7 }]} 
+          onPress={handleJoinRequest}
+          disabled={isSubmitting}
+        >
+          <Text style={styles.joinButtonText}>
+            {isSubmitting ? "SENDING..." : "REQUEST TO JOIN"}
+          </Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#FDFCF0" },
@@ -92,4 +138,6 @@ const styles = StyleSheet.create({
   section: { marginBottom: 15 },
   label: { fontSize: 12, color: "#888", textTransform: 'uppercase', marginBottom: 4 },
   value: { fontSize: 16, color: "#333" },
+  joinButton: { backgroundColor: "#1A3C22", paddingVertical: 14, borderRadius: 10, marginTop: 10 },
+  joinButtonText: { color: "#FFF", fontWeight: "bold", textAlign: "center" },
 });

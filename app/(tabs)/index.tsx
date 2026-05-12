@@ -1,5 +1,5 @@
-import { useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import React, { useCallback, useState } from "react";
 import { ActivityIndicator, RefreshControl, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { fetchAllHangouts, fetchDashboardData } from "../../api/hangoutApi";
 import { styles } from "../../components/homeStyles";
@@ -57,9 +57,11 @@ export default function HomeScreen() {
       setIsRefreshing(false);
     }
   };
-  useEffect(() => {
-    loadData();
-  }, [user?.id]);
+  useFocusEffect(
+    useCallback(() => {
+      loadData();
+    }, [user?.id])
+  );
 
   const onRefresh = () => {
     setIsRefreshing(true);
