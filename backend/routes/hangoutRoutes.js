@@ -168,4 +168,31 @@ router.get("/:id", async (req, res) => {
     res.status(500).json({ message: "Invalid ID format or Server Error" });
   }
 });
+
+router.delete('/:id', async (req, res) => {
+  try {
+    const hangoutId = req.params.id;
+
+    // 1. Find the hangout to make sure it exists
+    const hangout = await Hangout.findById(hangoutId);
+    if (!hangout) {
+      return res.status(404).json({ message: "Hangout not found" });
+    }
+
+    // 2. Remove this Hangout ID from all Users' hosted and joined arrays
+    // $pull removes the specific ID from the arrays
+    await User.updateMany(
+      { $or: [{ hangoutsJoined: hangoutId }, { hangoutsHosted: hangoutId }] },
+      { $pull: { hangoutsJoined: hangoutId, hangoutsHosted: hangoutId } }
+    );
+
+    // 3. Delete the hangout itself
+    await Hangout.findByIdAndDelete(hangoutId);
+
+    res.status(200).json({ message: "Deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error during deletion" });
+  }
+});
 module.exports = router;

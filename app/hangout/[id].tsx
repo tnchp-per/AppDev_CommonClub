@@ -1,3 +1,4 @@
+import { deleteHangout } from "@/api/hangoutApi";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
@@ -56,6 +57,32 @@ export default function HangoutDetails() {
     }
 
     
+  };
+
+  const handleDelete = async () => {
+    // 1. Confirm deletion (Works for both Web and Mobile)
+    const confirmed = window.confirm("Are you sure you want to delete this hangout? This will remove it for all participants.");
+    
+    if (!confirmed) return;
+
+    try {
+      // 2. Call your API function
+      await deleteHangout(hangout._id);
+
+      // 3. Success Feedback
+      alert("Event deleted successfully.");
+
+      // 4. Redirect and Force Refresh
+      // We go to discover, then force a reload to ensure the deleted item is gone
+      router.replace("http://localhost:8081/");
+      
+      if (typeof window !== 'undefined') {
+        window.location.href = "http://localhost:8081/";
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error: Could not delete the event.");
+    }
   };
 
   const fetchHangoutDetails = async () => {
@@ -149,38 +176,33 @@ export default function HangoutDetails() {
         </View>
       </ScrollView>
 
-      <View style={styles.footer}>
-        {isHost ? (
-          /* HOST VIEW: Review Requests */
-          <TouchableOpacity 
-            style={styles.Button} 
-            onPress={() => router.push(`/manage_requests/${id}`)}
-          >
-            <Text style={styles.ButtonText}>REVIEW REQUESTS</Text>
-          </TouchableOpacity>
-        ) : isAlreadyJoined ? (
-          /* PARTICIPANT VIEW: Already In */
-          <View style={[styles.Button, { backgroundColor: '#E0E0E0' }]}>
-            <Text style={[styles.ButtonText, { color: '#666' }]}>ALREADY JOINED</Text>
-          </View>
-        ) : isPending ? (
-          /* PARTICIPANT VIEW: Waiting */
-          <View style={[styles.Button, { backgroundColor: '#E0E0E0' }]}>
-            <Text style={[styles.ButtonText, { color: '#666' }]}>REQUEST PENDING</Text>
-          </View>
-        ) : (
-          /* PUBLIC VIEW: Join Button */
-          <TouchableOpacity 
-            style={[styles.Button, isSubmitting && { opacity: 0.6 }]} 
-            onPress={handleJoinRequest}
-            disabled={isSubmitting}
-          >
-            <Text style={styles.ButtonText}>
-              {isSubmitting ? "SENDING..." : "REQUEST TO JOIN"}
-            </Text>
-          </TouchableOpacity>
-        )}
-      </View>
+        <View style={styles.actionContainer}>
+          {isHost && (
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 10 }}>
+              {/* Existing Review Requests Button */}
+              <TouchableOpacity 
+                style={[styles.Button, { flex: 1, backgroundColor: '#1A3C22' }]} 
+                onPress={() => router.push(`/manage_requests/${hangout._id}`)}
+              >
+                <Text style={styles.ButtonText}>REVIEW REQUESTS</Text>
+              </TouchableOpacity>
+
+              {/* New Delete Button */}
+              <TouchableOpacity 
+                style={[styles.Button, { flex: 1, backgroundColor: '#FF4B4B' }]} 
+                onPress={handleDelete}
+              >
+                <Text style={styles.ButtonText}>DELETE EVENT</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+          
+          {!isHost && (
+            <TouchableOpacity style={styles.Button}>
+              <Text style={styles.ButtonText}>JOIN HANGOUT</Text>
+            </TouchableOpacity>
+          )}
+        </View>
           </SafeAreaView>
   );
 }
