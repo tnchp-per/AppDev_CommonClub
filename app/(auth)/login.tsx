@@ -20,6 +20,8 @@ export default function Login() {
     const [loading, setLoading] = useState(false);
     const { login } = useAuth(); // ดึงฟังก์ชัน login มาจาก Context
 
+   
+
     const handleLogin = async () => {
         if (!email || !password) {
             alert("Please fill in all fields");

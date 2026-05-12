@@ -92,9 +92,9 @@ export default function HomeScreen() {
         )}
 
         {/* Dynamic Header */}
-        <View style={{ marginBottom: 20 }}>
+        <View style={{ marginBottom: 20, marginLeft: 10 }}>
           <Text style={styles.header}>
-            {user ? `Welcome Back, ${user.name}!` : "Explore the Club! 🥂"}
+            {user ? `Welcome Back, ${user.name}!` : "Explore the Club!"}
           </Text>
           
           {!user && (
