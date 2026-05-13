@@ -3,7 +3,7 @@ import axios from "axios";
 import { useFocusEffect, useRouter } from "expo-router"; // 1. เพิ่ม useFocusEffect
 import React, { useCallback, useState } from "react"; // 2. เพิ่ม useCallback
 import { ActivityIndicator, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import styles from "../../components/ProfileStyles";
+import styles from "../../components/profileStyles";
 import { useAuth } from "../../context/AuthContext";
 
 export default function Profile() {

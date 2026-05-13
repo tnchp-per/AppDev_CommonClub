@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
+import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -17,6 +18,28 @@ export default function EditProfile() {
     const [interests, setInterests] = useState<string[]>(user?.interests || []);
     const DEFAULT_AVATAR = require('../../assets/images/default.png');
     const [loading, setLoading] = useState(false);
+    const [image, setImage] = useState(user?.image || null);
+
+    const pickImage = async () => {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (status !== 'granted') {
+            alert('Sorry, we need camera roll permissions to make this work!');
+            return;
+        }
+
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true, // ให้ User ครอบตัดรูปได้ (Crop)
+            aspect: [1, 1],     // บังคับเป็นรูปจัตุรัส
+            quality: 1,         // ความคมชัดสูงสุด
+        });
+
+        if (!result.canceled) {
+            // เก็บ URI ของรูปไว้ใน State เพื่อแสดงผลและเตรียมส่งไป Backend
+            setImage(result.assets[0].uri);
+        }
+    };
 
     useEffect(() => {
         const fetchFreshUser = async () => {
@@ -24,7 +47,7 @@ export default function EditProfile() {
                 // Use _id or id depending on your setup
                 const res = await axios.get(`http://localhost:5001/api/users/${user._id || user.id}`);
                 console.log("Fresh data from server:", res.data.interests);
-                
+
                 // Now set the interests from the actual database response
                 if (res.data.interests) {
                     setInterests(res.data.interests);
@@ -78,13 +101,14 @@ export default function EditProfile() {
             </View>
 
             {/* Avatar Section */}
-            <View style={styles.avatarSection}>
+            <View style={{ alignItems: 'center', marginVertical: 20 }}>
                 <Image
-                    source={user?.image ? { uri: user.image } : DEFAULT_AVATAR}
-                    style={styles.avatar}
+                    source={image ? { uri: image } : require("../../assets/images/default.png")}
+                    style={{ width: 100, height: 100, borderRadius: 50 }}
                 />
-                <TouchableOpacity style={styles.changePhotoButton}>
-                    <Text style={styles.changePhotoText}>Change Photo</Text>
+
+                <TouchableOpacity onPress={pickImage} style={{ marginTop: 10 }}>
+                    <Text style={{ color: '#4D7260', fontWeight: 'bold' }}>Change Photo</Text>
                 </TouchableOpacity>
             </View>
 
