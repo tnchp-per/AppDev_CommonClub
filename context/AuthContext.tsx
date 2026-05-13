@@ -1,9 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import { router } from 'expo-router';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 // เปลี่ยน localhost เป็น IP เครื่องคอมคุณถ้าใช้เครื่องจริง/Emulator
-const BASE_URL = "http://192.168.1.XX:5001/api/users";
+const BASE_URL = "http://localhost:5001/api/users";
 
 interface User {
   id: string; // หรือเปลี่ยนเป็น _id ให้ตรงกับ MongoDB
@@ -46,26 +47,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const login = async (email: string, password: string) => {
+    setIsLoading(true);
     try {
-      const response = await fetch(`${BASE_URL}/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await axios.post(`${BASE_URL}/login`, { email, password });
+      const data = response.data;
 
-      const data = await response.json();
-
-      if (response.ok) {
-        // จัด Format ข้อมูลให้มี id (ไม่มีขีดล่าง) ตาม Interface
+      if (data) {
+        // อย่าลืมแปลง _id เป็น id เพื่อให้หน้า Profile ไม่พัง
         const userToSave = { ...data, id: data._id || data.id };
         await AsyncStorage.setItem('user', JSON.stringify(userToSave));
         setUser(userToSave);
-        router.replace("/");
-      } else {
-        alert(data.message);
+        router.replace("/(tabs)/profile");
       }
-    } catch (error) {
-      console.error("Login Error:", error);
+    } catch (error: any) {
+      console.error("Login Error:", error.response?.data || error.message);
+      alert("Login Failed: " + (error.response?.data?.message || "Invalid credentials"));
+    } finally {
+      setIsLoading(false);
     }
   };
 
