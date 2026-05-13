@@ -16,6 +16,7 @@ export default function EditProfile() {
     const [interestInput, setInterestInput] = useState('');
     const [interests, setInterests] = useState<string[]>(user?.interests || []);
     const DEFAULT_AVATAR = require('../../assets/images/default.png');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         // Only update if the local state is empty and the user data has arrived
@@ -41,19 +42,22 @@ export default function EditProfile() {
 
     const handleSave = async () => {
         try {
+            setLoading(true);
             const response = await axios.put(`http://localhost:5001/api/users/${user.id}`, {
-                name, username, bio, interests
+                name,
+                username,
+                bio,
+                interests
             });
 
-            if (response.data) {
-                setUser({ ...user, name, username, bio, interests });
-                alert("Success: Profile Updated!");
-                router.back();
-            }
-        } catch (error: any) {
-            console.error("Save Error:", error.response?.data || error.message);
-            const msg = error.response?.data?.message || "Internal Server Error";
-            alert("Failed: " + msg);
+            setUser({ ...user, name, username, bio, interests });
+            alert("Update successful!");
+            router.replace("/(tabs)/profile");
+
+        } catch (error) {
+            alert("Failed to update profile");
+        } finally {
+            setLoading(false);
         }
     };
 
