@@ -1,19 +1,13 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Tabs, router } from "expo-router";
 import { Image, Platform, Text, TouchableOpacity, View } from "react-native";
+import { useAuth } from "../../context/AuthContext";
 
 function WebSidebar() {
+  const { logout } = useAuth();
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        flex: 1,
-        
-      }}
-    >
+    <View style={{ flexDirection: "row", flex: 1 }}>
       {/* Sidebar */}
-      
-
       <View
         style={{
           width: 280,
@@ -21,76 +15,53 @@ function WebSidebar() {
           paddingTop: 40,
           paddingHorizontal: 20,
           borderRightWidth: 1,
-          //borderColor: "#E5E5E5",
+          borderColor: "#E5E5E5",
+          justifyContent: "flex-start", // ให้เมนูเรียงจากบนลงล่าง
         }}
       >
         <Image
           source={require("../../assets/images/logo.png")}
-          style={{
-            width: 50,
-            height: 50,
-            marginBottom: 10,
-          }}
-        />  
-        <Text
-          style={{
-            fontSize: 30,
-            fontWeight: "700",
-            marginBottom: 40,
-            //color: "#F5F5F5",
-          }}
-        >
+          style={{ width: 50, height: 50, marginBottom: 10 }}
+        />
+        <Text style={{ fontSize: 30, fontWeight: "700", marginBottom: 40 }}>
           CommonClub
         </Text>
 
-        <SidebarButton
-          title="Home"
-          icon="home-outline"
-          route="/"
-        />
+        <SidebarButton title="Home" icon="home-outline" route="/" />
+        <SidebarButton title="Discover" icon="search-outline" route="/discover" />
+        <SidebarButton title="Create Hangout" icon="add-circle-outline" route="/create" />
+        <SidebarButton title="Profile" icon="person-outline" route="/profile" />
 
-        <SidebarButton
-          title="Discover"
-          icon="search-outline"
-          route="/discover"
-        />
+        {/* --- เพิ่มปุ่ม LOGOUT ตรงนี้ --- */}
+        <View style={{ flex: 1 }} /> {/* ตัวดัน (Spacer) เพื่อให้ปุ่ม Logout ไปอยู่ล่างสุด */}
 
-        <SidebarButton
-          title="Create Hangout"
-          icon="add-circle-outline"
-          route="/create"
-        />
-
-        <SidebarButton
-          title="Profile"
-          icon="person-outline"
-          route="/profile"
-        />
-      </View>
-
-      {/* Content */}
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-        }}
-      >
-        <View
+        <TouchableOpacity
+          onPress={logout}
           style={{
-            width: "100%",
-            maxWidth: 1200,
-            flex: 1,
+            flexDirection: "row",
+            alignItems: "center",
+            paddingVertical: 12,
+            paddingHorizontal: 10,
+            borderRadius: 10,
+            marginBottom: 40, // เว้นระยะห่างจากขอบล่างจอ
+            backgroundColor: "#FFF5F5", // เพิ่มสีพื้นหลังอ่อนๆ ให้ปุ่มดูเด่น
           }}
         >
+          <Ionicons name="log-out-outline" size={20} color="#E06666" />
+          <Text style={{ marginLeft: 12, fontSize: 16, fontWeight: "600", color: "#E06666" }}>
+            Logout
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Content Section (โค้ดเดิมของคุณ) */}
+      <View style={{ flex: 1, alignItems: "center" }}>
+        <View style={{ width: "100%", maxWidth: 1200, flex: 1 }}>
           <Tabs
             screenOptions={{
               headerShown: false,
-              tabBarStyle: {
-                display: "none",
-              },
-              sceneStyle: {
-                backgroundColor: "#F5F5F5",
-              },
+              tabBarStyle: { display: "none" },
+              sceneStyle: { backgroundColor: "#F5F5F5" },
             }}
           >
             <Tabs.Screen name="index" />
@@ -128,7 +99,7 @@ function SidebarButton({
       <Ionicons
         name={icon}
         size={20}
-        //color="#F5F5F5"
+      //color="#F5F5F5"
       />
 
       <Text
