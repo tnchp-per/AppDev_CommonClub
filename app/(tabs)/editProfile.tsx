@@ -19,14 +19,23 @@ export default function EditProfile() {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        // Only update if the local state is empty and the user data has arrived
-        if (user && interests.length === 0) {
-            setInterests(user.interests || []);
-            setName(user.name || '');
-            setUsername(user.username || '');
-            setBio(user.bio || '');
-        }
-    }, [user]);
+        const fetchFreshUser = async () => {
+            try {
+                // Use _id or id depending on your setup
+                const res = await axios.get(`http://localhost:5001/api/users/${user._id || user.id}`);
+                console.log("Fresh data from server:", res.data.interests);
+                
+                // Now set the interests from the actual database response
+                if (res.data.interests) {
+                    setInterests(res.data.interests);
+                }
+            } catch (err) {
+                console.error("Could not fetch fresh user data", err);
+            }
+        };
+
+        if (user) fetchFreshUser();
+    }, []); // Run ONCE when the page opens
 
     const addInterest = () => {
         if (interestInput.trim() && !interests.includes(interestInput.trim())) {
