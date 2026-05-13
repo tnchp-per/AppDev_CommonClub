@@ -1,4 +1,5 @@
 import styles from "@/components/LogInStyles";
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -19,6 +20,8 @@ export default function SignUp() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false); // ควบคุมช่อง Password
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false); // ควบคุมช่อง Confirm
 
     const handleSignUp = async () => {
         if (!name || !username || !email || !password) {
@@ -92,12 +95,48 @@ export default function SignUp() {
 
                     <View style={styles.inputWrapper}>
                         <Text style={styles.inputLabel}>PASSWORD</Text>
-                        <TextInput style={styles.input} placeholder="••••••••" value={password} onChangeText={setPassword} secureTextEntry />
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <TextInput
+                                style={[styles.input, { flex: 1 }]}
+                                placeholder="••••••••"
+                                value={password}
+                                onChangeText={setPassword}
+                                secureTextEntry={!showPassword}
+                            />
+                            <TouchableOpacity
+                                onPress={() => setShowPassword(!showPassword)}
+                                style={{ position: 'absolute', right: 15 }}
+                            >
+                                <Ionicons
+                                    name={showPassword ? "eye-outline" : "eye-off-outline"}
+                                    size={20}
+                                    color="#666"
+                                />
+                            </TouchableOpacity>
+                        </View>
                     </View>
 
                     <View style={styles.inputWrapper}>
                         <Text style={styles.inputLabel}>CONFIRM PASSWORD</Text>
-                        <TextInput style={styles.input} placeholder="••••••••" value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry />
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <TextInput
+                                style={[styles.input, { flex: 1 }]}
+                                placeholder="••••••••"
+                                value={confirmPassword}
+                                onChangeText={setConfirmPassword}
+                                secureTextEntry={!showConfirmPassword}
+                            />
+                            <TouchableOpacity
+                                onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                                style={{ position: 'absolute', right: 15 }}
+                            >
+                                <Ionicons
+                                    name={showConfirmPassword ? "eye-outline" : "eye-off-outline"}
+                                    size={20}
+                                    color="#666"
+                                />
+                            </TouchableOpacity>
+                        </View>
                     </View>
 
                     {/* --- 3. ปุ่มกด --- */}

@@ -42,7 +42,13 @@ export default function Profile() {
       });
     }
   };
-  const DEFAULT_IMAGE = require("../../assets/images/default.png");
+  const getProfileImage = (imageData: string | undefined | null) => {
+    if (!imageData || (typeof imageData === 'string' && imageData.trim() === "") || imageData === "default.png") {
+      return require("../../assets/images/default.png");
+    }
+    return { uri: imageData };
+  };
+
 
   if (!user) {
     return (
@@ -78,7 +84,7 @@ export default function Profile() {
 
       <View style={styles.header}>
         <Image
-          source={{ uri: userData.image || "https://via.placeholder.com/150" }}
+          source={getProfileImage(userData?.image)}
           style={styles.avatar}
         />
         <Text style={styles.name}>{userData.name?.toUpperCase()}</Text>

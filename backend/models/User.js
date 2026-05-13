@@ -17,9 +17,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     unique: true
   },
-  bio: String,
+  bio: {
+    type: String,
+    default: ""
+  },
   image: {
     type: String,
+    default: "default.png"
   },
   interests: [String],
 
