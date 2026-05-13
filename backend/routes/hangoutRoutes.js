@@ -112,14 +112,9 @@ router.put("/:hangoutId/manage-request", async (req, res) => {
 
       // Add to User's joined list
       await User.findByIdAndUpdate(userId, {
-        $addToSet: { joinedHangouts: hangoutId }
+        $addToSet: { joinedEvents: hangoutId }
       });
 
-    } else if (action === "reject") {
-      // Just remove from pending
-      hangout.pendingParticipants.pull(userId);
-    } else {
-      return res.status(400).json({ message: "Invalid action. Use 'accept' or 'reject'." });
     }
 
     await hangout.save();
