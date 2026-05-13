@@ -1,17 +1,18 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { Platform } from 'react-native';
 
+// เปลี่ยน localhost เป็น IP เครื่องคอมคุณถ้าใช้เครื่องจริง/Emulator
+const BASE_URL = "http://192.168.1.XX:5001/api/users";
 
-const BASE_URL = "http://localhost:5001/api/users"; // CHANGE THIS to your actual backend URL (e.g., http://
 interface User {
-  id: string;
+  id: string; // หรือเปลี่ยนเป็น _id ให้ตรงกับ MongoDB
   name: string;
   email: string;
   image?: string;
   username?: string;
   bio?: string;
+  interests?: string[];
 }
 
 const AuthContext = createContext<any>(null);
@@ -25,8 +26,8 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null); // เริ่มต้นเป็น null เสมอ
-  const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const checkPersistedUser = async () => {
@@ -38,30 +39,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       } catch (error) {
         console.error("Error loading persisted user:", error);
       } finally {
-        setIsLoading(false); // Stop loading regardless of result
+        setIsLoading(false);
       }
     };
-
     checkPersistedUser();
   }, []);
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await fetch(`${BASE_URL}/login`, { // URL becomes .../api/users/login
+      const response = await fetch(`${BASE_URL}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
-      // DEBUG: If you get the '<' error again, uncomment the line below to see the HTML
-      // const text = await response.text(); console.log(text);
-
       const data = await response.json();
 
       if (response.ok) {
-        // SUCCESS: Overwrite the 'Hong' data
-        await AsyncStorage.setItem('user', JSON.stringify(data));
-        setUser(data); 
+        // จัด Format ข้อมูลให้มี id (ไม่มีขีดล่าง) ตาม Interface
+        const userToSave = { ...data, id: data._id || data.id };
+        await AsyncStorage.setItem('user', JSON.stringify(userToSave));
+        setUser(userToSave);
         router.replace("/");
       } else {
         alert(data.message);
@@ -74,17 +72,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = async () => {
     try {
       await AsyncStorage.removeItem('user');
-
-      //await AsyncStorage.removeItem('userToken');
-     // await AsyncStorage.removeItem('userData');
-
       setUser(null);
-
-      if (Platform.OS === 'web') {
-        window.location.href = "/";
-      } else {
-        router.replace("/login");
-      }
+      router.replace("/(auth)/login");
     } catch (error) {
       console.error("Logout failed", error);
     }
@@ -93,8 +82,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signUp = async (name: string, email: string, password: string) => {
     setIsLoading(true);
     try {
-    // Note: Your backend POST "/" route expects the whole body
-      const response = await fetch(`${BASE_URL}/`, { 
+      const response = await fetch(`${BASE_URL}/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
@@ -103,16 +91,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const data = await response.json();
 
       if (response.ok) {
-        await AsyncStorage.setItem('user', JSON.stringify(data));
-        setUser(data);
+        // สำคัญ: แปลง _id เป็น id เพื่อให้หน้า Profile เรียกใช้ง่ายๆ
+        const userToSave = { ...data, id: data._id || data.id };
+        await AsyncStorage.setItem('user', JSON.stringify(userToSave));
+        setUser(userToSave);
+
+        alert("Sign up successful!");
         router.replace("/");
+      } else {
+        alert(data.message || "Registration failed");
       }
     } catch (error) {
       console.error("Signup Error:", error);
+      alert("Network Error: Cannot connect to server");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // อย่าลืมส่ง signUp ออกไปใน Provider value
   return (
     <AuthContext.Provider value={{ user, setUser, login, logout, signUp, isLoading }}>
       {children}

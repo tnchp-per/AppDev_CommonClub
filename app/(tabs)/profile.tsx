@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
-import { useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router"; // 1. เพิ่ม useFocusEffect
+import React, { useCallback, useState } from "react"; // 2. เพิ่ม useCallback
 import { ActivityIndicator, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import styles from "../../components/ProfileStyles";
 import { useAuth } from "../../context/AuthContext";
@@ -14,39 +14,35 @@ export default function Profile() {
 
   const API_URL = "http://localhost:5001/api/users";
 
-  useEffect(() => {
-    if (user?.id) {
-      fetchUserData();
-    } else {
-      // ถ้าไม่มี user ให้เคลียร์ข้อมูลเก่าออก (เผื่อกด logout)
-      setUserData(null);
-    }
-  }, [user]);
+  // 3. ใช้ useFocusEffect แทน useEffect เดิมบางส่วน 
+  // เพื่อให้ดึงข้อมูลใหม่ทุกครั้งที่หน้า Profile ถูก "Focus" (เช่น ตอนกด Back กลับมา)
+  useFocusEffect(
+    useCallback(() => {
+      if (user?.id) {
+        fetchUserData();
+      } else {
+        setUserData(null);
+      }
+    }, [user])
+  );
 
   const fetchUserData = async () => {
     try {
-      setLoading(true);
       const response = await axios.get(`${API_URL}/${user.id}`);
       setUserData(response.data);
-    } catch (error: any) {
-      console.log("Fetch error, using context data instead.");
-      // ถ้าหาใน DB ไม่เจอ ให้ดึงข้อมูลจาก Context มาโชว์แก้ขัด
+    } catch (error) {
+      // ถ้าเพิ่งสมัครใหม่แล้วยังไม่มีข้อมูลใน DB ให้ใช้ค่าจาก Context แทน
       setUserData({
-        name: user.name || "User",
-        email: user.email,
-        username: user.name?.replace(/\s+/g, '').toLowerCase() || "user",
-        bio: "Welcome to my profile!",
-        image: "https://via.placeholder.com/150",
-        interests: ["Hangout"],
+        name: user.name,
+        username: "new_user",
+        bio: "Add your bio here!",
+        interests: [],
         joinedEvents: [],
         createdEvents: []
       });
-    } finally {
-      setLoading(false);
     }
   };
 
-  // --- 1. เช็คว่าเป็น Guest หรือไม่ ---
   if (!user) {
     return (
       <View style={styles.guestContainer}>
@@ -63,8 +59,7 @@ export default function Profile() {
     );
   }
 
-  // --- 2. เช็คสถานะ Loading ---
-  if (loading) {
+  if (loading && !userData) { // โชว์ loading เฉพาะตอนที่ยังไม่มีข้อมูลเดิม
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#FAF9F1" }}>
         <ActivityIndicator size="large" color="#042917" />
@@ -72,10 +67,8 @@ export default function Profile() {
     );
   }
 
-  // --- 3. ป้องกันหน้าขาว ---
   if (!userData) return null;
 
-  // --- 4. แสดงผลหน้า Profile จริง ---
   return (
     <ScrollView style={styles.container}>
       <View style={styles.topHeader}>
@@ -91,14 +84,16 @@ export default function Profile() {
         <Text style={styles.username}>@{userData.username}</Text>
         <Text style={styles.bio}>{userData.bio}</Text>
 
+        {/* 4. ใส่ Link ไปหน้า Edit Profile */}
         <TouchableOpacity
           style={styles.editButton}
-          onPress={() => router.push('/(tabs)/editProfile')}
+          onPress={() => router.push('/(tabs)/editProfile')} // ใช้ push เท่านั้น!
         >
           <Text style={styles.editButtonText}>EDIT PROFILE</Text>
         </TouchableOpacity>
       </View>
 
+      {/* ส่วน Stats */}
       <View style={styles.statsContainer}>
         <View style={styles.statCard}>
           <Text style={styles.statNumber}>{userData.joinedEvents?.length || 0}</Text>
@@ -110,7 +105,7 @@ export default function Profile() {
         </View>
       </View>
 
-      {/* Interests */}
+      {/* ส่วน Interests */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Interest</Text>
         <View style={styles.interestsContainer}>
@@ -126,13 +121,12 @@ export default function Profile() {
         </View>
       </View>
 
-      {/* Action Buttons */}
       <View style={styles.section}>
+        {/* ปุ่ม Action ต่างๆ */}
         <Text style={styles.sectionTitle}>My Hangout</Text>
         <TouchableOpacity style={styles.primaryBlockButton}>
           <Text style={styles.blockButtonText}>VIEW MY HANGOUT</Text>
         </TouchableOpacity>
-
         <Text style={styles.sectionTitle}>My Request</Text>
         <TouchableOpacity style={styles.secondaryBlockButton}>
           <Text style={styles.blockButtonText}>VIEW MY REQUEST</Text>
@@ -142,14 +136,11 @@ export default function Profile() {
         <TouchableOpacity style={styles.secondaryBlockButton}>
           <Text style={styles.blockButtonText}>VIEW MY SAVED ACTIVITIES</Text>
         </TouchableOpacity>
-
-        {/* Logout Button (Kept at the bottom for functionality) */}
         <TouchableOpacity style={styles.logoutButton} onPress={logout}>
           <Text style={styles.logoutButtonText}>LOGOUT</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Bottom padding to ensure you can scroll past the last button */}
       <View style={{ height: 40 }} />
     </ScrollView>
   );

@@ -103,4 +103,26 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+router.post("/", async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    // สร้าง User โดยใส่ค่าเริ่มต้นเผื่อไว้เลย
+    const newUser = new User({
+      name,
+      email,
+      password,
+      username: email.split('@')[0], // เอาหน้า email มาทำ username ชั่วคราว
+      bio: "Hello! I'm new here.",
+      interests: [], // ใส่เป็น Array ว่างไว้ก่อน
+      image: ""
+    });
+
+    const savedUser = await newUser.save();
+    res.status(201).json(savedUser);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
 module.exports = router;

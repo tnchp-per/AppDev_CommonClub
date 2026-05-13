@@ -6,18 +6,19 @@ import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View 
 import { useAuth } from '../../context/AuthContext';
 
 export default function EditProfile() {
-   const { user, setUser } = useAuth();
+    const { user, setUser } = useAuth();
     const router = useRouter();
-    
+
     // 1. Keep these! They handle the typing/editing
     const [name, setName] = useState(user?.name || '');
     const [username, setUsername] = useState(user?.username || '');
     const [bio, setBio] = useState(user?.bio || '');
     const [interestInput, setInterestInput] = useState('');
     const [interests, setInterests] = useState<string[]>(user?.interests || []);
+    const DEFAULT_AVATAR = require('../../assets/images/default.png');
 
     useEffect(() => {
-    // Only update if the local state is empty and the user data has arrived
+        // Only update if the local state is empty and the user data has arrived
         if (user && interests.length === 0) {
             setInterests(user.interests || []);
             setName(user.name || '');
@@ -32,32 +33,27 @@ export default function EditProfile() {
             setInterests([...interests, interestInput.trim()]);
             setInterestInput('');
         }
-    };  
-    
+    };
+
     const removeInterest = (target: string) => {
         setInterests(interests.filter(i => i !== target));
     };
 
     const handleSave = async () => {
         try {
-            // แนะนำ: ถ้าใช้มือถือจริง/Emulator ให้เปลี่ยน localhost เป็น IP เครื่องคอมคุณ
             const response = await axios.put(`http://localhost:5001/api/users/${user.id}`, {
-                name,
-                username,
-                bio,
-                interests
+                name, username, bio, interests
             });
 
-            // อัปเดตข้อมูลใน Context
-            setUser({ ...user, name, username, bio, interests });
-            alert("Saved successfully!");
-            router.replace("http://localhost:8081/profile"); 
-        } catch (err: any) { 
-            console.error("Save error detail:", err.response?.data || err.message);
-
-            // ดึงข้อความ error จากหลังบ้านมาโชว์ (เช่น Username already exists)
-            const errorMessage = err.response?.data?.message || "Something went wrong";
-            alert("Failed to save: " + errorMessage);
+            if (response.data) {
+                setUser({ ...user, name, username, bio, interests });
+                alert("Success: Profile Updated!");
+                router.back();
+            }
+        } catch (error: any) {
+            console.error("Save Error:", error.response?.data || error.message);
+            const msg = error.response?.data?.message || "Internal Server Error";
+            alert("Failed: " + msg);
         }
     };
 
@@ -71,7 +67,7 @@ export default function EditProfile() {
             {/* Avatar Section */}
             <View style={styles.avatarSection}>
                 <Image
-                    source={{ uri: user?.image }}
+                    source={user?.image ? { uri: user.image } : DEFAULT_AVATAR}
                     style={styles.avatar}
                 />
                 <TouchableOpacity style={styles.changePhotoButton}>
@@ -137,8 +133,10 @@ export default function EditProfile() {
                 <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
                     <Text style={styles.saveButtonText}>SAVE CHANGES</Text>
                 </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => router.back()} style={styles.cancelButton}>
+                <TouchableOpacity
+                    onPress={() => router.replace('/(tabs)/profile')} // เปลี่ยนจาก router.push('/(tabs)/home') เป็น back()
+                    style={styles.cancelButton}
+                >
                     <Text style={styles.cancelText}>Cancel</Text>
                 </TouchableOpacity>
             </View>
