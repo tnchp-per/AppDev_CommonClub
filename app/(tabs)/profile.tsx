@@ -42,6 +42,7 @@ export default function Profile() {
       });
     }
   };
+  const DEFAULT_IMAGE = require("../../assets/images/default.png");
 
   if (!user) {
     return (

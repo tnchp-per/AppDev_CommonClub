@@ -7,11 +7,11 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 const BASE_URL = "http://localhost:5001/api/users";
 
 interface User {
-  id: string; // หรือเปลี่ยนเป็น _id ให้ตรงกับ MongoDB
+  id: string;
   name: string;
+  username: string; // ✅ เพิ่มบรรทัดนี้
   email: string;
   image?: string;
-  username?: string;
   bio?: string;
   interests?: string[];
 }
@@ -77,31 +77,36 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const signUp = async (name: string, email: string, password: string) => {
+  const signUp = async (name: string, username: string, email: string, password: string) => {
     setIsLoading(true);
     try {
       const response = await fetch(`${BASE_URL}/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
+        // ✅ ส่ง username ไปใน body ด้วย
+        body: JSON.stringify({ name, username, email, password }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        // สำคัญ: แปลง _id เป็น id เพื่อให้หน้า Profile เรียกใช้ง่ายๆ
-        const userToSave = { ...data, id: data._id || data.id };
+        // ✅ จัดรูปแบบข้อมูลให้ตรงกับ Interface ก่อนเซ็ตลง State
+        const userToSave = {
+          ...data,
+          id: data._id || data.id,
+          username: data.username // มั่นใจว่ามี username กลับมา
+        };
+
         await AsyncStorage.setItem('user', JSON.stringify(userToSave));
         setUser(userToSave);
-
-        alert("Sign up successful!");
         router.replace("/");
       } else {
-        alert(data.message || "Registration failed");
+        // ถ้า Backend ส่ง Error มา (เช่น Username ซ้ำ) ให้โยนออกไป alert
+        throw new Error(data.message || "Registration failed");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Signup Error:", error);
-      alert("Network Error: Cannot connect to server");
+      throw error; // ส่ง Error กลับไปให้หน้า SignUp.tsx จัดการ alert
     } finally {
       setIsLoading(false);
     }

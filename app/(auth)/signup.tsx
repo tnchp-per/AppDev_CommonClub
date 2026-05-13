@@ -1,4 +1,4 @@
-import styles from "@/components/LogInStyles"; // ใช้ style เดิมได้เลย
+import styles from "@/components/LogInStyles";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -14,42 +14,54 @@ export default function SignUp() {
     const { signUp } = useAuth();
 
     const [name, setName] = useState("");
+    const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [loading, setLoading] = useState(false);
 
     const handleSignUp = async () => {
-        console.log("Button Pressed!"); // ใส่ไว้เช็คว่าปุ่มทำงานไหม
-        if (!name || !email || !password) {
+        if (!name || !username || !email || !password) {
             alert("Please fill in all fields");
+            return;
+        }
+        if (password !== confirmPassword) {
+            alert("Passwords do not match");
             return;
         }
 
         try {
             setLoading(true);
-            await signUp(name, email, password);
-            // ถ้า signUp สำเร็จ user จะไม่เป็น null -> ยามใน _layout จะพาไปหน้าหลักเอง
+            await signUp(name, username, email, password);
         } catch (error: any) {
             alert(error.message);
         } finally {
             setLoading(false);
         }
     };
+
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={styles.container}
         >
-            <ScrollView contentContainerStyle={styles.scrollContent}>
+            <ScrollView
+                contentContainerStyle={[
+                    styles.scrollContent,
+                    { paddingBottom: 40 }, { paddingTop: 40 }
+                ]}
+            >
+                {/* --- 1. ส่วน Header (Logo และ Text) --- */}
                 <View style={styles.headerArea}>
-                    <Image source={require("../../assets/images/logo_transparent.png")}
+                    <Image
+                        source={require("../../assets/images/logo_transparent.png")}
                         style={{ width: 80, height: 80, alignSelf: "center", marginBottom: 5, marginTop: 20 }}
                     />
                     <Text style={styles.welcomeText}>CREATE ACCOUNT</Text>
                     <Text style={styles.subText}>Join Common Club today</Text>
                 </View>
 
+                {/* --- 2. ส่วน Form Inputs --- */}
                 <View style={styles.formContainer}>
                     <View style={styles.inputWrapper}>
                         <Text style={styles.inputLabel}>FULL NAME</Text>
@@ -57,8 +69,25 @@ export default function SignUp() {
                     </View>
 
                     <View style={styles.inputWrapper}>
+                        <Text style={styles.inputLabel}>USERNAME</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="your_username"
+                            value={username}
+                            onChangeText={setUsername}
+                            autoCapitalize="none"
+                        />
+                    </View>
+
+                    <View style={styles.inputWrapper}>
                         <Text style={styles.inputLabel}>EMAIL</Text>
-                        <TextInput style={styles.input} placeholder="example@mail.com" value={email} onChangeText={setEmail} autoCapitalize="none" />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="example@mail.com"
+                            value={email}
+                            onChangeText={setEmail}
+                            autoCapitalize="none"
+                        />
                     </View>
 
                     <View style={styles.inputWrapper}>
@@ -71,6 +100,7 @@ export default function SignUp() {
                         <TextInput style={styles.input} placeholder="••••••••" value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry />
                     </View>
 
+                    {/* --- 3. ปุ่มกด --- */}
                     <TouchableOpacity style={styles.loginButton} onPress={handleSignUp} disabled={loading}>
                         {loading ? <ActivityIndicator color="#FAF9F1" /> : <Text style={styles.loginButtonText}>SIGN UP</Text>}
                     </TouchableOpacity>
