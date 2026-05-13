@@ -118,7 +118,7 @@ export default function SignUp() {
 
                     <View style={styles.inputWrapper}>
                         <Text style={styles.inputLabel}>CONFIRM PASSWORD</Text>
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 20 }}>
                             <TextInput
                                 style={[styles.input, { flex: 1 }]}
                                 placeholder="••••••••"
