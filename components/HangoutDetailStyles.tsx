@@ -131,6 +131,17 @@ const styles = StyleSheet.create({
   padding: 20,
   width: '100%',
 },
+hostContainer: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  gap: 12,
+  marginBottom: 20,
+},
+hostedByText: {
+  fontSize: 12,
+  color: '#1A3C22',
+  opacity: 0.6,
+},
 });
 
 export default styles;

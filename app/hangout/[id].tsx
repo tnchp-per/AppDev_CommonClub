@@ -163,13 +163,18 @@ export default function HangoutDetails() {
           <Text style={styles.aboutHeader}>About this event</Text>
           
           {/* DYNAMIC HOST */}
-          <View style={styles.hostRow}>
+          <TouchableOpacity 
+            style={styles.hostContainer} 
+            onPress={() => router.push(`/profile/${hangout.host._id || hangout.host}`)}
+          >
             <Image 
-               source={{ uri: hangout?.host?.image }} 
-               style={styles.hostAvatar} 
+              source={{ uri: hangout.host.image }} 
+              style={styles.hostAvatar} 
             />
-            <Text style={styles.hostName}>{hangout?.host?.name || "Host"}</Text>
-          </View>
+            <View>
+              <Text style={styles.hostName}>{hangout.host.name }</Text>
+            </View>
+          </TouchableOpacity>
 
           {/* DYNAMIC DESCRIPTION */}
           <Text style={styles.descriptionText}>{hangout?.description}</Text>

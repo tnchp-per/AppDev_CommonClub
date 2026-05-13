@@ -154,7 +154,7 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const hangout = await Hangout.findById(req.params.id)
-      .populate("host", "name image username") // This pulls host details instead of just their ID
+      .populate("host", "name image bio username interest") // This pulls host details instead of just their ID
       .populate("acceptedParticipants", "name image")
       .populate("pendingParticipants", "name image");
 
