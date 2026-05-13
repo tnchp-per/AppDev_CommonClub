@@ -1,4 +1,5 @@
 import styles from "@/components/LogInStyles";
+import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -20,7 +21,7 @@ export default function Login() {
     const [loading, setLoading] = useState(false);
     const { login } = useAuth(); // ดึงฟังก์ชัน login มาจาก Context
 
-   
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleLogin = async () => {
         if (!email || !password) {
@@ -73,14 +74,30 @@ export default function Login() {
 
                     <View style={styles.inputWrapper}>
                         <Text style={styles.inputLabel}>PASSWORD</Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="••••••••"
-                            placeholderTextColor="#A0A0A0"
-                            value={password}
-                            onChangeText={setPassword}
-                            secureTextEntry
-                        />
+                        <View style={{ justifyContent: 'center' }}>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="••••••••"
+                                value={password}
+                                onChangeText={setPassword}
+                                secureTextEntry={!showPassword}
+                                autoCapitalize="none"
+                            />
+                            <TouchableOpacity
+                                onPress={() => setShowPassword(!showPassword)}
+                                style={{
+                                    position: 'absolute',
+                                    right: 15,
+                                    padding: 5
+                                }}
+                            >
+                                <Ionicons
+                                    name={showPassword ? "eye-outline" : "eye-off-outline"}
+                                    size={20}
+                                    color="#666"
+                                />
+                            </TouchableOpacity>
+                        </View>
                     </View>
 
                     <TouchableOpacity style={styles.forgotPassword}>
