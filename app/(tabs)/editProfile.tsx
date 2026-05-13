@@ -1,30 +1,39 @@
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
 
 export default function EditProfile() {
-    const { user, setUser } = useAuth();
+   const { user, setUser } = useAuth();
     const router = useRouter();
-
-    // 1. สร้าง State สำหรับเก็บค่าต่างๆ
+    
+    // 1. Keep these! They handle the typing/editing
     const [name, setName] = useState(user?.name || '');
     const [username, setUsername] = useState(user?.username || '');
     const [bio, setBio] = useState(user?.bio || '');
-    const [interestInput, setInterestInput] = useState(''); // สำหรับพิมพ์ interest ใหม่
+    const [interestInput, setInterestInput] = useState('');
     const [interests, setInterests] = useState<string[]>(user?.interests || []);
 
-    // ฟังก์ชันเพิ่ม Interest
+    useEffect(() => {
+    // Only update if the local state is empty and the user data has arrived
+        if (user && interests.length === 0) {
+            setInterests(user.interests || []);
+            setName(user.name || '');
+            setUsername(user.username || '');
+            setBio(user.bio || '');
+        }
+    }, [user]);
+
     const addInterest = () => {
         if (interestInput.trim() && !interests.includes(interestInput.trim())) {
+            // This adds to the existing list (Yoga, Coffee + New)
             setInterests([...interests, interestInput.trim()]);
             setInterestInput('');
         }
-    };
-
-    // ฟังก์ชันลบ Interest
+    };  
+    
     const removeInterest = (target: string) => {
         setInterests(interests.filter(i => i !== target));
     };
@@ -42,8 +51,8 @@ export default function EditProfile() {
             // อัปเดตข้อมูลใน Context
             setUser({ ...user, name, username, bio, interests });
             alert("Saved successfully!");
-            router.back();
-        } catch (err: any) { // เปลี่ยนชื่อเป็น err เพื่อกันงง และใส่ : any
+            router.replace("http://localhost:8081/profile"); 
+        } catch (err: any) { 
             console.error("Save error detail:", err.response?.data || err.message);
 
             // ดึงข้อความ error จากหลังบ้านมาโชว์ (เช่น Username already exists)
@@ -62,7 +71,7 @@ export default function EditProfile() {
             {/* Avatar Section */}
             <View style={styles.avatarSection}>
                 <Image
-                    source={{ uri: user?.image || 'https://via.placeholder.com/150' }}
+                    source={{ uri: user?.image }}
                     style={styles.avatar}
                 />
                 <TouchableOpacity style={styles.changePhotoButton}>
