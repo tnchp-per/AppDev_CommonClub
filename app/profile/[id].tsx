@@ -1,149 +1,121 @@
 import { Ionicons } from "@expo/vector-icons";
-import axios from "axios";
-import { useFocusEffect, useRouter } from "expo-router"; // 1. เพิ่ม useFocusEffect
-import React, { useCallback, useState } from "react"; // 2. เพิ่ม useCallback
-import { ActivityIndicator, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import styles from "../../components/ProfileStyles";
-import { useAuth } from "../../context/AuthContext";
+import { router, useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
 
-export default function Profile() {
-  const { user, logout } = useAuth();
-  const router = useRouter();
-  const [userData, setUserData] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
+import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-  const API_URL = "http://localhost:5001/api/users";
+export default function PublicProfile() {
+    const { id } = useLocalSearchParams(); // This gets the ID from the URL
+    const [targetUser, setTargetUser] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
 
-  // 3. ใช้ useFocusEffect แทน useEffect เดิมบางส่วน 
-  // เพื่อให้ดึงข้อมูลใหม่ทุกครั้งที่หน้า Profile ถูก "Focus" (เช่น ตอนกด Back กลับมา)
-  useFocusEffect(
-    useCallback(() => {
-      if (user?.id) {
-        fetchUserData();
-      } else {
-        setUserData(null);
-      }
-    }, [user])
-  );
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                // Fetch the specific user's info from your backend
+                const response = await fetch(`http://localhost:5001/api/users/${id}`);
+                const data = await response.json();
+                setTargetUser(data);
+            } catch (error) {
+                console.error("Error fetching profile:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-  const fetchUserData = async () => {
-    try {
-      const response = await axios.get(`${API_URL}/${user.id}`);
-      setUserData(response.data);
-    } catch (error) {
-      // ถ้าเพิ่งสมัครใหม่แล้วยังไม่มีข้อมูลใน DB ให้ใช้ค่าจาก Context แทน
-      setUserData({
-        name: user.name,
-        username: "new_user",
-        bio: "Add your bio here!",
-        interests: [],
-        joinedEvents: [],
-        createdEvents: []
-      });
-    }
-  };
+        if (id) fetchUserData();
+    }, [id]);
 
-  if (!user) {
+    if (loading) return <Text>Loading Profile...</Text>;
+    if (!targetUser) return <Text>User not found.</Text>;
+
     return (
-      <View style={styles.guestContainer}>
-        <Ionicons name="lock-closed" size={80} color="#042917" style={{ opacity: 0.2 }} />
-        <Text style={styles.title}>JOIN COMMON CLUB</Text>
-        <Text style={styles.subTitle}>Login to see your profile and activities</Text>
-        <TouchableOpacity
-          style={styles.loginButton}
-          onPress={() => router.push('/(auth)/login')}
-        >
-          <Text style={styles.buttonText}>LOGIN / SIGN UP</Text>
-        </TouchableOpacity>
-      </View>
+        <ScrollView style={styles.container}>
+            
+                <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+                <Ionicons name="arrow-back" size={28} color="#1A3C22" />
+                </TouchableOpacity>
+
+            
+            {/* Header Info */}
+            <View style={styles.profileHeader}>
+                <Image source={{ uri: targetUser.image }} style={styles.avatar} />
+                <Text style={styles.name}>{targetUser.name?.toUpperCase()}</Text>
+                <Text style={styles.username}>@{targetUser.username}</Text>
+                <Text style={styles.bio}>{targetUser.bio || "No bio yet."}</Text>
+            </View>
+
+            {/* Stats Section */}
+            <View style={styles.statsContainer}>
+                <View style={styles.statBox}>
+                    <Text style={styles.statNumber}>{targetUser.joinedEvents?.length || 0}</Text>
+                    <Text style={styles.statLabel}>Joined</Text>
+                </View>
+                <View style={styles.statBox}>
+                    <Text style={styles.statNumber}>{targetUser.createdEvents?.length || 0}</Text>
+                    <Text style={styles.statLabel}>Created</Text>
+                </View>
+            </View>
+
+            {/* Interests Section */}
+            <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Interest</Text>
+                <View style={styles.tagsContainer}>
+                    {targetUser.interests && targetUser.interests.length > 0 ? (
+                        targetUser.interests.map((item: string, index: number) => (
+                            <View key={index} style={styles.tag}>
+                                <Text style={styles.tagText}>{item.toUpperCase()}</Text>
+                            </View>
+                        ))
+                    ) : (
+                        <Text style={styles.emptyText}>No interests listed.</Text>
+                    )}
+                </View>
+            </View>
+            
+            {/* Added a bottom spacer for better scrolling */}
+            <View style={{ height: 50 }} />
+        </ScrollView>
     );
-  }
-
-  if (loading && !userData) { // โชว์ loading เฉพาะตอนที่ยังไม่มีข้อมูลเดิม
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#FAF9F1" }}>
-        <ActivityIndicator size="large" color="#042917" />
-      </View>
-    );
-  }
-
-  if (!userData) return null;
-
-  return (
-    <ScrollView style={styles.container}>
-      <View style={styles.topHeader}>
-        <Text style={styles.pageTitle}>USER</Text>
-      </View>
-
-      <View style={styles.header}>
-        <Image
-          source={{ uri: userData.image || "https://via.placeholder.com/150" }}
-          style={styles.avatar}
-        />
-        <Text style={styles.name}>{userData.name?.toUpperCase()}</Text>
-        <Text style={styles.username}>@{userData.username}</Text>
-        <Text style={styles.bio}>{userData.bio}</Text>
-
-        {/* 4. ใส่ Link ไปหน้า Edit Profile */}
-        <TouchableOpacity
-          style={styles.editButton}
-          onPress={() => router.push('/(tabs)/editProfile')} // ใช้ push เท่านั้น!
-        >
-          <Text style={styles.editButtonText}>EDIT PROFILE</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* ส่วน Stats */}
-      <View style={styles.statsContainer}>
-        <View style={styles.statCard}>
-          <Text style={styles.statNumber}>{userData.joinedEvents?.length || 0}</Text>
-          <Text style={styles.statLabel}>Joined</Text>
-        </View>
-        <View style={styles.statCard}>
-          <Text style={styles.statNumber}>{userData.createdEvents?.length || 0}</Text>
-          <Text style={styles.statLabel}>Created</Text>
-        </View>
-      </View>
-
-      {/* ส่วน Interests */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Interest</Text>
-        <View style={styles.interestsContainer}>
-          {userData.interests && userData.interests.length > 0 ? (
-            userData.interests.map((interest: string, index: number) => (
-              <View key={index} style={styles.tag}>
-                <Text style={styles.tagText}>{interest.toUpperCase()}</Text>
-              </View>
-            ))
-          ) : (
-            <Text style={styles.emptyText}>No interests yet.</Text>
-          )}
-        </View>
-      </View>
-
-      <View style={styles.section}>
-        {/* ปุ่ม Action ต่างๆ */}
-        <Text style={styles.sectionTitle}>My Hangout</Text>
-        <TouchableOpacity style={styles.primaryBlockButton}>
-          <Text style={styles.blockButtonText}>VIEW MY HANGOUT</Text>
-        </TouchableOpacity>
-        <Text style={styles.sectionTitle}>My Request</Text>
-        <TouchableOpacity style={styles.secondaryBlockButton}>
-          <Text style={styles.blockButtonText}>VIEW MY REQUEST</Text>
-        </TouchableOpacity>
-
-        <Text style={styles.sectionTitle}>Saved Activities</Text>
-        <TouchableOpacity style={styles.secondaryBlockButton}>
-          <Text style={styles.blockButtonText}>VIEW MY SAVED ACTIVITIES</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.logoutButton} onPress={logout}>
-          <Text style={styles.logoutButtonText}>LOGOUT</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={{ height: 40 }} />
-    </ScrollView>
-  );
-}
 }
 
+const styles = StyleSheet.create({
+    container: { 
+        flex: 1, 
+        backgroundColor: '#FAF9F1' 
+    },
+    profileHeader: { 
+        alignItems: 'center', 
+        padding: 30 , 
+        marginTop: 25 
+    },
+    center: { 
+        flex: 1, 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        backgroundColor: '#FAF9F1' 
+    },
+    backButton: {
+        position: 'absolute',
+        left: 20,
+        top: Platform.OS === 'ios' ? 10 : 16 ,
+        zIndex: 10,
+    },
+    topLabel: { fontSize: 18, fontWeight: 'bold', color: '#042917', marginBottom: 15 },
+    avatar: { width: 120, height: 120, borderRadius: 60, borderWidth: 1, borderColor: '#A5A198' },
+    name: { fontSize: 22, fontWeight: '900', color: '#042917', marginTop: 15 },
+    username: { fontSize: 14, color: '#4D7260', marginBottom: 5 },
+    bio: { fontSize: 14, color: '#042917', opacity: 0.8, marginTop: 5 },
+    
+    statsContainer: { flexDirection: 'row', justifyContent: 'center', gap: 60, marginTop: 30 },
+    statBox: { alignItems: 'center' },
+    statNumber: { fontSize: 20, fontWeight: 'bold', color: '#042917' },
+    statLabel: { fontSize: 12, color: '#042917', opacity: 0.6 },
+
+    section: { paddingHorizontal: 30, marginTop: 40 },
+    sectionTitle: { fontSize: 14, fontWeight: 'bold', color: '#042917', marginBottom: 10 },
+    tagsContainer: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+    tag: { backgroundColor: '#0D331C', paddingHorizontal: 15, paddingVertical: 8, borderRadius: 20 },
+    tagText: { color: '#FAF9F1', fontSize: 11, fontWeight: 'bold' },
+    emptyText: { color: '#A5A198', fontStyle: 'italic' }
+});
