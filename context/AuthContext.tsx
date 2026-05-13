@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { Platform } from 'react-native';
 
 
 const BASE_URL = "http://localhost:5001/api/users"; // CHANGE THIS to your actual backend URL (e.g., http://
@@ -70,8 +71,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const logout = () => {
-    setUser(null);
+  const logout = async () => {
+    try {
+      await AsyncStorage.removeItem('user');
+
+      //await AsyncStorage.removeItem('userToken');
+     // await AsyncStorage.removeItem('userData');
+
+      setUser(null);
+
+      if (Platform.OS === 'web') {
+        window.location.href = "/";
+      } else {
+        router.replace("/login");
+      }
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
   };
 
   const signUp = async (name: string, email: string, password: string) => {
