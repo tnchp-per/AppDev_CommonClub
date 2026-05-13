@@ -177,7 +177,15 @@ export default function HangoutDetails() {
       </ScrollView>
 
         <View style={styles.actionContainer}>
-          {isHost ? (
+          {!user ? (
+            // 1. GUEST STATE: Not logged in
+            <TouchableOpacity 
+              style={[styles.Button, { backgroundColor: '#1A3C22' }]} 
+              onPress={() => router.push("/login")}
+            >
+              <Text style={styles.ButtonText}>LOG IN TO JOIN</Text>
+            </TouchableOpacity>
+          ) : isHost ? (
             // 1. If user is the HOST
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 10, width: '100%' }}>
               <TouchableOpacity 

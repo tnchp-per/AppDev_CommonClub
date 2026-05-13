@@ -1,14 +1,18 @@
+import { useAuth } from '@/context/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import style from '../../components/manageRequestStyles'; // Adjust path as needed
 
 export default function ManageRequests() {
+  const { user } = useAuth();
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const [hangout, setHangout] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+
+  const isHost = hangout?.host?.toString() === user?._id?.toString();
 
   const BASE_URL = "http://localhost:5001/api/hangouts";
 
@@ -28,20 +32,27 @@ export default function ManageRequests() {
     }
   };
 
-  const handleAction = async (participantId: string, action: 'accept' | 'reject' | 'remove') => {
+  const handleAction = async (participantId: string) => {
     try {
-      const response = await fetch(`${BASE_URL}/${id}/respond`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ participantId, action }),
+      const response = await fetch(`${BASE_URL}/${hangout._id}/manage-request`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: participantId, // The person who wants to join
+          hostId: hangout?.host?._id ,
+          action: "accept"
+        }),
       });
 
+      const result = await response.json();
       if (response.ok) {
-        Alert.alert("Success", `User ${action}ed!`);
-        fetchData(); // Refresh both lists
+        alert("User accepted!");
+        window.location.reload(); // Refresh to update the UI lists
+      } else {
+        alert(result.message);
       }
-    } catch (error) {
-      Alert.alert("Error", "Action failed");
+    } catch (err) {
+      alert("System error accepting user");
     }
   };
 
@@ -68,16 +79,16 @@ export default function ManageRequests() {
           hangout?.pendingParticipants.map((user: any) => (
             <View key={user._id} style={style.sectionStyles.card}>
               <View style={style.sectionStyles.userInfo}>
-                <Image source={{ uri: user.image || 'https://via.placeholder.com/40' }} style={style.sectionStyles.avatar} />
+                <Image source={{ uri: user.image }} style={style.sectionStyles.avatar} />
                 <Text style={style.sectionStyles.userName}>{user.name}</Text>
               </View>
               <View style={style.sectionStyles.actions}>
-                <TouchableOpacity onPress={() => handleAction(user._id, 'reject')} style={style.sectionStyles.rejectBtn}>
-                  <Ionicons name="close" size={18} color="#FF4B4B" />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleAction(user._id, 'accept')} style={style.sectionStyles.acceptBtn}>
-                  <Ionicons name="checkmark" size={18} color="#FFF" />
-                </TouchableOpacity>
+                <TouchableOpacity 
+                    style={style.sectionStyles.acceptBtn} 
+                    onPress={() => handleAction(user._id)}
+                  >
+                    <Text style={style.sectionStyles.acceptText}>ACCEPT</Text>
+                  </TouchableOpacity>
               </View>
             </View>
           ))
@@ -91,7 +102,7 @@ export default function ManageRequests() {
           hangout?.acceptedParticipants.map((user: any) => (
             <View key={user._id} style={style.sectionStyles.card}>
               <View style={style.sectionStyles.userInfo}>
-                <Image source={{ uri: user.image || 'https://via.placeholder.com/40' }} style={style.sectionStyles.avatar} />
+                <Image source={{ uri: user.image }} style={style.sectionStyles.avatar} />
                 <Text style={style.sectionStyles.userName}>{user.name}</Text>
               </View>
             </View>
@@ -102,22 +113,3 @@ export default function ManageRequests() {
     </SafeAreaView>
   );
 }
-
-const headerStyles = {
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 20 },
-  headerTitle: { fontSize: 16, fontWeight: '700', color: '#1A3C22', letterSpacing: 1 },
-};
-
-const sectionStyles = {
-  title: { fontSize: 14, fontWeight: 'bold', color: '#1A3C22', textTransform: 'uppercase', marginBottom: 15, opacity: 0.6 },
-  card: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#FFF', padding: 12, borderRadius: 12, marginBottom: 10 },
-  userInfo: { flexDirection: 'row', alignItems: 'center' },
-  avatar: { width: 40, height: 40, borderRadius: 20, marginRight: 10 },
-  userName: { fontSize: 15, fontWeight: '500', color: '#1A3C22' },
-  actions: { flexDirection: 'row' },
-  acceptBtn: { backgroundColor: '#1A3C22', width: 34, height: 34, borderRadius: 17, justifyContent: 'center', alignItems: 'center', marginLeft: 8 },
-  rejectBtn: { backgroundColor: '#FFEBEB', width: 34, height: 34, borderRadius: 17, justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#FF4B4B' },
-  removeBtn: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, backgroundColor: '#f0f0f0' },
-  removeBtnText: { color: '#888', fontSize: 12, fontWeight: '600' },
-  emptyText: { color: '#999', fontStyle: 'italic', marginBottom: 10 }
-};

@@ -107,7 +107,6 @@ router.put("/:hangoutId/manage-request", async (req, res) => {
         return res.status(400).json({ message: "Hangout is already full!" });
       }
 
-      // Move from pending to accepted
       hangout.pendingParticipants.pull(userId);
       hangout.acceptedParticipants.push(userId);
 
@@ -156,7 +155,8 @@ router.get("/:id", async (req, res) => {
   try {
     const hangout = await Hangout.findById(req.params.id)
       .populate("host", "name image username") // This pulls host details instead of just their ID
-      .populate("acceptedParticipants", "name image");
+      .populate("acceptedParticipants", "name image")
+      .populate("pendingParticipants", "name image");
 
     if (!hangout) {
       return res.status(404).json({ message: "Hangout not found in database" });
