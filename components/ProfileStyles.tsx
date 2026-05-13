@@ -3,123 +3,173 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#0B3B2E',
+        backgroundColor: '#FAF9F1',
+        paddingHorizontal: 20,
     },
-
+    topHeader: {
+        marginTop: 60,
+        marginBottom: 20,
+        alignItems: "center",
+    },
+    pageTitle: {
+        fontSize: 24,
+        fontWeight: '700',
+        color: '#042917',
+    },
     header: {
         alignItems: 'center',
-        paddingTop: 60,
-        paddingHorizontal: 20,
+        paddingHorizontal: 40,
     },
-
     avatar: {
-        width: 110,
-        height: 110,
-        borderRadius: 55,
+        width: 100,
+        height: 100,
+        borderRadius: 50,
         marginBottom: 15,
-        borderWidth: 2,
-        borderColor: '#E8DFC7',
+        borderWidth: 1,
+        borderColor: '#A5A198',
     },
-
     name: {
-        fontSize: 26,
-        color: '#F5EFD8',
-        fontWeight: '600',
-        letterSpacing: 1,
+        fontSize: 22,
+        color: '#042917',
+        fontWeight: 'bold',
     },
-
     username: {
-        fontSize: 15,
-        color: '#D8CFAF',
+        fontSize: 14,
+        color: '#4D7260',
         marginTop: 4,
     },
-
     bio: {
         textAlign: 'center',
-        marginTop: 12,
-        color: '#E8DFC7',
-        lineHeight: 22,
-        paddingHorizontal: 20,
+        marginTop: 15,
+        color: '#042917',
+        lineHeight: 20,
+        fontSize: 13,
     },
-
     editButton: {
         marginTop: 20,
-        backgroundColor: '#E8DFC7',
-        paddingHorizontal: 28,
-        paddingVertical: 10,
+        backgroundColor: '#0D331C', // Darkest green
+        paddingHorizontal: 30,
+        paddingVertical: 12,
         borderRadius: 25,
     },
-
     editButtonText: {
-        color: '#0B3B2E',
-        fontWeight: '600',
-        letterSpacing: 1,
+        color: '#FAF9F1',
+        fontWeight: 'bold',
+        fontSize: 12,
     },
-
     statsContainer: {
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         marginTop: 35,
-        marginBottom: 10,
+        paddingHorizontal: 20,
     },
-
     statCard: {
         alignItems: 'center',
     },
-
     statNumber: {
-        fontSize: 24,
-        color: '#F5EFD8',
+        fontSize: 22,
+        color: '#042917',
         fontWeight: 'bold',
     },
-
     statLabel: {
-        color: '#D8CFAF',
+        color: '#4D7260',
         marginTop: 4,
         fontSize: 14,
+        fontWeight: '500',
     },
-
     section: {
         marginTop: 30,
-        paddingHorizontal: 25,
+        paddingHorizontal: 20,
     },
-
     sectionTitle: {
-        fontSize: 18,
-        color: '#F5EFD8',
-        marginBottom: 15,
-        letterSpacing: 1,
+        fontSize: 14,
+        color: '#042917',
+        marginBottom: 12,
+        fontWeight: '600',
     },
-
     interestsContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
     },
-
     tag: {
-        backgroundColor: '#184D3B',
-        paddingHorizontal: 16,
+        backgroundColor: '#0D331C',
+        paddingHorizontal: 18,
         paddingVertical: 10,
         borderRadius: 20,
         marginRight: 10,
         marginBottom: 10,
-        borderWidth: 1,
-        borderColor: '#D8CFAF',
     },
-
     tagText: {
-        color: '#F5EFD8',
+        color: '#FAF9F1',
+        fontSize: 11,
+        fontWeight: 'bold',
     },
-
-    menuItem: {
-        paddingVertical: 18,
-        borderBottomWidth: 0.5,
-        borderColor: '#295746',
+    emptyText: {
+        color: '#A5A198',
+        fontStyle: 'italic',
     },
-
-    menuText: {
+    // Action Block Buttons (Hangout, Request, Saved)
+    primaryBlockButton: {
+        backgroundColor: '#4D7260', // Medium green for priority action
+        borderRadius: 25,
+        paddingVertical: 14,
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    secondaryBlockButton: {
+        backgroundColor: '#A5A198', // Beige/Tan for secondary actions
+        borderRadius: 25,
+        paddingVertical: 14,
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    blockButtonText: {
+        color: '#FAF9F1',
+        fontSize: 12,
+        fontWeight: 'bold',
+    },
+    logoutButton: {
+        marginTop: 20,
+        alignSelf: 'center',
+    },
+    logoutButtonText: {
+        color: '#E06666', // Muted red
+        fontSize: 14,
+        fontWeight: 'bold',
+        textDecorationLine: 'underline',
+    },
+    guestContainer: {
+        flex: 1,
+        backgroundColor: '#FAF9F1',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#042917',
+        marginTop: 20,
+        marginBottom: 10,
+    },
+    subTitle: {
         fontSize: 16,
-        color: '#F5EFD8',
+        color: '#666',
+        textAlign: 'center',
+        marginBottom: 30,
+    },
+    loginButton: {
+        backgroundColor: '#042917',
+        paddingVertical: 15,
+        paddingHorizontal: 40,
+        borderRadius: 12,
+        width: '80%',
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: '#FAF9F1',
+        fontSize: 16,
+        fontWeight: 'bold',
     },
 });
 
