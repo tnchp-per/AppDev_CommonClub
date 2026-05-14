@@ -3,8 +3,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import styles from "../../components/HangoutDetailStyles"; // Adjust path as needed
-import { useAuth } from "../../context/AuthContext"; // Path to your context
+import styles from "../../../components/HangoutDetailStyles"; // Adjust path as needed
+import { useAuth } from "../../../context/AuthContext"; // Path to your context
 
 export default function HangoutDetails() {
   const { id } = useLocalSearchParams();
@@ -16,7 +16,7 @@ export default function HangoutDetails() {
   const isImageValid = hangout?.image && (hangout.image.startsWith('http') || hangout.image.startsWith('data:image'));
   const imageSource = isImageValid 
   ? { uri: hangout.image } 
-  : require('../../assets/images/logo.png'); // Local fallback
+  : require('../../../assets/images/logo.png'); // Local fallback
 
   const BASE_URL = "http://localhost:5001/api/hangouts";
 
@@ -171,7 +171,7 @@ export default function HangoutDetails() {
               />
             ) : (
               <Image 
-                source={require('../../assets/images/default.png')} 
+                source={imageSource} 
                 style={styles.hostAvatar} 
               />
             )}
@@ -205,11 +205,12 @@ export default function HangoutDetails() {
               </TouchableOpacity>
 
               <TouchableOpacity 
-                style={[styles.Button, { flex: 1, backgroundColor: '#FF4B4B' }]} 
-                onPress={handleDelete}
+                style={[styles.Button, { flex: 1, backgroundColor: '#1A3C22' }]}
+                onPress={() => router.push(`/hangout/${id}/edit`)}
               >
-                <Text style={styles.ButtonText}>DELETE EVENT</Text>
+                <Text style={styles.ButtonText}>Edit</Text> 
               </TouchableOpacity>
+          
             </View>
           ) : isAlreadyJoined ? (
             // 2. If user is already a PARTICIPANT

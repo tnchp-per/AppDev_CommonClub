@@ -190,4 +190,17 @@ router.delete('/:id', async (req, res) => {
     res.status(500).json({ message: "Server error during deletion" });
   }
 });
+
+router.put("/:id", async (req, res) => {
+  try {
+    const updatedHangout = await Hangout.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body }, // Updates whatever you send (title, desc, etc.)
+      { new: true }
+    );
+    res.json(updatedHangout);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 module.exports = router;
