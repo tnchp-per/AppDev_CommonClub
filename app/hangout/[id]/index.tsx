@@ -160,9 +160,10 @@ export default function HangoutDetails() {
             <Text style={styles.participantText}>
               Participants: {hangout?.acceptedParticipants?.length || 0}/{hangout?.maxParticipants || 0}
             </Text>
-            <Ionicons name="chevron-forward" size={16} color="#1A3C22" />
           </TouchableOpacity> 
 
+
+          
 
           <Text style={styles.aboutHeader}>About this event</Text>
           

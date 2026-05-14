@@ -2,7 +2,8 @@ import { Ionicons } from "@expo/vector-icons";
 import axios from 'axios';
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Image, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import style from "../../../components/manageRequestStyles"; // Adjust path as needed
 
 //const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
 const BASE_URL = "http://localhost:5001/api"; // Use your Mac's IP or
@@ -12,6 +13,7 @@ export default function ParticipantsList() {
   const router = useRouter();
   const [participants, setParticipants] = useState<any[]>([]);  
   const [loading, setLoading] = useState(true);
+  const [host, setHost] = useState<any>(null);
 
   useEffect(() => {
     const fetchParticipants = async () => {
@@ -19,6 +21,7 @@ export default function ParticipantsList() {
         // Make sure your backend .populate('acceptedParticipants')
         const res = await axios.get(`${BASE_URL}/hangouts/${id}`);
         setParticipants(res.data.acceptedParticipants || []);
+        setHost(res.data.host);
       } catch (err) {
         console.error(err);
       } finally {
@@ -28,73 +31,60 @@ export default function ParticipantsList() {
     fetchParticipants();
   }, [id]);
 
-  const renderUser = ({ item }: any) => (
-    <TouchableOpacity 
-      style={styles.userCard}
-      onPress={() => router.push(`/profile/${item._id}`)}
-    >
-      <Image 
-        source={item.image ? { uri: item.image } : require('../../../assets/images/default.png')} 
-        style={styles.avatar} 
-      />
-      <View>
-        <Text style={styles.userName}>{item.name}</Text>
-        <Text style={styles.userBio} numberOfLines={1}>{item.bio || "Member"}</Text>
-      </View>
-      <Ionicons name="chevron-forward" size={20} color="#ccc" style={{ marginLeft: 'auto' }} />
-    </TouchableOpacity>
-  );
+  
 
-  if (loading) return <ActivityIndicator style={{ flex: 1 }} />;
+    return (
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#FAF9F1' }}>
+        {/* Header: Usually full-width or with its own internal padding */}
+        <View style={style.sectionStyles.header}>
+            <TouchableOpacity onPress={() => router.back()}>
+            <Ionicons name="arrow-back" size={24} color="#1A3C22" />
+            </TouchableOpacity>
+            <Text style={style.sectionStyles.headerTitle}>Participants ({participants.length})</Text>
+            <View style={{ width: 24 }} /> 
+        </View>
 
-  return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#FAF9F1' }}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color="#1A3C22" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Participants ({participants.length})</Text>
-        <View style={{ width: 24 }} /> 
-      </View>
+        {/* 🟢 Main Content Container with Padding */}
+        <ScrollView contentContainerStyle={{ padding: 20 }}>
+            
+            {/* Host Section */}
+            <Text style={style.sectionStyles.title2}>Host</Text>
+            <TouchableOpacity 
+            style={style.sectionStyles.card}
+            onPress={() => router.push(`/profile/${host._id}`)}
+            >
+            <Image 
+                source={host?.image ? { uri: host.image } : require('../../../assets/images/default.png')} 
+                style={style.sectionStyles.avatar} 
+            />
+            <View>
+                <Text style={style.sectionStyles.userName}>{host?.name}</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#ccc" style={{ marginLeft: 'auto' }} />
+            </TouchableOpacity>
 
-      <FlatList
-        data={participants}
-        keyExtractor={(item) => item._id}
-        renderItem={renderUser}
-        contentContainerStyle={{ padding: 20 }}
-        ListEmptyComponent={<Text style={styles.emptyText}>No participants yet.</Text>}
-      />
+            {/* Participants Section */}
+            <Text style={[style.sectionStyles.title2, { marginTop: 20 }]}>Participants</Text>
+            
+            <FlatList
+            data={participants}
+            scrollEnabled={false} // Since it's inside a ScrollView
+            keyExtractor={(item) => item._id}
+            renderItem={({ item }) => (
+                <TouchableOpacity 
+                style={style.sectionStyles.card}
+                onPress={() => router.push(`/profile/${item._id}`)}
+                >
+                <Image 
+                    source={item.image ? { uri: item.image } : require('../../../assets/images/default.png')} 
+                    style={style.sectionStyles.avatar} 
+                />
+                <Text style={style.sectionStyles.userName}>{item.name}</Text>
+                <Ionicons name="chevron-forward" size={20} color="#ccc" style={{ marginLeft: 'auto' }} />
+                </TouchableOpacity>
+            )}
+            />
+        </ScrollView>
     </SafeAreaView>
-  );
+    )
 }
-
-const styles = {
-  header: {
-    flexDirection: 'row' as const,
-    alignItems: 'center' as const,
-    justifyContent: 'space-between' as const,
-    padding: 20,
-    backgroundColor: '#FAF9F1',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  headerTitle: { fontSize: 18, fontWeight: 'bold' as const, color: '#1A3C22' },
-  userCard: {
-    flexDirection: 'row' as const,
-    alignItems: 'center' as const,
-    padding: 15,
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    marginBottom: 10,
-    // Add a slight shadow
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    elevation: 2,
-  },
-  avatar: { width: 50, height: 50, borderRadius: 25, marginRight: 15 },
-  userName: { fontSize: 16, fontWeight: '600' as const, color: '#1A3C22' },
-  userBio: { fontSize: 13, color: '#666', marginTop: 2 },
-  emptyText: { textAlign: 'center' as const, marginTop: 50, color: '#888' }
-};

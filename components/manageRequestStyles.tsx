@@ -16,7 +16,32 @@ export const headerStyles = StyleSheet.create({
 });
 
 export const sectionStyles = StyleSheet.create({
-  title: { fontSize: 14, fontWeight: 'bold', color: '#1A3C22', textTransform: 'uppercase', marginBottom: 15, opacity: 0.6 },
+  header: {
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    justifyContent: 'space-between' as const,
+    padding: 20,
+    backgroundColor: '#FAF9F1',
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  headerTitle: { fontSize: 18, fontWeight: 'bold' as const, color: '#1A3C22' },
+  title: { 
+    fontSize: 14, 
+    fontWeight: 'bold', 
+    color: '#1A3C22', 
+    textTransform: 'uppercase', 
+    marginBottom: 15, 
+    opacity: 0.6 
+  },
+  title2: { 
+    fontSize: 16, 
+    fontWeight: 'bold', 
+    color: '#1A3C22', 
+    textTransform: 'uppercase', 
+    marginBottom: 15, 
+    
+  },
   card: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#FFF', padding: 12, borderRadius: 12, marginBottom: 10 },
   userInfo: { flexDirection: 'row', alignItems: 'center' },
   avatar: { width: 40, height: 40, borderRadius: 20, marginRight: 10 },
@@ -39,7 +64,8 @@ export const sectionStyles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     letterSpacing: 0.5,
-  }
+  },
+  userBio: { fontSize: 13, color: '#666', marginTop: 2 },
 });
 
 export default { headerStyles, sectionStyles };

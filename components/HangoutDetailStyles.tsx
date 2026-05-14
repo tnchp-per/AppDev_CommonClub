@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   },
   participantRow: { 
     backgroundColor: '#1A3C22',
-    //  paddingHorizontal: 16,
+    padding: 8,
     borderRadius: 40,
     justifyContent: 'center',
     alignItems: 'center',
