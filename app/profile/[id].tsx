@@ -39,7 +39,11 @@ export default function PublicProfile() {
             
             {/* Header Info */}
             <View style={styles.profileHeader}>
-                <Image source={{ uri: targetUser.image }} style={styles.avatar} />
+                {typeof targetUser.image === 'string' && targetUser.image.startsWith('data:image') ? (
+                  <Image source={targetUser.image} style={styles.avatar} />
+                ) : (
+                  <Image source={require('../../assets/images/default.png')} style={styles.avatar} />
+                )}
                 <Text style={styles.name}>{targetUser.name?.toUpperCase()}</Text>
                 <Text style={styles.username}>@{targetUser.username}</Text>
                 <Text style={styles.bio}>{targetUser.bio || "No bio yet."}</Text>

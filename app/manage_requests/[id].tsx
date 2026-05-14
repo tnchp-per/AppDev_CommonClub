@@ -79,7 +79,11 @@ export default function ManageRequests() {
           hangout?.pendingParticipants.map((user: any) => (
             <View key={user._id} style={style.sectionStyles.card}>
               <View style={style.sectionStyles.userInfo}>
-                <Image source={{ uri: user.image }} style={style.sectionStyles.avatar} />
+                {typeof user.image === 'string' && user.image.startsWith('data:image') ? (
+                  <Image source={user.image} style={style.sectionStyles.avatar} />
+                ) : (
+                  <Image source={require('../../assets/images/default.png')} style={style.sectionStyles.avatar} />
+                )}
                 <Text style={style.sectionStyles.userName}>{user.name}</Text>
               </View>
               <View style={style.sectionStyles.actions}>
@@ -102,7 +106,11 @@ export default function ManageRequests() {
           hangout?.acceptedParticipants.map((user: any) => (
             <View key={user._id} style={style.sectionStyles.card}>
               <View style={style.sectionStyles.userInfo}>
-                <Image source={{ uri: user.image }} style={style.sectionStyles.avatar} />
+                {typeof user.image === 'string' && user.image.startsWith('data:image') ? (
+                  <Image source={user.image} style={style.sectionStyles.avatar} />
+                ) : (
+                  <Image source={require('../../assets/images/default.png')} style={style.sectionStyles.avatar} />
+                )}
                 <Text style={style.sectionStyles.userName}>{user.name}</Text>
               </View>
             </View>

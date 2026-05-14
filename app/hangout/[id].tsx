@@ -6,8 +6,6 @@ import { ActivityIndicator, Alert, Image, SafeAreaView, ScrollView, Text, Toucha
 import styles from "../../components/HangoutDetailStyles"; // Adjust path as needed
 import { useAuth } from "../../context/AuthContext"; // Path to your context
 
-
-
 export default function HangoutDetails() {
   const { id } = useLocalSearchParams();
   const [hangout, setHangout] = useState<any>(null);
@@ -20,7 +18,6 @@ export default function HangoutDetails() {
   ? { uri: hangout.image } 
   : require('../../assets/images/logo.png'); // Local fallback
 
-  // Replace with your actual IP address
   const BASE_URL = "http://localhost:5001/api/hangouts";
 
   useEffect(() => {
@@ -167,10 +164,17 @@ export default function HangoutDetails() {
             style={styles.hostContainer} 
             onPress={() => router.push(`/profile/${hangout.host._id || hangout.host}`)}
           >
-            <Image 
-              source={{ uri: hangout.host.image }} 
-              style={styles.hostAvatar} 
-            />
+            {typeof hangout.host.image === 'string' && hangout.host.image.startsWith('data:image') ? (
+              <Image 
+                source={{ uri: hangout.host.image }} 
+                style={styles.hostAvatar} 
+              />
+            ) : (
+              <Image 
+                source={require('../../assets/images/default.png')} 
+                style={styles.hostAvatar} 
+              />
+            )}
             <View>
               <Text style={styles.hostName}>{hangout.host.name }</Text>
             </View>
