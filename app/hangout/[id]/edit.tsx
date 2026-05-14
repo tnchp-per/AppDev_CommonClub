@@ -8,7 +8,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import { styles } from "../../../components/createHangoutStyles";
+import { styles } from "../../../components/editHangoutStyles";
 // Reuse your styles for consistency
 // Remember to use your Mac IP (e.g., 192.168.1.XX) or 10.0.2.2 for Android!
 const BASE_URL = "http://localhost:5001/api"; 
@@ -17,8 +17,10 @@ export default function EditHangout() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
   
+  const today = new Date().toISOString().split('T')[0];
+
   // States matching CreateHangout structure
-  const [selectedDay, setSelectedDay] = useState('');
+  const [selectedDay, setSelectedDay] = useState(today);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [image, setImage] = useState<string | null>(null);
@@ -128,13 +130,13 @@ export default function EditHangout() {
   if (loading) return <View style={{flex:1, justifyContent:'center'}}><ActivityIndicator size="large" color="#1A3C22"/></View>;
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 60 }}>
+    <ScrollView style={styles.container}>
         <View style={styles.headerNav}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={28} color="#1A3C22" />
         </TouchableOpacity>
         <View style={{ alignItems: 'center' }}>
-          <Text style={styles.headerTitle}>Edit Hangout</Text>
+          <Text style={styles.headerTitle}>EDIT HANGOUT</Text>
         </View>
       </View>
 
@@ -163,10 +165,32 @@ export default function EditHangout() {
 
         <Text style={styles.label}>SELECT DATE</Text>
         <Calendar
-          onDayPress={day => setSelectedDay(day.dateString)}
-          markedDates={{ [selectedDay]: { selected: true, selectedColor: '#1A3C22' } }}
-          theme={{ selectedDayBackgroundColor: '#1A3C22' }}
-          style={{ borderWidth: 2, borderColor: '#1A3C22', borderRadius: 12 }}
+            current={selectedDay} 
+            onDayPress={day => setSelectedDay(day.dateString)}
+            markedDates={{
+              [today]: {
+                selected: true,
+                selectedColor: '#518163',
+                selectedTextColor: '#000000',
+              },
+              [selectedDay]: { 
+                selected: true, 
+                disableTouchEvent: true, 
+                selectedColor: '#1A3C24', // Your dark circle color
+                selectedTextColor: '#FFFFFF' 
+              },
+              
+            }}
+            
+            theme={{
+              textSectionTitleColor: '#1A3C22',
+              dayTextColor: '#1A3C22',
+              monthTextColor: '#1A3C22',
+              arrowColor: '#1A3C22',
+              textDayFontWeight: '400',
+              textMonthFontWeight: 'bold',
+            }}
+          style={{ borderWidth: 2, borderColor: '#1A3C22', borderRadius: 12, backgroundColor: "white" }}
         />
 
         <View style={styles.row}>

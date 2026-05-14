@@ -11,7 +11,7 @@ import { useAuth } from "../../context/AuthContext";
 export default function CreateHangout() {
   const today = new Date().toISOString().split('T')[0];
   const router = useRouter();
-  const [selectedDay, setSelectedDay] = useState('2026-05-09');
+  const [selectedDay, setSelectedDay] = useState(today);
   const [startTime, setStartTime] = useState('09:00');
   const [endTime, setEndTime] = useState('10:00');
   const [image, setImage] = useState<string | null>(null);

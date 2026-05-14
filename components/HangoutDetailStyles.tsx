@@ -154,6 +154,8 @@ hostedByText: {
   color: '#1A3C22',
   opacity: 0.6,
 },
-});
+  
+}
+);
 
 export default styles;
