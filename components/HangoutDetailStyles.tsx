@@ -58,10 +58,20 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   participantText: {
-    fontSize: 14,
-    color: "#1A3C22",
-    marginBottom: 25,
-    marginLeft: 12,
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '600',
+    letterSpacing: 0.5,
+    textAlign: 'center',
+  },
+  participantRow: { 
+    backgroundColor: '#1A3C22',
+    //  paddingHorizontal: 16,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 160,
+    margin:12
   },
 
   // Host Section
@@ -89,13 +99,15 @@ const styles = StyleSheet.create({
   hostName: {
     fontSize: 16,
     color: "#1A3C22",
-    marginLeft: 15,
+    marginLeft: 5,
+    fontWeight: '600',
   },
   descriptionText: {
     fontSize: 14,
     color: "#1A3C22",
     lineHeight: 20,
     marginLeft: 12,
+    
   },
 
   // Footer
