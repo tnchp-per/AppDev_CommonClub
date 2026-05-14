@@ -18,7 +18,7 @@ export default function CreateHangout() {
   const { user } = useAuth();
 
   const [invalidMsg, setInvalidMsg] = useState('');
-  
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -39,52 +39,52 @@ export default function CreateHangout() {
   const handleSubmit = async () => {
     let error = ""; // Local variable for immediate checking
 
-  // Validation Logic
-  if (!formData.title.trim()) {
-    error = 'Please enter an event name';
-  } else if (!formData.location || formData.location === "-") {
-    error = 'Please enter a location';
-  } else if (!selectedDay) {
-    error = 'Please select a date';
-  } else if (new Date(selectedDay) <= new Date()) {
-    error = 'Date must be in the future';
-  }
+    // Validation Logic
+    if (!formData.title.trim()) {
+      error = 'Please enter an event name';
+    } else if (!formData.location || formData.location === "-") {
+      error = 'Please enter a location';
+    } else if (!selectedDay) {
+      error = 'Please select a date';
+    } else if (new Date(selectedDay) <= new Date()) {
+      error = 'Date must be in the future';
+    }
 
-  // Update the UI state so the user sees the message
-  setInvalidMsg(error);
-    
+    // Update the UI state so the user sees the message
+    setInvalidMsg(error);
+
     const [startHours, startMins] = startTime.split(':').map(Number);
     const [endHours, endMins] = endTime.split(':').map(Number);
     const totalStartMinutes = startHours * 60 + startMins;
     const totalEndMinutes = endHours * 60 + endMins;
 
     if (error === "") {
-    try {
-      const startISO = new Date(`${selectedDay}T${startTime}:00`).toISOString();
-      const endISO = new Date(`${selectedDay}T${endTime}:00`).toISOString();
+      try {
+        const startISO = new Date(`${selectedDay}T${startTime}:00`).toISOString();
+        const endISO = new Date(`${selectedDay}T${endTime}:00`).toISOString();
 
-      const finalData = {
-        ...formData,
-        description: formData.description || "",
-        host: user._id || user.id, // Adjust based on your user object structure
-        date: startISO,
-        endTime: endISO,
-        maxParticipants: parseInt(formData.maxParticipants) || 5,
-        image: image || ""
-      };
+        const finalData = {
+          ...formData,
+          description: formData.description || "",
+          host: user._id || user.id, // Adjust based on your user object structure
+          date: startISO,
+          endTime: endISO,
+          maxParticipants: parseInt(formData.maxParticipants) || 5,
+          image: image || ""
+        };
 
-      await createHangout(finalData);
+        await createHangout(finalData);
 
-      // Reset everything on success
-      setFormData({ title: "", description: "-", location: "", category: "Social", maxParticipants: "5", image: "" });
-      setImage(null);
-      alert("Hangout Created!");
-      window.location.reload();
-    } catch (err) {
-      alert("Error, Submission failed");
-    } 
-  } else alert(error);
-};
+        // Reset everything on success
+        setFormData({ title: "", description: "-", location: "", category: "Social", maxParticipants: "5", image: "" });
+        setImage(null);
+        alert("Hangout Created!");
+        window.location.reload();
+      } catch (err) {
+        alert("Error, Submission failed");
+      }
+    } else alert(error);
+  };
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -112,18 +112,18 @@ export default function CreateHangout() {
     return (
       <View style={styles.guestContainer}>
         <View style={styles.guestCard}>
-          <Image 
-            source={require("../../assets/images/logo_transparent.png")} 
-            style={styles.guestLogoImage} 
-            resizeMode="contain" 
+          <Image
+            source={require("../../assets/images/logo_transparent.png")}
+            style={styles.guestLogoImage}
+            resizeMode="contain"
           />
           <Text style={styles.guestTitle}>Host a Hangout</Text>
           <Text style={styles.guestSubtitle}>
             Connect with people nearby! You need to be a member to create and manage events.
           </Text>
-          
-          <TouchableOpacity 
-            style={styles.guestLoginBtn} 
+
+          <TouchableOpacity
+            style={styles.guestLoginBtn}
             onPress={() => router.push("/login")}
           >
             <Text style={styles.guestLoginBtnText}>Login / Sign Up</Text>
@@ -143,64 +143,64 @@ export default function CreateHangout() {
 
       <View style={styles.inputGroup}>
         <Text style={styles.label}>NAME OF EVENT</Text>
-        <TextInput 
-          style={styles.input} 
-          placeholder="ENTER EVENT'S NAME" 
-          onChangeText={(val) => setFormData({...formData, title: val})}
+        <TextInput
+          style={styles.input}
+          placeholder="ENTER EVENT'S NAME"
+          onChangeText={(val) => setFormData({ ...formData, title: val })}
         />
 
         <Text style={styles.label}>DESCRIPTION</Text>
-        <TextInput 
-          style={[styles.input, styles.textArea]} 
+        <TextInput
+          style={[styles.input, styles.textArea]}
           placeholder="ENTER DESCRIPTION (MAX 50 WORDS)"
           multiline
-          onChangeText={(val) => setFormData({...formData, description: val})}
+          onChangeText={(val) => setFormData({ ...formData, description: val })}
         />
 
-        
+
 
         <Text style={styles.label}>LOCATION</Text>
-        <TextInput 
-          style={styles.input} 
+        <TextInput
+          style={styles.input}
           placeholder="ENTER EVENT'S LOCATION"
-          onChangeText={(val) => setFormData({...formData, location: val})}
+          onChangeText={(val) => setFormData({ ...formData, location: val })}
         />
 
         <Text style={styles.label}>SELECT DATE</Text>
         <Calendar
-            current={selectedDay} 
-            onDayPress={day => setSelectedDay(day.dateString)}
-            markedDates={{
-              [today]: {
-                selected: true,
-                selectedColor: '#518163',
-                selectedTextColor: '#000000',
-              },
-              [selectedDay]: { 
-                selected: true, 
-                disableTouchEvent: true, 
-                selectedColor: '#1A3C24', // Your dark circle color
-                selectedTextColor: '#FFFFFF' 
-              },
-              
-            }}
-            
-            theme={{
-              textSectionTitleColor: '#1A3C22',
-              dayTextColor: '#1A3C22',
-              monthTextColor: '#1A3C22',
-              arrowColor: '#1A3C22',
-              textDayFontWeight: '400',
-              textMonthFontWeight: 'bold',
-            }}
+          current={selectedDay}
+          onDayPress={day => setSelectedDay(day.dateString)}
+          markedDates={{
+            [today]: {
+              selected: true,
+              selectedColor: '#518163',
+              selectedTextColor: '#000000',
+            },
+            [selectedDay]: {
+              selected: true,
+              disableTouchEvent: true,
+              selectedColor: '#1A3C24', // Your dark circle color
+              selectedTextColor: '#FFFFFF'
+            },
+
+          }}
+
+          theme={{
+            textSectionTitleColor: '#1A3C22',
+            dayTextColor: '#1A3C22',
+            monthTextColor: '#1A3C22',
+            arrowColor: '#1A3C22',
+            textDayFontWeight: '400',
+            textMonthFontWeight: 'bold',
+          }}
           style={{ borderWidth: 2, borderColor: '#1A3C22', borderRadius: 12, backgroundColor: "white" }}
         />
 
         <View style={styles.row}>
           <View style={{ width: '48%' }}>
             <Text style={styles.label}>FROM</Text>
-            <TextInput 
-              style={styles.input} 
+            <TextInput
+              style={styles.input}
               placeholder="13:00"
               keyboardType="numeric"
               value={startTime}
@@ -209,8 +209,8 @@ export default function CreateHangout() {
           </View>
           <View style={{ width: '48%' }}>
             <Text style={styles.label}>TO</Text>
-            <TextInput 
-              style={styles.input} 
+            <TextInput
+              style={styles.input}
               placeholder="14:00"
               keyboardType="numeric"
               value={endTime}
@@ -224,18 +224,18 @@ export default function CreateHangout() {
         </Text>
 
         <Text style={styles.label}>MAX PARTICIPANTS</Text>
-        <TextInput 
-          style={styles.input} 
+        <TextInput
+          style={styles.input}
           placeholder="5"
           keyboardType="numeric"
-          onChangeText={(val) => setFormData({...formData, maxParticipants: val})}
+          onChangeText={(val) => setFormData({ ...formData, maxParticipants: val })}
         />
 
         <Text style={styles.label}>CATEGORY</Text>
         <View style={styles.dropdownContainer}>
           <Picker
             selectedValue={formData.category}
-            onValueChange={(itemValue) => setFormData({...formData, category: itemValue})}
+            onValueChange={(itemValue) => setFormData({ ...formData, category: itemValue })}
           >
             <Picker.Item label="Cafe Hopping" value="Cafe Hopping" />
             <Picker.Item label="Food" value="Food" />
@@ -244,21 +244,22 @@ export default function CreateHangout() {
             <Picker.Item label="Social" value="Social" />
             <Picker.Item label="Sports" value="Sports" />
             <Picker.Item label="Study" value="Study" />
+            <Picker.Item label="Adventure" value="Adventure" />
             <Picker.Item label="Other" value="Other" />
-            
+
           </Picker>
         </View>
 
         {/* IMAGE UPLOAD SECTION */}
-      <TouchableOpacity style={styles.imageUploadBox} onPress={pickImage}>
-        {image ? (
-          <Image source={{ uri: image }} style={styles.uploadedImage} />
-        ) : (
-          <View style={styles.imagePlaceholder}>
-            <Text style={styles.imagePlaceholderText}>+ ADD PHOTO (OPTIONAL)</Text>
-          </View>
-        )}
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.imageUploadBox} onPress={pickImage}>
+          {image ? (
+            <Image source={{ uri: image }} style={styles.uploadedImage} />
+          ) : (
+            <View style={styles.imagePlaceholder}>
+              <Text style={styles.imagePlaceholderText}>+ ADD PHOTO (OPTIONAL)</Text>
+            </View>
+          )}
+        </TouchableOpacity>
 
         <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
           <Text style={styles.submitBtnText}>CREATE HANGOUT</Text>
