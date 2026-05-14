@@ -20,7 +20,7 @@ export default function EditHangout() {
   const today = new Date().toISOString().split('T')[0];
 
   // States matching CreateHangout structure
-  const [selectedDay, setSelectedDay] = useState(today);
+  const [selectedDay, setSelectedDay] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [image, setImage] = useState<string | null>(null);

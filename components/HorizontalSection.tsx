@@ -82,7 +82,7 @@ const HorizontalSection = ({ title, data }: { title: string; data: any[] }) => {
 };
 
 const styles = StyleSheet.create({
-  sectionContainer: { marginVertical: 15, paddingLeft: 20 },
+  sectionContainer: { marginVertical: 15, paddingLeft: 10 },
   sectionTitle: { fontSize: 20, fontWeight: "bold", marginBottom: 10, color: "#1A3C22" },
   scrollContainer: { paddingRight: 20 },
 });
