@@ -44,21 +44,28 @@ export default function EditProfile() {
     useEffect(() => {
         const fetchFreshUser = async () => {
             try {
-                // Use _id or id depending on your setup
-                const res = await axios.get(`http://localhost:5001/api/users/${user._id || user.id}`);
-                console.log("Fresh data from server:", res.data.interests);
+                const userId = user?._id || user?.id;
+                if (!userId) return;
 
-                // Now set the interests from the actual database response
-                if (res.data.interests) {
-                    setInterests(res.data.interests);
+                const res = await axios.get(`http://localhost:5001/api/users/${userId}`);
+                const data = res.data;
+
+                console.log("Fresh data from server:", data);
+
+                if (data) {
+                    setName(data.name || '');
+                    setUsername(data.username || '');
+                    setBio(data.bio || '');
+                    setInterests(data.interests || []);
+                    setImage(data.image || null);
                 }
             } catch (err) {
                 console.error("Could not fetch fresh user data", err);
             }
         };
 
-        if (user) fetchFreshUser();
-    }, []); // Run ONCE when the page opens
+        fetchFreshUser();
+    }, []); // รันครั้งเดียวตอนเปิดหน้า
 
     const addInterest = () => {
         if (interestInput.trim() && !interests.includes(interestInput.trim())) {
