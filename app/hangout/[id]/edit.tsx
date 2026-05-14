@@ -11,12 +11,12 @@ import { Calendar } from 'react-native-calendars';
 import { styles } from "../../../components/editHangoutStyles";
 // Reuse your styles for consistency
 // Remember to use your Mac IP (e.g., 192.168.1.XX) or 10.0.2.2 for Android!
-const BASE_URL = "http://localhost:5001/api"; 
+const BASE_URL = "http://localhost:5001/api";
 
 export default function EditHangout() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
-  
+
   const today = new Date().toISOString().split('T')[0];
 
   // States matching CreateHangout structure
@@ -52,7 +52,7 @@ export default function EditHangout() {
           category: data.category || "Social",
           maxParticipants: data.maxParticipants.toString(),
         });
-        
+
         setSelectedDay(startDate.toISOString().split('T')[0]);
         setStartTime(startDate.toTimeString().slice(0, 5));
         setEndTime(endDate.toTimeString().slice(0, 5));
@@ -107,9 +107,9 @@ export default function EditHangout() {
         maxParticipants: parseInt(formData.maxParticipants),
         image: image
       });
-      alert( "Hangout Updated!");
+      alert("Hangout Updated!");
       router.replace(`/hangout/${id}`);
-      
+
     } catch (err) {
       alert(err);
     }
@@ -118,20 +118,22 @@ export default function EditHangout() {
   const handleDelete = () => {
     Alert.alert("Delete Event", "Are you sure?", [
       { text: "Cancel", style: "cancel" },
-      { text: "Delete", style: "destructive", onPress: async () => {
+      {
+        text: "Delete", style: "destructive", onPress: async () => {
           try {
             await deleteHangout(id as string);
             router.replace("/(tabs)");
           } catch (err) { Alert.alert("Error", "Could not delete"); }
-      }}
+        }
+      }
     ]);
   };
 
-  if (loading) return <View style={{flex:1, justifyContent:'center'}}><ActivityIndicator size="large" color="#1A3C22"/></View>;
+  if (loading) return <View style={{ flex: 1, justifyContent: 'center' }}><ActivityIndicator size="large" color="#1A3C22" /></View>;
 
   return (
     <ScrollView style={styles.container}>
-        <View style={styles.headerNav}>
+      <View style={styles.headerNav}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={28} color="#1A3C22" />
         </TouchableOpacity>
@@ -142,62 +144,62 @@ export default function EditHangout() {
 
       <View style={styles.inputGroup}>
         <Text style={styles.label}>NAME OF EVENT</Text>
-        <TextInput 
-          style={styles.input} 
+        <TextInput
+          style={styles.input}
           value={formData.title}
-          onChangeText={(val) => setFormData({...formData, title: val})}
+          onChangeText={(val) => setFormData({ ...formData, title: val })}
         />
 
         <Text style={styles.label}>DESCRIPTION</Text>
-        <TextInput 
-          style={[styles.input, styles.textArea]} 
+        <TextInput
+          style={[styles.input, styles.textArea]}
           multiline
           value={formData.description}
-          onChangeText={(val) => setFormData({...formData, description: val})}
+          onChangeText={(val) => setFormData({ ...formData, description: val })}
         />
 
         <Text style={styles.label}>LOCATION</Text>
-        <TextInput 
-          style={styles.input} 
+        <TextInput
+          style={styles.input}
           value={formData.location}
-          onChangeText={(val) => setFormData({...formData, location: val})}
+          onChangeText={(val) => setFormData({ ...formData, location: val })}
         />
 
         <Text style={styles.label}>SELECT DATE</Text>
         <Calendar
-            current={selectedDay} 
-            onDayPress={day => setSelectedDay(day.dateString)}
-            markedDates={{
-              [today]: {
-                selected: true,
-                selectedColor: '#518163',
-                selectedTextColor: '#000000',
-              },
-              [selectedDay]: { 
-                selected: true, 
-                disableTouchEvent: true, 
-                selectedColor: '#1A3C24', // Your dark circle color
-                selectedTextColor: '#FFFFFF' 
-              },
-              
-            }}
-            
-            theme={{
-              textSectionTitleColor: '#1A3C22',
-              dayTextColor: '#1A3C22',
-              monthTextColor: '#1A3C22',
-              arrowColor: '#1A3C22',
-              textDayFontWeight: '400',
-              textMonthFontWeight: 'bold',
-            }}
+          current={selectedDay}
+          onDayPress={day => setSelectedDay(day.dateString)}
+          markedDates={{
+            [today]: {
+              selected: true,
+              selectedColor: '#518163',
+              selectedTextColor: '#000000',
+            },
+            [selectedDay]: {
+              selected: true,
+              disableTouchEvent: true,
+              selectedColor: '#1A3C24', // Your dark circle color
+              selectedTextColor: '#FFFFFF'
+            },
+
+          }}
+
+          theme={{
+            textSectionTitleColor: '#1A3C22',
+            dayTextColor: '#1A3C22',
+            monthTextColor: '#1A3C22',
+            arrowColor: '#1A3C22',
+            textDayFontWeight: '400',
+            textMonthFontWeight: 'bold',
+          }}
           style={{ borderWidth: 2, borderColor: '#1A3C22', borderRadius: 12, backgroundColor: "white" }}
         />
 
         <View style={styles.row}>
           <View style={{ width: '48%' }}>
             <Text style={styles.label}>FROM</Text>
-            <TextInput 
-              style={styles.input} 
+            <TextInput
+              style={styles.input}
               keyboardType="numeric"
               value={startTime}
               onChangeText={(text) => handleTimeChange(text, setStartTime)}
@@ -205,8 +207,8 @@ export default function EditHangout() {
           </View>
           <View style={{ width: '48%' }}>
             <Text style={styles.label}>TO</Text>
-            <TextInput 
-              style={styles.input} 
+            <TextInput
+              style={styles.input}
               keyboardType="numeric"
               value={endTime}
               onChangeText={(text) => handleTimeChange(text, setEndTime)}
@@ -215,18 +217,18 @@ export default function EditHangout() {
         </View>
 
         <Text style={styles.label}>MAX PARTICIPANTS (Current: {currentAcceptedCount})</Text>
-        <TextInput 
-          style={styles.input} 
+        <TextInput
+          style={styles.input}
           keyboardType="numeric"
           value={formData.maxParticipants}
-          onChangeText={(val) => setFormData({...formData, maxParticipants: val})}
+          onChangeText={(val) => setFormData({ ...formData, maxParticipants: val })}
         />
 
         <Text style={styles.label}>CATEGORY</Text>
         <View style={styles.dropdownContainer}>
           <Picker
             selectedValue={formData.category}
-            onValueChange={(val) => setFormData({...formData, category: val})}
+            onValueChange={(val) => setFormData({ ...formData, category: val })}
           >
             <Picker.Item label="Cafe Hopping" value="Cafe Hopping" />
             <Picker.Item label="Food" value="Food" />
@@ -235,6 +237,7 @@ export default function EditHangout() {
             <Picker.Item label="Social" value="Social" />
             <Picker.Item label="Sports" value="Sports" />
             <Picker.Item label="Study" value="Study" />
+            <Picker.Item label="Adventure" value="Adventure" />
             <Picker.Item label="Other" value="Other" />
           </Picker>
         </View>
@@ -251,8 +254,8 @@ export default function EditHangout() {
           <Text style={styles.submitBtnText}>SAVE CHANGES</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={{marginTop: 20, alignItems: 'center'}} onPress={handleDelete}>
-          <Text style={{color: '#FF4444', fontWeight: 'bold'}}>DELETE EVENT</Text>
+        <TouchableOpacity style={{ marginTop: 20, alignItems: 'center' }} onPress={handleDelete}>
+          <Text style={{ color: '#FF4444', fontWeight: 'bold' }}>DELETE EVENT</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
