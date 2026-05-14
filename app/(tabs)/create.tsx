@@ -9,6 +9,7 @@ import { styles } from "../../components/createHangoutStyles";
 import { useAuth } from "../../context/AuthContext";
 
 export default function CreateHangout() {
+  const today = new Date().toISOString().split('T')[0];
   const router = useRouter();
   const [selectedDay, setSelectedDay] = useState('2026-05-09');
   const [startTime, setStartTime] = useState('09:00');
@@ -51,7 +52,7 @@ export default function CreateHangout() {
 
   // Update the UI state so the user sees the message
   setInvalidMsg(error);
-
+    
     const [startHours, startMins] = startTime.split(':').map(Number);
     const [endHours, endMins] = endTime.split(':').map(Number);
     const totalStartMinutes = startHours * 60 + startMins;
@@ -167,10 +168,32 @@ export default function CreateHangout() {
 
         <Text style={styles.label}>SELECT DATE</Text>
         <Calendar
-          onDayPress={day => setSelectedDay(day.dateString)}
-          markedDates={{ [selectedDay]: { selected: true, selectedColor: '#1A3C22' } }}
-          theme={{ selectedDayBackgroundColor: '#1A3C22', todayTextColor: '#8C9C8E' }}
-          style={{ borderWidth: 2, borderColor: '#1A3C22', borderRadius: 12 }}
+            current={selectedDay} 
+            onDayPress={day => setSelectedDay(day.dateString)}
+            markedDates={{
+              [today]: {
+                selected: true,
+                selectedColor: '#518163',
+                selectedTextColor: '#000000',
+              },
+              [selectedDay]: { 
+                selected: true, 
+                disableTouchEvent: true, 
+                selectedColor: '#1A3C24', // Your dark circle color
+                selectedTextColor: '#FFFFFF' 
+              },
+              
+            }}
+            
+            theme={{
+              textSectionTitleColor: '#1A3C22',
+              dayTextColor: '#1A3C22',
+              monthTextColor: '#1A3C22',
+              arrowColor: '#1A3C22',
+              textDayFontWeight: '400',
+              textMonthFontWeight: 'bold',
+            }}
+          style={{ borderWidth: 2, borderColor: '#1A3C22', borderRadius: 12, backgroundColor: "white" }}
         />
 
         <View style={styles.row}>
