@@ -105,11 +105,11 @@ export default function EditHangout() {
         maxParticipants: parseInt(formData.maxParticipants),
         image: image
       });
-
-      Alert.alert("Success", "Hangout Updated!");
-      router.back();
+      alert( "Hangout Updated!");
+      router.replace(`/hangout/${id}`);
+      
     } catch (err) {
-      Alert.alert("Error", "Update failed");
+      alert(err);
     }
   };
 
@@ -206,8 +206,12 @@ export default function EditHangout() {
           >
             <Picker.Item label="Cafe Hopping" value="Cafe Hopping" />
             <Picker.Item label="Food" value="Food" />
+            <Picker.Item label="Movie" value="Movie" />
+            <Picker.Item label="Photography" value="Photography" />
             <Picker.Item label="Social" value="Social" />
             <Picker.Item label="Sports" value="Sports" />
+            <Picker.Item label="Study" value="Study" />
+            <Picker.Item label="Other" value="Other" />
           </Picker>
         </View>
 
