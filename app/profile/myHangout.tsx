@@ -44,7 +44,7 @@ export default function MyHangouts() {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#FAF9F1" }}>
             {/* Header */}
-            <View style={{ flexDirection: 'row', alignItems: 'center', padding: 20, paddingTop: 25 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', padding: 20, paddingTop: 20 }}>
                 <TouchableOpacity onPress={() => router.back()}>
                     <Ionicons name="arrow-back" size={28} color="#042917" />
                 </TouchableOpacity>
