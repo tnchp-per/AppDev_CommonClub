@@ -136,6 +136,11 @@ export default function Discovery() {
                           overflow: "hidden",
                           paddingBottom: 16,
                           marginBottom: 18,
+                          elevation: 2,
+                          shadowColor: "#000",
+                          shadowOffset: { width: 0, height: 2 },
+                          shadowOpacity: 0.1,
+                          shadowRadius: 4,
                         }
                       ]}
                     >
@@ -194,7 +199,7 @@ export default function Discovery() {
 const localStyles = StyleSheet.create({
   centeredHeader: { marginTop: 40, marginBottom: 20, alignItems: 'center' },
   pageTitle: { fontSize: 24, fontWeight: '800', color: '#042917', letterSpacing: 1, marginTop: 20 },
-  searchSection: { paddingHorizontal: 20, marginBottom: 20 },
+  searchSection: { paddingHorizontal: 20, marginBottom: 25 },
   searchWrapper: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#F0F0F0', borderRadius: 10, paddingHorizontal: 15, height: 50 },
   searchInput: { flex: 1, fontSize: 16, color: '#042917', },
   categoryRow: { height: 150, borderRadius: 20, overflow: 'hidden', marginBottom: 18 },
@@ -205,6 +210,5 @@ const localStyles = StyleSheet.create({
   gridContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 5,
   }
 });

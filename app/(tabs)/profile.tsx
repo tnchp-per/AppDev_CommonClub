@@ -129,20 +129,30 @@ export default function Profile() {
       </View>
 
       <View style={styles.section}>
-        {/* ปุ่ม Action ต่างๆ */}
         <Text style={styles.sectionTitle}>My Hangout</Text>
-        <TouchableOpacity style={styles.primaryBlockButton}>
+        <TouchableOpacity
+          style={styles.primaryBlockButton}
+          onPress={() => router.push('/profile/myHangout')}
+        >
           <Text style={styles.blockButtonText}>VIEW MY HANGOUT</Text>
         </TouchableOpacity>
+
+        {/* --- ปุ่ม My Request --- */}
         <Text style={styles.sectionTitle}>My Request</Text>
-        <TouchableOpacity style={styles.secondaryBlockButton}>
+        <TouchableOpacity
+          style={styles.secondaryBlockButton}
+        >
           <Text style={styles.blockButtonText}>VIEW MY REQUEST</Text>
         </TouchableOpacity>
 
+        {/* --- ปุ่ม Saved Activities --- */}
         <Text style={styles.sectionTitle}>Saved Activities</Text>
-        <TouchableOpacity style={styles.secondaryBlockButton}>
+        <TouchableOpacity
+          style={styles.secondaryBlockButton}
+        >
           <Text style={styles.blockButtonText}>VIEW MY SAVED ACTIVITIES</Text>
         </TouchableOpacity>
+
         <TouchableOpacity style={styles.logoutButton} onPress={logout}>
           <Text style={styles.logoutButtonText}>LOGOUT</Text>
         </TouchableOpacity>
