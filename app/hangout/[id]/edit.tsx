@@ -115,18 +115,24 @@ export default function EditHangout() {
     }
   };
 
-  const handleDelete = () => {
-    Alert.alert("Delete Event", "Are you sure?", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Delete", style: "destructive", onPress: async () => {
-          try {
-            await deleteHangout(id as string);
-            router.replace("/(tabs)");
-          } catch (err) { Alert.alert("Error", "Could not delete"); }
-        }
+  const handleDelete = async () => {
+    // 1. Confirm deletion (Works for both Web and Mobile)
+    const confirmed = window.confirm("Are you sure you want to delete this hangout? This will remove it for all participants.");
+    
+    if (!confirmed) return;
+
+    try {
+      await deleteHangout(id);
+      alert("Event deleted successfully.");
+      router.back(); // Go back to the previous page (Discover)
+      
+      if (typeof window !== 'undefined') {
+        window.location.href = "http://localhost:8081/";
       }
-    ]);
+    } catch (err) {
+      console.error(err);
+      alert("Error: Could not delete the event.");
+    }
   };
 
   if (loading) return <View style={{ flex: 1, justifyContent: 'center' }}><ActivityIndicator size="large" color="#1A3C22" /></View>;

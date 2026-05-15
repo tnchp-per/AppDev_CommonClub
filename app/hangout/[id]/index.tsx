@@ -1,4 +1,3 @@
-import { deleteHangout } from "@/api/hangoutApi";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
@@ -60,31 +59,7 @@ export default function HangoutDetails() {
     
   };
 
-  const handleDelete = async () => {
-    // 1. Confirm deletion (Works for both Web and Mobile)
-    const confirmed = window.confirm("Are you sure you want to delete this hangout? This will remove it for all participants.");
-    
-    if (!confirmed) return;
-
-    try {
-      // 2. Call your API function
-      await deleteHangout(hangout._id);
-
-      // 3. Success Feedback
-      alert("Event deleted successfully.");
-
-      // 4. Redirect and Force Refresh
-      // We go to discover, then force a reload to ensure the deleted item is gone
-      router.replace("http://localhost:8081/");
-      
-      if (typeof window !== 'undefined') {
-        window.location.href = "http://localhost:8081/";
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Error: Could not delete the event.");
-    }
-  };
+  
 
   const fetchHangoutDetails = async () => {
     try {
