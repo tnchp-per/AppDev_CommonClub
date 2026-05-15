@@ -94,7 +94,7 @@ export default function Profile() {
         {/* 4. ใส่ Link ไปหน้า Edit Profile */}
         <TouchableOpacity
           style={styles.editButton}
-          onPress={() => router.push('/(tabs)/editProfile')} // ใช้ push เท่านั้น!
+          onPress={() => router.push('/profile/editProfile')} // ใช้ push เท่านั้น!
         >
           <Text style={styles.editButtonText}>EDIT PROFILE</Text>
         </TouchableOpacity>

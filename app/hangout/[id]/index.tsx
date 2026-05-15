@@ -13,10 +13,14 @@ export default function HangoutDetails() {
   const { user } = useAuth(); // Get the logged-in user
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const isImageValid = hangout?.image && (hangout.image.startsWith('http') || hangout.image.startsWith('data:image'));
-  const imageSource = isImageValid 
+  const isHangoutImageValid = hangout?.image && (hangout.image.startsWith('http') || hangout.image.startsWith('data:image'));
+  const hangoutImageSource = isHangoutImageValid 
   ? { uri: hangout.image } 
   : require('../../../assets/images/logo.png'); // Local fallback
+  const isHostImageValid = hangout?.host?.image && (hangout.host.image.startsWith('http') || hangout.host.image.startsWith('data:image'));
+  const hostImageSource = isHostImageValid
+    ? { uri: hangout.host.image }
+    : require('../../../assets/images/default.png'); // Local fallback
 
   const BASE_URL = "http://localhost:5001/api/hangouts";
 
@@ -139,7 +143,7 @@ export default function HangoutDetails() {
       <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
         
         <View>
-          <Image source={imageSource} style={styles.image} />  
+          <Image source={hangoutImageSource} style={styles.image} />  
           {/* DYNAMIC TITLE */}
           <Text style={styles.mainTitle}>{hangout?.title}</Text>
         
@@ -179,7 +183,7 @@ export default function HangoutDetails() {
               />
             ) : (
               <Image 
-                source={imageSource} 
+                source={hostImageSource} 
                 style={styles.hostAvatar} 
               />
             )}
