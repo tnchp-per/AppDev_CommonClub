@@ -44,7 +44,6 @@ export default function ParticipantsList() {
             <View style={{ width: 24 }} /> 
         </View>
 
-        {/* 🟢 Main Content Container with Padding */}
         <ScrollView contentContainerStyle={{ padding: 20 }}>
             
             {/* Host Section */}

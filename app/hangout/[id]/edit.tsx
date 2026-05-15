@@ -124,7 +124,7 @@ export default function EditHangout() {
     try {
       await deleteHangout(id);
       alert("Event deleted successfully.");
-      router.back(); // Go back to the previous page (Discover)
+      router.dismiss(2); // Go back to the previous page (Discover)
       
       if (typeof window !== 'undefined') {
         window.location.href = "http://localhost:8081/";
@@ -176,11 +176,6 @@ export default function EditHangout() {
           current={selectedDay}
           onDayPress={day => setSelectedDay(day.dateString)}
           markedDates={{
-            [today]: {
-              selected: true,
-              selectedColor: '#518163',
-              selectedTextColor: '#000000',
-            },
             [selectedDay]: {
               selected: true,
               disableTouchEvent: true,
