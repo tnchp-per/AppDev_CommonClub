@@ -46,6 +46,9 @@ export default function Login() {
             style={styles.container}
         >
             <ScrollView contentContainerStyle={styles.scrollContent}>
+                <TouchableOpacity onPress={() => router.replace('/')} style={styles.homeButton}>
+                    < Ionicons name="home" size={28} color="#1A3C22" />
+                </TouchableOpacity>
                 {/* Logo / Illustration Area */}
                 <View style={styles.headerArea}>
                     <Image
