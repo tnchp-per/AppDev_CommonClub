@@ -130,6 +130,7 @@ export default function Discovery() {
                         hangoutCardStyle.card,
                         {
                           width: 280,
+                          height: 265,
                           backgroundColor: "#FFFFFF",
                           borderRadius: 18,
                           marginRight: 18,

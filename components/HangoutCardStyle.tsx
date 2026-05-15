@@ -3,11 +3,13 @@ import { StyleSheet } from "react-native";
 const hangoutCardStyle = StyleSheet.create({
   card: {
     width: 280,
+    height: 265,
     backgroundColor: "#FFFFFF",
     borderRadius: 18,
     marginRight: 18,
     overflow: "hidden",
     paddingBottom: 16,
+    marginBottom: 18,
     elevation: 2,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -37,7 +39,8 @@ const hangoutCardStyle = StyleSheet.create({
     fontSize: 15,
     color: "#666666",
     marginBottom: 4,
-    marginLeft: 12
+    marginLeft: 12,
+    lineHeight: 18,
   },
 
   time: {
