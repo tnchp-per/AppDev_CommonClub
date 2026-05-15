@@ -3,12 +3,34 @@ import { useFocusEffect, useRouter } from "expo-router";
 import React, { useCallback, useState } from "react";
 import { ActivityIndicator, Dimensions, Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { fetchAllHangouts } from "../../api/hangoutApi";
+import hangoutCardStyle from "../../components/HangoutCardStyle";
 
-// ✅ คำนวณความกว้างเพื่อให้ได้ 3 ช่องแบบเป๊ะๆ โดยอิงจากหน้าจอ
 const { width: screenWidth } = Dimensions.get('window');
 const horizontalPadding = 20;
-const gap = 10; // ระยะห่างระหว่างการ์ด
-const gridCardWidth = (screenWidth - (horizontalPadding * 2) - (gap * 2)) / 3.01;
+const gap = 10;
+const formatHangoutDate = (dateString: string) => {
+  if (!dateString) return "Coming soon";
+
+  const date = new Date(dateString);
+  const now = new Date();
+
+  const diffTime = date.getTime() - now.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  const timeStr = `${hours}:${minutes}`;
+
+  if (diffDays > 0 && diffDays <= 7) {
+    return `${diffDays} days from now at ${timeStr}`;
+  }
+
+  return date.toLocaleDateString('en-GB', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+  }) + ` at ${timeStr}`;
+};
 
 export default function Discovery() {
   const router = useRouter();
@@ -18,11 +40,11 @@ export default function Discovery() {
 
   const categories = [
     { id: "1", title: "WORKOUT & SPORTS", values: ["Sports", "Workout", "Gym"], image: require("../../assets/images/workout.jpg") },
-    { id: "2", title: "STUDY SESSION", values: ["Study", "Education", "Workshop"], image: require("../../assets/images/work.jpg") },
+    { id: "2", title: "STUDY SESSION", values: ["Study", "Education", "Workshop"], image: require("../../assets/images/studysess.jpg") },
     { id: "3", title: "FOOD & CAFE HOPPING", values: ["Food", "Cafe Hopping", "Brunch", "Cafe"], image: require("../../assets/images/cafe2.jpg") },
-    { id: "4", title: "OUTDOOR & ADVENTURE", values: ["Outdoor", "Photography", "Travel", "Waterpark", "Adventure"], image: require("../../assets/images/work.jpg") },
-    { id: "5", title: "ENTERTAINMENT", values: ["Movie", "Gaming", "Music", "Social", "Entertainment"], image: require("../../assets/images/work.jpg") },
-    { id: "6", title: "OTHERS", values: ["Other", "Others"], image: require("../../assets/images/logo.png") },
+    { id: "4", title: "OUTDOOR & ADVENTURE", values: ["Outdoor", "Photography", "Travel", "Waterpark", "Adventure"], image: require("../../assets/images/adv.jpg") },
+    { id: "5", title: "ENTERTAINMENT", values: ["Movie", "Gaming", "Music", "Social", "Entertainment"], image: require("../../assets/images/ent.jpg") },
+    { id: "6", title: "OTHERS", values: ["Other", "Others"], image: require("../../assets/images/others.jpg") },
   ];
 
   useFocusEffect(
@@ -49,10 +71,7 @@ export default function Discovery() {
     if (selectedCategory) {
       return selectedCategory.values.some(v => v.toLowerCase() === item.category?.toLowerCase());
     }
-    return (
-      item.title?.toLowerCase().includes(query) ||
-      item.category?.toLowerCase().includes(query)
-    );
+    return item.title?.toLowerCase().includes(query) || item.category?.toLowerCase().includes(query);
   });
 
   return (
@@ -73,7 +92,7 @@ export default function Discovery() {
             {searchQuery === "" && <Ionicons name="search" size={20} color="#042917" style={{ marginRight: 10 }} />}
             <TextInput
               style={localStyles.searchInput}
-              placeholder="Search categories or events..."
+              placeholder="Search hangouts..."
               placeholderTextColor="#8E8E8E"
               value={searchQuery}
               onChangeText={setSearchQuery}
@@ -86,7 +105,6 @@ export default function Discovery() {
           {isLoading ? (
             <ActivityIndicator size="large" color="#FF6B6B" style={{ marginTop: 50 }} />
           ) : searchQuery === "" ? (
-            /* --- หน้าแรก: Categories แถวยาวแบบเดิมที่คุณต้องการ --- */
             categories.map((cat) => (
               <TouchableOpacity key={cat.id} style={localStyles.categoryRow} onPress={() => setSearchQuery(cat.title)}>
                 <Image source={cat.image} style={localStyles.catImage} />
@@ -96,38 +114,74 @@ export default function Discovery() {
               </TouchableOpacity>
             ))
           ) : (
-            /* --- หน้าผลลัพธ์: Grid แถวละ 3 สไตล์เดียวกับหน้า Home --- */
-            <View>
+            <View style={{ padding: 16 }}>
               <Text style={localStyles.resultsText}>{filteredEvents.length} hangouts found</Text>
               <View style={localStyles.gridContainer}>
-                {filteredEvents.length > 0 ? (
-                  filteredEvents.map((item, index) => (
+                {filteredEvents.map((item, index) => {
+                  const imageSource = (typeof item.image === 'string' && item.image.startsWith('data:image'))
+                    ? { uri: item.image }
+                    : require("../../assets/images/logo.png");
+
+                  return (
                     <TouchableOpacity
                       key={item._id}
-                      style={[
-                        localStyles.gridCard,
-                        (index + 1) % 3 !== 0 && { marginRight: gap } // เว้นช่องว่าง ยกเว้นใบที่ 3 ของแถว
-                      ]}
                       onPress={() => router.push(`/hangout/${item._id}`)}
+                      style={[
+                        hangoutCardStyle.card,
+                        {
+                          width: 280,
+                          backgroundColor: "#FFFFFF",
+                          borderRadius: 18,
+                          marginRight: 18,
+                          overflow: "hidden",
+                          paddingBottom: 16,
+                          marginBottom: 18,
+                        }
+                      ]}
                     >
                       <Image
-                        source={item.image ? { uri: item.image } : require("../../assets/images/logo.png")}
-                        style={localStyles.gridImage}
+                        source={imageSource}
+                        style={[
+                          hangoutCardStyle.image,
+                          {
+                            width: "100%",
+                            height: 160,
+                            backgroundColor: '#f0f0f0',
+                          }
+                        ]}
+                        resizeMode="cover"
                       />
-                      <View style={localStyles.gridContent}>
-                        <Text style={localStyles.gridTitle} numberOfLines={1}>{item.title}</Text>
-                        <Text style={localStyles.gridLocation} numberOfLines={1}>{item.location}</Text>
-                        <Text style={localStyles.gridTime} numberOfLines={1}>
-                          {item.date || 'Coming soon'}
-                        </Text>
-                      </View>
+
+                      {/* ✅ ใช้ Style ต้นฉบับเป๊ะๆ แต่ลดขนาดฟอนต์ให้เข้ากับหน้าจอ */}
+                      <Text style={[hangoutCardStyle.title, {
+                        fontSize: 20,
+                        fontWeight: "700",
+                        //color: "#1A3C22",
+                        marginLeft: 12,
+                        marginBottom: 6,
+                        lineHeight: 24,
+                      }]} numberOfLines={1}>
+                        {item.title}
+                      </Text>
+                      <Text style={[hangoutCardStyle.location, {
+                        fontSize: 15,
+                        color: "#666666",
+                        marginBottom: 4,
+                        marginLeft: 12,
+                        lineHeight: 18,
+                      }]} numberOfLines={1}>
+                        {item.location}
+                      </Text>
+                      <Text style={[hangoutCardStyle.time, {
+                        fontSize: 15,
+                        color: "#666666",
+                        marginLeft: 12
+                      }]} numberOfLines={1}>
+                        {formatHangoutDate(item.date)}
+                      </Text>
                     </TouchableOpacity>
-                  ))
-                ) : (
-                  <View style={{ width: '100%', alignItems: 'center', marginTop: 50 }}>
-                    <Text style={{ color: '#999' }}>No results found</Text>
-                  </View>
-                )}
+                  );
+                })}
               </View>
             </View>
           )}
@@ -138,59 +192,19 @@ export default function Discovery() {
 }
 
 const localStyles = StyleSheet.create({
-  // ส่วนหัวและช่องค้นหา (สไตล์เดิม)
   centeredHeader: { marginTop: 40, marginBottom: 20, alignItems: 'center' },
   pageTitle: { fontSize: 24, fontWeight: '800', color: '#042917', letterSpacing: 1, marginTop: 20 },
-  searchSection: { paddingHorizontal: 20, marginBottom: 25 },
+  searchSection: { paddingHorizontal: 20, marginBottom: 20 },
   searchWrapper: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#F0F0F0', borderRadius: 10, paddingHorizontal: 15, height: 50 },
-  searchInput: { flex: 1, fontSize: 16, color: '#042917' },
-
-  // สไตล์หน้า Categories (แถวยาว สไตล์เดิม)
-  categoryRow: { height: 130, borderRadius: 20, overflow: 'hidden', marginBottom: 18 },
+  searchInput: { flex: 1, fontSize: 16, color: '#042917', },
+  categoryRow: { height: 150, borderRadius: 20, overflow: 'hidden', marginBottom: 18 },
   catImage: { width: '100%', height: '100%', position: 'absolute' },
   overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.3)', justifyContent: 'center', alignItems: 'center' },
-  catTitle: { color: '#FFF', fontSize: 20, fontWeight: 'bold', textAlign: 'center' },
+  catTitle: { color: '#FFF', fontSize: 20, fontWeight: 'bold', textAlign: 'center', letterSpacing: 1 },
   resultsText: { marginBottom: 15, color: '#666', fontSize: 14, fontWeight: '600' },
-
-  // ✅ สไตล์ Grid 3 ช่อง (ดึงดีไซน์จากหน้า Home)
   gridContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'flex-start',
-  },
-  gridCard: {
-    width: gridCardWidth,
-    backgroundColor: '#FFF',
-    borderRadius: 15, // มนสวยเหมือนหน้า Home
-    marginBottom: 15,
-    overflow: 'hidden',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-  },
-  gridImage: {
-    width: '100%',
-    height: gridCardWidth, // รูปทรงจัตุรัสเพื่อให้เรียงกันสวย
-    backgroundColor: '#EEE',
-  },
-  gridContent: {
-    padding: 8,
-  },
-  gridTitle: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#000',
-  },
-  gridLocation: {
-    fontSize: 10,
-    color: '#666',
-    marginTop: 2,
-  },
-  gridTime: {
-    fontSize: 9,
-    color: '#999',
-    marginTop: 2,
-  },
+    gap: 5,
+  }
 });
