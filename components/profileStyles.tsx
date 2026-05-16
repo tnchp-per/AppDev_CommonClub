@@ -7,14 +7,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
     },
     topHeader: {
-        marginTop: 60,
+        marginTop: 20,
         marginBottom: 20,
         alignItems: "center",
     },
     pageTitle: {
-        fontSize: 24,
-        fontWeight: '700',
-        color: '#042917',
+        fontSize: 24, fontWeight: 'bold', color: '#042917', letterSpacing: 1, marginTop: 20, marginBottom:15 ,
     },
     header: {
         alignItems: 'center',

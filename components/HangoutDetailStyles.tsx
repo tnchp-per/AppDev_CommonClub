@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   backButton: {
     position: 'absolute',
     left: 20,
-    top: Platform.OS === 'ios' ? 10 : 16 ,
+    top: Platform.OS === 'ios' ? 15 : 16 ,
     zIndex: 10,
   },
   headerTitle: {

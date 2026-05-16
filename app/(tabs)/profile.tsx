@@ -79,7 +79,7 @@ export default function Profile() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.topHeader}>
-        <Text style={styles.pageTitle}>USER</Text>
+        <Text style={styles.pageTitle}>PROFILE</Text>
       </View>
 
       <View style={styles.header}>

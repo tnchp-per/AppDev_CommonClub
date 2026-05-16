@@ -2,19 +2,19 @@ import { Platform, StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: { 
-    flex: 1, 
-    backgroundColor: "#FAF9F1", 
-    padding: 25 
+    flex: 1,
+    backgroundColor: "#FAF9F1",
+    paddingHorizontal: 20,
   },
   header: { 
-    fontSize: 28, 
-    fontWeight: "400", 
+    fontSize: 24, 
+    fontWeight: "bold", 
     textAlign: "center", 
-    marginTop: 50, 
+    marginTop: 40, 
     marginBottom: 30, 
-    letterSpacing: 0.5, 
+    letterSpacing: 1, 
     color: '#1A3C22',
-    fontFamily: "Georgia",
+    //fontFamily: "Georgia",
   },
   inputGroup: { gap: 12 },
   label: { 

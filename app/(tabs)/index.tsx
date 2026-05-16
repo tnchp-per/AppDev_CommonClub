@@ -78,10 +78,10 @@ export default function HomeScreen() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#FDFCF0" }}>
+    <SafeAreaView style={{ backgroundColor: "#FDFCF0" }}>
       <ScrollView 
         contentContainerStyle={[styles.container, { paddingBottom: 40 }]}
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator={true}
         refreshControl={
           <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
         }

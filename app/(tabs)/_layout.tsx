@@ -11,7 +11,7 @@ function WebSidebar() {
       <View
         style={{
           width: 280,
-          backgroundColor: "white",
+          backgroundColor: "#FAF9F1",
           paddingTop: 40,
           paddingHorizontal: 20,
           borderRightWidth: 1,
@@ -20,7 +20,7 @@ function WebSidebar() {
         }}
       >
         <Image
-          source={require("../../assets/images/logo.png")}
+          source={require("../../assets/images/logo_transparent.png")}
           style={{ width: 50, height: 50, marginBottom: 10 }}
         />
         <Text style={{ fontSize: 30, fontWeight: "700", marginBottom: 40 }}>

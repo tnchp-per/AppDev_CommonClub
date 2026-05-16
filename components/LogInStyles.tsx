@@ -17,7 +17,7 @@ export default StyleSheet.create({
     homeButton: {
         position: 'absolute',
         left: 20,
-        top: Platform.OS === 'ios' ? 10 : 18 ,
+        top: Platform.OS === 'ios' ? 50 : 18 ,
         zIndex: 10,
     },
     welcomeText: {

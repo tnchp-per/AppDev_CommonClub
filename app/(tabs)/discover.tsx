@@ -200,8 +200,8 @@ export default function Discovery() {
 }
 
 const localStyles = StyleSheet.create({
-  centeredHeader: { marginTop: 40, marginBottom: 20, alignItems: 'center' },
-  pageTitle: { fontSize: 24, fontWeight: '800', color: '#042917', letterSpacing: 1, marginTop: 20 },
+  centeredHeader: { marginTop: 20, marginBottom: 20, alignItems: 'center' },
+  pageTitle: { fontSize: 24, fontWeight: 'bold', color: '#042917', letterSpacing: 1, marginTop: 20 },
   searchSection: { paddingHorizontal: 20, marginBottom: 25 },
   searchWrapper: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#F0F0F0', borderRadius: 10, paddingHorizontal: 15, height: 50 },
   searchInput: { flex: 1, fontSize: 16, color: '#042917', },

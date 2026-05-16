@@ -102,11 +102,11 @@ const styles = StyleSheet.create({
     backButton: {
         position: 'absolute',
         left: 20,
-        top: Platform.OS === 'ios' ? 10 : 16 ,
+        top: Platform.OS === 'ios' ? 45 : 16 ,
         zIndex: 10,
     },
     topLabel: { fontSize: 18, fontWeight: 'bold', color: '#042917', marginBottom: 15 },
-    avatar: { width: 120, height: 120, borderRadius: 60, borderWidth: 1, borderColor: '#A5A198' },
+    avatar: { width: 120, height: 120, marginTop:15,borderRadius: 60, borderWidth: 1, borderColor: '#A5A198' },
     name: { fontSize: 22, fontWeight: '900', color: '#042917', marginTop: 15 },
     username: { fontSize: 14, color: '#4D7260', marginBottom: 5 },
     bio: { fontSize: 14, color: '#042917', opacity: 0.8, marginTop: 5 },
