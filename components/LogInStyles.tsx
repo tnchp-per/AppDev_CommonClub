@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 
 export default StyleSheet.create({
     container: {
@@ -13,6 +13,12 @@ export default StyleSheet.create({
     headerArea: {
         alignItems: "center",
         marginBottom: 40,
+    },
+    homeButton: {
+        position: 'absolute',
+        left: 20,
+        top: Platform.OS === 'ios' ? 10 : 18 ,
+        zIndex: 10,
     },
     welcomeText: {
         fontSize: 26,

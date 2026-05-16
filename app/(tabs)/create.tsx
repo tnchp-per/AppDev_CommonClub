@@ -9,9 +9,9 @@ import { styles } from "../../components/createHangoutStyles";
 import { useAuth } from "../../context/AuthContext";
 
 export default function CreateHangout() {
-  const today = new Date().toISOString().split('T')[0];
+  const getToday = () => new Date().toLocaleDateString('en-CA');  
   const router = useRouter();
-  const [selectedDay, setSelectedDay] = useState(today);
+  const [selectedDay, setSelectedDay] = useState(getToday());
   const [startTime, setStartTime] = useState('09:00');
   const [endTime, setEndTime] = useState('10:00');
   const [image, setImage] = useState<string | null>(null);
@@ -171,20 +171,13 @@ export default function CreateHangout() {
           current={selectedDay}
           onDayPress={day => setSelectedDay(day.dateString)}
           markedDates={{
-            [today]: {
-              selected: true,
-              selectedColor: '#518163',
-              selectedTextColor: '#000000',
-            },
             [selectedDay]: {
               selected: true,
               disableTouchEvent: true,
               selectedColor: '#1A3C24', // Your dark circle color
               selectedTextColor: '#FFFFFF'
             },
-
           }}
-
           theme={{
             textSectionTitleColor: '#1A3C22',
             dayTextColor: '#1A3C22',
