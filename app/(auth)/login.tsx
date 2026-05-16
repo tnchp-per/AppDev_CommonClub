@@ -32,7 +32,6 @@ export default function Login() {
         try {
             setLoading(true);
             await login(email, password);
-            // เมื่อสำเร็จ ปกติ Context จะเปลี่ยนสถานะ user และนำทางไปหน้าหลักอัตโนมัติ
         } catch (error: any) {
             alert(error.message || "Login failed. Please try again.");
         } finally {
@@ -121,7 +120,7 @@ export default function Login() {
 
                     <View style={styles.footer}>
                         <Text style={styles.footerText}>Don't have an account? </Text>
-                        <TouchableOpacity onPress={() => router.push("/(auth)/signup")}> {/* ต้องมีบรรทัดนี้ */}
+                        <TouchableOpacity onPress={() => router.push("/(auth)/signup")}> 
                             <Text style={styles.signupText}>SIGN UP</Text>
                         </TouchableOpacity>
                     </View>

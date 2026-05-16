@@ -1,9 +1,5 @@
 const BASE_URL = "http://localhost:5001/api";
 
-//const BASE_URL = "http://192.168.1.56:5001/api";
-
-
-
 export const fetchAllHangouts = async () => {
   try {
     const response = await fetch(`${BASE_URL}/hangouts`);

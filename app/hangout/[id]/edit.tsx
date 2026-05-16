@@ -9,8 +9,8 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { styles } from "../../../components/editHangoutStyles";
-// Reuse your styles for consistency
-// Remember to use your Mac IP (e.g., 192.168.1.XX) or 10.0.2.2 for Android!
+
+
 const BASE_URL = "http://localhost:5001/api";
 
 export default function EditHangout() {

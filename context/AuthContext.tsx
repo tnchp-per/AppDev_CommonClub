@@ -3,13 +3,13 @@ import axios from 'axios';
 import { router } from 'expo-router';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-// เปลี่ยน localhost เป็น IP เครื่องคอมคุณถ้าใช้เครื่องจริง/Emulator
+
 const BASE_URL = "http://localhost:5001/api/users";
 
 interface User {
   id: string;
   name: string;
-  username: string; // ✅ เพิ่มบรรทัดนี้
+  username: string; 
   email: string;
   image?: string;
   bio?: string;
@@ -49,11 +49,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const response = await axios.post(`${BASE_URL}/login`, { email, password });
+      const cleanEmail = email.trim();
+      const cleanPassword = password.trim();
+
+      const response = await axios.post(`${BASE_URL}/login`, { 
+        email: cleanEmail, 
+        password: cleanPassword 
+      });
+      
       const data = response.data;
 
       if (data) {
-        // อย่าลืมแปลง _id เป็น id เพื่อให้หน้า Profile ไม่พัง
         const userToSave = { ...data, id: data._id || data.id };
         await AsyncStorage.setItem('user', JSON.stringify(userToSave));
         setUser(userToSave);
@@ -83,14 +89,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const response = await fetch(`${BASE_URL}/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // ✅ ส่ง username ไปใน body ด้วย
         body: JSON.stringify({ name, username, email, password }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        // ✅ จัดรูปแบบข้อมูลให้ตรงกับ Interface ก่อนเซ็ตลง State
         const userToSave = {
           ...data,
           id: data._id || data.id,
