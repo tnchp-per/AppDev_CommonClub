@@ -21,21 +21,13 @@ export default function EditProfile() {
     const [interests, setInterests] = useState<string[]>(user?.interests || []);
     const DEFAULT_AVATAR = require('../../assets/images/default.png');
     const [loading, setLoading] = useState(false);
-    const [image, setImage] = useState<string | null>(null);
-
-    const getImageSource = () => {
-        if (image) {
-            if (image.startsWith('data:image') || image.startsWith('file') || image.startsWith('http')) {
-                return { uri: image };
-            }
-        }
-        return require("../../assets/images/default.png");
-    };
+    const [image, setImage] = useState(user?.image || null);
 
     const pickImage = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
         if (status !== 'granted') {
-            alert('Sorry, we need camera roll permissions!');
+            alert('Sorry, we need camera roll permissions to make this work!');
             return;
         }
 
@@ -43,13 +35,13 @@ export default function EditProfile() {
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [1, 1],
-            quality: 0.7,
-            base64: true,
+            quality: 0.5, // ลดขนาดไฟล์ลงหน่อยเพื่อให้ส่ง Base64 ไวขึ้น
+            base64: true, // 👈 ต้องเปิดตัวนี้
         });
 
         if (!result.canceled) {
-            const base64Image = `data:image/jpeg;base64,${result.assets[0].base64}`;
-            setImage(base64Image);
+            // เก็บเป็นรูป Base64 เพื่อให้บันทึกเข้า DB ได้จริง
+            setImage(`data:image/jpeg;base64,${result.assets[0].base64}`);
         }
     };
 
@@ -61,6 +53,8 @@ export default function EditProfile() {
 
                 const res = await axios.get(`${BASE_URL}/${userId}`);
                 const data = res.data;
+
+                //console.log("Fresh data from server:", data);
 
                 if (data) {
                     setName(data.name || '');
@@ -99,12 +93,13 @@ export default function EditProfile() {
                 username,
                 bio,
                 interests,
-                image
+                image // 👈 เพิ่มตัวนี้เข้าไปใน body
             });
+
+            // อัปเดต Context ด้วย
             setUser({ ...user, name, username, bio, interests, image });
             alert("Update successful!");
             router.replace("/(tabs)/profile");
-
         } catch (error) {
             console.error(error);
             alert("Failed to update profile");
@@ -113,6 +108,16 @@ export default function EditProfile() {
         }
     };
 
+    // 1. เพิ่มฟังก์ชันนี้ก่อนถึงส่วน return
+    const renderImage = () => {
+        // ถ้า image ไม่มีค่า, หรือเป็นค่าว่าง, หรือเป็นชื่อไฟล์ default.png
+        if (!image || image === "" || image === "default.png") {
+            return require("../../assets/images/default.png");
+        }
+
+        // ถ้าเป็น Base64 หรือ URI จากเครื่อง
+        return { uri: image };
+    };
     return (
         <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 50 }}>
             {/* Header */}
@@ -123,15 +128,20 @@ export default function EditProfile() {
             {/* Avatar Section */}
             <View style={{ alignItems: 'center', marginVertical: 20 }}>
                 <Image
-                    source={getImageSource()}
+                    source={
+                        // ถ้า image เป็น null, ค่าว่าง หรือ "default.png" ให้ใช้รูปในเครื่อง
+                        (!image || image === "" || image === "default.png")
+                            ? require("../../assets/images/default.png")
+                            : { uri: image }
+                    }
                     style={{
                         width: 100,
                         height: 100,
                         borderRadius: 50,
+                        borderWidth: 1,           // 👈 เพิ่มเส้นขอบ
+                        borderColor: '#A5A198',   // 👈 สีที่คุณต้องการ
                         backgroundColor: '#ffffff',
-                        borderWidth: 1,
-                        borderColor: '#A5A198',
-                        marginBottom: 8
+                        marginBottom: 3    // สีพื้นหลังกันรูปโปร่งใสแล้วดูแปลก
                     }}
                 />
 
