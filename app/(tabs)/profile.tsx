@@ -133,7 +133,7 @@ export default function Profile() {
         <Text style={styles.sectionTitle}>Manage My Events</Text>
         <TouchableOpacity
           style={styles.primaryBlockButton}
-          onPress={() => router.push('/profile/myCreatedHangouts')}
+          onPress={() => router.push('/profile/myCreatedHangout')}
         >
           <Text style={styles.blockButtonText}>MY CREATED HANGOUTS</Text>
         </TouchableOpacity>

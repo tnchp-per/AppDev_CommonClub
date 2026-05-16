@@ -103,7 +103,9 @@ export default function Discovery() {
 
         <View style={{ paddingHorizontal: horizontalPadding }}>
           {isLoading ? (
-            <ActivityIndicator size="large" color="#FF6B6B" style={{ marginTop: 50 }} />
+            <View style={{ flex: 1, marginTop: 200, alignItems: 'center' }}>
+              <ActivityIndicator size="large" color="#FF6B6B" />
+            </View>
           ) : searchQuery === "" ? (
             categories.map((cat) => (
               <TouchableOpacity key={cat.id} style={localStyles.categoryRow} onPress={() => setSearchQuery(cat.title)}>

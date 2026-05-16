@@ -32,7 +32,8 @@ const hangoutCardStyle = StyleSheet.create({
     //color: "#1A3C22",
     marginTop: 16,
     marginLeft: 12,
-    marginBottom: 6
+    marginBottom: 6,
+    lineHeight: 24,
   },
 
   location: {
