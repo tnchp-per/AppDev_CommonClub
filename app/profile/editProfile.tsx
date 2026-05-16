@@ -21,26 +21,35 @@ export default function EditProfile() {
     const [interests, setInterests] = useState<string[]>(user?.interests || []);
     const DEFAULT_AVATAR = require('../../assets/images/default.png');
     const [loading, setLoading] = useState(false);
-    const [image, setImage] = useState(user?.image || null);
+    const [image, setImage] = useState<string | null>(null);
+
+    const getImageSource = () => {
+        if (image) {
+            if (image.startsWith('data:image') || image.startsWith('file') || image.startsWith('http')) {
+                return { uri: image };
+            }
+        }
+        return require("../../assets/images/default.png");
+    };
 
     const pickImage = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
         if (status !== 'granted') {
-            alert('Sorry, we need camera roll permissions to make this work!');
+            alert('Sorry, we need camera roll permissions!');
             return;
         }
 
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true, // ให้ User ครอบตัดรูปได้ (Crop)
-            aspect: [1, 1],     // บังคับเป็นรูปจัตุรัส
-            quality: 1,         // ความคมชัดสูงสุด
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 0.7,
+            base64: true,
         });
 
         if (!result.canceled) {
-            // เก็บ URI ของรูปไว้ใน State เพื่อแสดงผลและเตรียมส่งไป Backend
-            setImage(result.assets[0].uri);
+            const base64Image = `data:image/jpeg;base64,${result.assets[0].base64}`;
+            setImage(base64Image);
         }
     };
 
@@ -52,8 +61,6 @@ export default function EditProfile() {
 
                 const res = await axios.get(`${BASE_URL}/${userId}`);
                 const data = res.data;
-
-                //console.log("Fresh data from server:", data);
 
                 if (data) {
                     setName(data.name || '');
@@ -85,18 +92,21 @@ export default function EditProfile() {
     const handleSave = async () => {
         try {
             setLoading(true);
-            const response = await axios.put(`${BASE_URL}/${user.Id}`, {
+            const userId = user?._id || user?.id;
+
+            const response = await axios.put(`${BASE_URL}/${userId}`, {
                 name,
                 username,
                 bio,
-                interests
+                interests,
+                image
             });
-
-            setUser({ ...user, name, username, bio, interests });
+            setUser({ ...user, name, username, bio, interests, image });
             alert("Update successful!");
             router.replace("/(tabs)/profile");
 
         } catch (error) {
+            console.error(error);
             alert("Failed to update profile");
         } finally {
             setLoading(false);
@@ -113,8 +123,16 @@ export default function EditProfile() {
             {/* Avatar Section */}
             <View style={{ alignItems: 'center', marginVertical: 20 }}>
                 <Image
-                    source={image ? { uri: image } : require("../../assets/images/default.png")}
-                    style={{ width: 100, height: 100, borderRadius: 50 }}
+                    source={getImageSource()}
+                    style={{
+                        width: 100,
+                        height: 100,
+                        borderRadius: 50,
+                        backgroundColor: '#ffffff',
+                        borderWidth: 1,
+                        borderColor: '#A5A198',
+                        marginBottom: 8
+                    }}
                 />
 
                 <TouchableOpacity onPress={pickImage} style={{ marginTop: 10 }}>
