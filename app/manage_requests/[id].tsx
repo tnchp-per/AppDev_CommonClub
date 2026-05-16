@@ -15,6 +15,7 @@ export default function ManageRequests() {
   const isHost = hangout?.host?.toString() === user?._id?.toString();
 
 
+  //const BASE_URL = "http://192.168.1.61:5001/api/hangouts";
   const BASE_URL = "http://localhost:5001/api/hangouts";
 
   useEffect(() => {

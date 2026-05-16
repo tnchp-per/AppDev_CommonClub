@@ -1,71 +1,48 @@
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 
-export default StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#FAF9F1",
-        paddingHorizontal: 20,
+export const style = StyleSheet.create({
+  centeredHeader: { 
+    marginBottom: 20, 
+    alignItems: 'center' 
+},
+  pageTitle: { 
+    fontSize: 24, 
+    fontWeight: 'bold', 
+    color: '#042917', 
+    letterSpacing: 1, 
+    marginTop: Platform.OS === 'ios' ? 20: 30, 
+},
+  searchSection: { 
+    paddingHorizontal: 20,
+     marginBottom: 25 
     },
-    topHeader: {
-        //marginTop: 10,
-        marginBottom: 20,
-        alignItems: "center",
-    },
-    pageTitle: {
-        fontSize: 24,
-        fontWeight: "bold",
-        color: "#042917",
-    },
-    searchContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        backgroundColor: "#FFFFFF",
-        borderRadius: 10,
-        paddingHorizontal: 15,
-        height: 45,
-        marginBottom: 25,
-        borderWidth: 1,
-        borderColor: "#E0E0E0",
-    },
-    searchIcon: {
-        marginRight: 10,
-    },
-    searchInput: {
-        flex: 1,
-        fontSize: 16,
-        color: "#042917",
-    },
-    categoriesContainer: {
-        flexDirection: "column",
-        gap: 20,
-    },
-    categoryCard: {
-        height: 160,
-        borderRadius: 20,
-        overflow: "hidden",
-        elevation: 3,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-    },
-    categoryImage: {
-        width: "100%",
-        height: "100%",
-    },
-    categoryOverlay: {
-        ...StyleSheet.absoluteFillObject,
-        backgroundColor: "rgba(0, 0, 0, 0.25)", // ปรับให้จางลงเพื่อให้เห็นรูปชัดขึ้นเหมือนในแบบ
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    categoryText: {
-        color: "#FFFFFF",
-        fontSize: 20,
-        fontWeight: "bold",
-        letterSpacing: 1,
-        textShadowColor: 'rgba(0, 0, 0, 0.5)',
-        textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 3,
-    },
+  searchWrapper: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    backgroundColor: '#F0F0F0', 
+    borderRadius: 10, 
+    paddingHorizontal: 15, 
+    height: 50 
+},
+  searchInput: { 
+    flex: 1, 
+    fontSize: 16, 
+    color: '#042917', 
+},
+  categoryRow: { 
+    height: 150, 
+    borderRadius: 20, 
+    overflow: 'hidden', 
+    marginBottom: 18 
+},
+  catImage: { width: '100%', height: '100%', position: 'absolute' },
+  overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.3)', justifyContent: 'center', alignItems: 'center' },
+  catTitle: { color: '#FFF', fontSize: 20, fontWeight: 'bold', textAlign: 'center', letterSpacing: 1 },
+  resultsText: { marginBottom: 15, color: '#666', fontSize: 14, fontWeight: '600' },
+  gridContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  }
 });
+
+export default style;

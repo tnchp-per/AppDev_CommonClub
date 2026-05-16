@@ -6,6 +6,9 @@ import React, { useEffect, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
 
+//const BASE_URL = 'http://192.168.1.61:5001/api/users'
+const BASE_URL = 'http://localhost:5001/api/users'
+
 export default function EditProfile() {
     const { user, setUser } = useAuth();
     const router = useRouter();
@@ -47,10 +50,10 @@ export default function EditProfile() {
                 const userId = user?._id || user?.id;
                 if (!userId) return;
 
-                const res = await axios.get(`http://localhost:5001/api/users/${userId}`);
+                const res = await axios.get(`${BASE_URL}/${userId}`);
                 const data = res.data;
 
-                console.log("Fresh data from server:", data);
+                //console.log("Fresh data from server:", data);
 
                 if (data) {
                     setName(data.name || '');
@@ -82,7 +85,7 @@ export default function EditProfile() {
     const handleSave = async () => {
         try {
             setLoading(true);
-            const response = await axios.put(`http://localhost:5001/api/users/${user.id}`, {
+            const response = await axios.put(`${BASE_URL}/${user.Id}`, {
                 name,
                 username,
                 bio,

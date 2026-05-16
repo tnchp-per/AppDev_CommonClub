@@ -5,8 +5,9 @@ import React, { useEffect, useState } from "react";
 import { FlatList, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import style from "../../../components/manageRequestStyles"; // Adjust path as needed
 
-//const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
-const BASE_URL = "http://localhost:5001/api"; // Use your Mac's IP or
+
+//const BASE_URL = "http://192.168.1.61:5001/api";
+const BASE_URL = "http://localhost:5001/api"; 
 
 export default function ParticipantsList() {
   const { id } = useLocalSearchParams();

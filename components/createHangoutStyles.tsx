@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
     fontSize: 24, 
     fontWeight: "bold", 
     textAlign: "center", 
-    marginTop: 40, 
+    marginTop: Platform.OS === 'ios' ? 80: 30,
     marginBottom: 30, 
     letterSpacing: 1, 
     color: '#1A3C22',

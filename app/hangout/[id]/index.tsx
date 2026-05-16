@@ -21,8 +21,8 @@ export default function HangoutDetails() {
     ? { uri: hangout.host.image }
     : require('../../../assets/images/default.png'); // Local fallback
 
+  //const BASE_URL = "http://192.168.1.61:5001/api/hangouts";
   const BASE_URL = "http://localhost:5001/api/hangouts";
-
   useEffect(() => {
     fetchHangoutDetails();
   }, [id]);
@@ -35,7 +35,7 @@ export default function HangoutDetails() {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch(`http://localhost:5001/api/hangouts/${id}/join`, {
+      const response = await fetch(`http://192.168.1.61:5001/api/hangouts/${id}/join`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: user.id || user._id }), // Handle different ID naming

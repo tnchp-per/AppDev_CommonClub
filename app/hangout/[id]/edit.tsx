@@ -11,6 +11,7 @@ import { Calendar } from 'react-native-calendars';
 import { styles } from "../../../components/editHangoutStyles";
 
 
+//const BASE_URL = "http://192.168.1.61:5001/api";
 const BASE_URL = "http://localhost:5001/api";
 
 export default function EditHangout() {
@@ -127,7 +128,7 @@ export default function EditHangout() {
       router.dismiss(2); // Go back to the previous page (Discover)
       
       if (typeof window !== 'undefined') {
-        window.location.href = "http://localhost:8081/";
+        window.location.href = "http://192.168.1.61:8081/";
       }
     } catch (err) {
       console.error(err);

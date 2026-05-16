@@ -1,9 +1,10 @@
+import hangoutCardStyle from "@/components/HangoutCardStyle";
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useRouter } from "expo-router";
 import React, { useCallback, useState } from "react";
-import { ActivityIndicator, Dimensions, Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Dimensions, Image, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { fetchAllHangouts } from "../../api/hangoutApi";
-import hangoutCardStyle from "../../components/HangoutCardStyle";
+import style from "../../components/DiscoveryStyles";
 
 const { width: screenWidth } = Dimensions.get('window');
 const horizontalPadding = 20;
@@ -78,12 +79,12 @@ export default function Discovery() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FAF9F1" }}>
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
 
-        <View style={localStyles.centeredHeader}>
-          <Text style={localStyles.pageTitle}>DISCOVER</Text>
+        <View style={style.centeredHeader}>
+          <Text style={style.pageTitle}>DISCOVER</Text>
         </View>
 
-        <View style={localStyles.searchSection}>
-          <View style={localStyles.searchWrapper}>
+        <View style={style.searchSection}>
+          <View style={style.searchWrapper}>
             {searchQuery !== "" && (
               <TouchableOpacity onPress={() => setSearchQuery("")}>
                 <Ionicons name="arrow-back" size={24} color="#042917" style={{ marginRight: 10 }} />
@@ -91,7 +92,7 @@ export default function Discovery() {
             )}
             {searchQuery === "" && <Ionicons name="search" size={20} color="#042917" style={{ marginRight: 10 }} />}
             <TextInput
-              style={localStyles.searchInput}
+              style={style.searchInput}
               placeholder="Search hangouts..."
               placeholderTextColor="#8E8E8E"
               value={searchQuery}
@@ -108,17 +109,17 @@ export default function Discovery() {
             </View>
           ) : searchQuery === "" ? (
             categories.map((cat) => (
-              <TouchableOpacity key={cat.id} style={localStyles.categoryRow} onPress={() => setSearchQuery(cat.title)}>
-                <Image source={cat.image} style={localStyles.catImage} />
-                <View style={localStyles.overlay}>
-                  <Text style={localStyles.catTitle}>{cat.title}</Text>
+              <TouchableOpacity key={cat.id} style={style.categoryRow} onPress={() => setSearchQuery(cat.title)}>
+                <Image source={cat.image} style={style.catImage} />
+                <View style={style.overlay}>
+                  <Text style={style.catTitle}>{cat.title}</Text>
                 </View>
               </TouchableOpacity>
             ))
           ) : (
             <View style={{ padding: 16 }}>
-              <Text style={localStyles.resultsText}>{filteredEvents.length} hangouts found</Text>
-              <View style={localStyles.gridContainer}>
+              <Text style={style.resultsText}>{filteredEvents.length} hangouts found</Text>
+              <View style={style.gridContainer}>
                 {filteredEvents.map((item, index) => {
                   const imageSource = (typeof item.image === 'string' && item.image.startsWith('data:image'))
                     ? { uri: item.image }
@@ -199,19 +200,3 @@ export default function Discovery() {
   );
 }
 
-const localStyles = StyleSheet.create({
-  centeredHeader: { marginTop: 20, marginBottom: 20, alignItems: 'center' },
-  pageTitle: { fontSize: 24, fontWeight: 'bold', color: '#042917', letterSpacing: 1, marginTop: 20 },
-  searchSection: { paddingHorizontal: 20, marginBottom: 25 },
-  searchWrapper: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#F0F0F0', borderRadius: 10, paddingHorizontal: 15, height: 50 },
-  searchInput: { flex: 1, fontSize: 16, color: '#042917', },
-  categoryRow: { height: 150, borderRadius: 20, overflow: 'hidden', marginBottom: 18 },
-  catImage: { width: '100%', height: '100%', position: 'absolute' },
-  overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.3)', justifyContent: 'center', alignItems: 'center' },
-  catTitle: { color: '#FFF', fontSize: 20, fontWeight: 'bold', textAlign: 'center', letterSpacing: 1 },
-  resultsText: { marginBottom: 15, color: '#666', fontSize: 14, fontWeight: '600' },
-  gridContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  }
-});

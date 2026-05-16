@@ -12,6 +12,7 @@ export default function Profile() {
   const [userData, setUserData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
+  //const API_URL = "http://192.168.1.61:5001/api/users";
   const API_URL = "http://localhost:5001/api/users";
 
   // 3. ใช้ useFocusEffect แทน useEffect เดิมบางส่วน 
