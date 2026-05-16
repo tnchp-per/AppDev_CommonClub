@@ -39,9 +39,9 @@ export default function HomeScreen() {
       if (user?.id) {
         const data = await fetchDashboardData(user.id);
         setUpcoming(data.upcoming || []);
-        setRecommended(data.recommended || []);
+        setRecommended(data.limitedRecommendations || []);
+
       } else {
-        // Ensure this function name matches what is in your hangoutApi.js
         const allEvents = await fetchAllHangouts(); 
         console.log("Fetched all events:", allEvents?.length);
         

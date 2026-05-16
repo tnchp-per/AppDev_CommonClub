@@ -6,11 +6,51 @@ const User = require("../models/User");       // Added User model for the accept
 
 const mongoose = require('mongoose'); // Add this at the top of your routes file
 
+const interestToCategoryMap = {
+    "sports": "sports",
+    "gym": "sports",
+    "running": "sports",
+    "soccer": "sports",
+    "badminton": "sports",
+    "pilates":"sports",
+    "yoga":"sports",
+    "fitness":"sports",
+    "football":"sports",
+    
+    "cooking": "food",
+    "cafe": "food",
+    "baking": "food",
+    "cafe hopping":"food",
+    "fine-dining":"food",
+    "buffet":"food",
+
+    "concert": "music",
+    "guitar": "music",
+    "singing": "music",
+    "bass": "music",
+    
+    "clubbing":"social",
+
+    "travel":"adventure",
+    "car":"adventure",
+
+    "working":"study",
+};
+
+
 
 // GET all hangouts
 router.get("/dashboard/:userId", async (req, res) => {
     try {
         const userId = req.params.userId;
+        const userProfile = await User.findById(userId).lean();
+        
+        const userInterests = userProfile?.interests || [];
+        const userMasterCategories = userInterests.map(interest => {
+            const normalized = interest.toLowerCase().trim();
+            return interestToCategoryMap[normalized] || normalized; // fallback to the original if not found
+        });
+        
         const allHangouts = await Hangout.find().lean(); // Use .lean() for easier comparison
 
         // Fix: Check host OR acceptedParticipants
@@ -23,15 +63,30 @@ router.get("/dashboard/:userId", async (req, res) => {
 
         // Recommended: Events where you are NOT the host AND NOT a participant
         const recommended = allHangouts.filter(h => {
-            const isHost = h.host && h.host.toString() === userId;
-            const isGuest = h.acceptedParticipants && h.acceptedParticipants.some(id => id.toString() === userId);
+              const isHost = h.host && h.host.toString() === userId;
+              const isGuest = h.acceptedParticipants && h.acceptedParticipants.some(id => id.toString() === userId);
+              
+              const hangoutCategory = h.category?.toLowerCase().trim();
             
-            return !isHost && !isGuest;
+              const matchesInterests = userMasterCategories.includes(hangoutCategory);
+            
+            return !isHost && !isGuest && matchesInterests;
         });
+
+        const finalRecommendations = recommended.length > 0 
+            ? recommended 
+            : allHangouts.filter(h => {
+                const isHost = h.host && h.host.toString() === userId;
+                const isGuest = h.acceptedParticipants && h.acceptedParticipants.some(id => id.toString() === userId);
+                return !isHost && !isGuest;
+            });
+        
+          const limitedRecommendations = finalRecommendations.slice(0, 7);
 
         console.log(`User: ${userId} | Upcoming: ${upcoming.length} | Recs: ${recommended.length}`);
         
-        res.json({ upcoming, recommended });
+        res.json({ upcoming, limitedRecommendations });
+
     } catch (err) {
         console.error("Dashboard error:", err);
         res.status(500).json({ message: err.message });
