@@ -3,16 +3,7 @@ import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
     ActivityIndicator,
-    Dimensions // เพิ่มตัวนี้เข้ามา
-    ,
-
-
-
-
-
-
-
-
+    Dimensions,
     FlatList,
     Image,
     SafeAreaView,
@@ -26,6 +17,17 @@ import { useAuth } from "../../context/AuthContext";
 
 const { width: screenWidth } = Dimensions.get("window");
 
+// ✅ แก้ไขฟังก์ชันแปลงวันที่ให้ถูกต้อง
+const formatHangoutDate = (dateString: string) => {
+    if (!dateString) return "Coming soon";
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+    });
+};
+
 export default function MyCreatedHangout() {
     const { user } = useAuth();
     const router = useRouter();
@@ -37,7 +39,7 @@ export default function MyCreatedHangout() {
             if (user?.id) {
                 try {
                     const data = await fetchDashboardData(user.id);
-                    // ✅ ลองดึงทั้ง created และ upcoming มาเช็ค หรือใช้ตัวใดตัวหนึ่งที่ Backend ส่งมาจริง
+                    // ดึงข้อมูล created หรือ filter จาก upcoming
                     const myCreated = data.created || data.upcoming?.filter((ev: any) => ev.host === user.id) || [];
                     setCreatedEvents(myCreated);
                 } catch (error) {
@@ -48,86 +50,132 @@ export default function MyCreatedHangout() {
             }
         };
         loadData();
-    }, [user]);
+    }, [user?.id]); // ใส่ user.id ใน dependency
+
+    // ✅ แสดง Loading ตรงกลางหน้าจอ
+    if (loading) {
+        return (
+            <SafeAreaView style={{ flex: 1, backgroundColor: "#FDFCF0" }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', padding: 20, paddingTop: 20 }}>
+                    <TouchableOpacity onPress={() => router.back()}>
+                        <Ionicons name="arrow-back" size={28} color="#042917" />
+                    </TouchableOpacity>
+                    <Text style={{ fontSize: 18, fontWeight: '700', color: '#042917', marginLeft: 15 }}>
+                        MY CREATED HANGOUTS
+                    </Text>
+                </View>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginBottom: 100 }}>
+                    <ActivityIndicator size="large" color="#FF6B6B" />
+                    <Text style={{ marginTop: 10, color: '#999' }}>Loading your events...</Text>
+                </View>
+            </SafeAreaView>
+        );
+    }
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#FDFCF0" }}>
             {/* Header */}
-            <View style={{ flexDirection: 'row', alignItems: 'center', padding: 20, paddingTop: 40 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', padding: 20, paddingTop: 20 }}>
                 <TouchableOpacity onPress={() => router.back()}>
                     <Ionicons name="arrow-back" size={28} color="#042917" />
                 </TouchableOpacity>
-                <Text style={{ fontSize: 24, fontWeight: '800', color: '#042917', marginLeft: 15 }}>
+                <Text style={{ fontSize: 18, fontWeight: '700', color: '#042917', marginLeft: 15 }}>
                     MY CREATED HANGOUTS
                 </Text>
             </View>
 
-            {loading ? (
-                <View style={{ flex: 1, marginTop: 230, alignItems: 'center' }}>
-                    <ActivityIndicator size="large" color="#FF6B6B" />
-                    <Text style={{ marginTop: 10, color: '#999' }}>Loading...</Text>
-                </View>
-            ) : (
-                <FlatList
-                    data={createdEvents}
-                    keyExtractor={(item) => item._id}
-                    horizontal={createdEvents.length > 0} // ✅ ถ้าไม่มีข้อมูล ไม่ต้องเป็นแนวนอน เพื่อให้ Empty State อยู่ตรงกลาง
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={[
-                        { paddingTop: 20, paddingBottom: 20 },
-                        createdEvents.length > 0 ? { paddingHorizontal: 25 } : { flex: 1, justifyContent: 'center', alignItems: 'center' }
-                    ]}
-                    ListEmptyComponent={
-                        <View style={{ alignItems: 'center', justifyContent: 'center', width: screenWidth }}>
-                            <Ionicons name="create-outline" size={100} color="#CCC" style={{ opacity: 0.5 }} />
-                            <Text style={{ color: "#999", marginTop: 20, fontSize: 18, fontWeight: '500' }}>
-                                You haven't created any events yet.
-                            </Text>
-                            <TouchableOpacity
-                                style={{ marginTop: 20, backgroundColor: '#FF6B6B', padding: 12, borderRadius: 10 }}
-                                onPress={() => router.push('/create')} // สมมติว่ามีหน้าสร้างงาน
-                            >
-                                <Text style={{ color: '#FFF', fontWeight: 'bold' }}>Create New Hangout</Text>
-                            </TouchableOpacity>
-                        </View>
-                    }
-                    renderItem={({ item }) => {
-                        const imageSource = (typeof item.image === 'string' && item.image.startsWith('data:image'))
-                            ? { uri: item.image }
-                            : require("../../assets/images/logo.png");
+            <FlatList
+                data={createdEvents}
+                keyExtractor={(item) => item._id}
+                horizontal={createdEvents.length > 0}
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={[
+                    { paddingTop: 20, paddingBottom: 20 },
+                    createdEvents.length > 0
+                        ? { paddingHorizontal: 55 }
+                        : { flexGrow: 1, justifyContent: 'center', alignItems: 'center' }
+                ]}
+                ListEmptyComponent={
+                    <View style={{ alignItems: 'center', marginTop: -80, width: screenWidth }}>
+                        <Ionicons name="create-outline" size={80} color="#CCC" style={{ opacity: 0.5 }} />
+                        <Text style={{ color: "#999", marginTop: 10, fontSize: 16, fontWeight: '500' }}>
+                            You haven't created any events yet.
+                        </Text>
+                        <TouchableOpacity
+                            style={{ marginTop: 20, backgroundColor: '#4D7260', paddingVertical: 12, paddingHorizontal: 25, borderRadius: 10 }}
+                            onPress={() => router.push('/create')}
+                        >
+                            <Text style={{ color: '#FFF', fontWeight: 'bold' }}>Create New Hangout</Text>
+                        </TouchableOpacity>
+                    </View>
+                }
+                renderItem={({ item }) => {
+                    const imageSource = (typeof item.image === 'string' && item.image.startsWith('data:image'))
+                        ? { uri: item.image }
+                        : require("../../assets/images/logo.png");
 
-                        return (
-                            <TouchableOpacity
-                                key={item._id}
-                                onPress={() => router.push(`/hangout/${item._id}`)}
-                                style={[
-                                    hangoutCardStyle.card,
-                                    {
-                                        width: 280,
-                                        backgroundColor: "#FFFFFF",
-                                        borderRadius: 18,
-                                        marginRight: 20,
-                                        overflow: "hidden",
-                                        paddingBottom: 20,
-                                        elevation: 5,
-                                        shadowColor: "#000",
-                                        shadowOpacity: 0.1,
-                                    }
-                                ]}
-                            >
-                                <Image source={imageSource} style={{ width: "100%", height: 160 }} resizeMode="cover" />
-                                <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
-                                    <Text style={{ fontSize: 20, fontWeight: "700", marginBottom: 6, lineHeight: 26 }} numberOfLines={1}>
-                                        {item.title}
-                                    </Text>
-                                    <Text style={{ color: "#666", marginBottom: 4 }}>📍 {item.location}</Text>
-                                    <Text style={{ color: "#FF6B6B", fontWeight: "600" }}>🕒 {item.date}</Text>
-                                </View>
-                            </TouchableOpacity>
-                        );
-                    }}
-                />
-            )}
+                    return (
+                        <TouchableOpacity
+                            key={item._id}
+                            onPress={() => router.push(`/hangout/${item._id}`)}
+                            style={[
+                                hangoutCardStyle.card,
+                                {
+                                    width: 280,
+                                    height: 265,
+                                    backgroundColor: "#FFFFFF",
+                                    borderRadius: 18,
+                                    marginRight: 18,
+                                    overflow: "hidden",
+                                    paddingBottom: 16,
+                                    marginBottom: 18,
+                                    elevation: 2,
+                                    shadowColor: "#000",
+                                    shadowOffset: { width: 0, height: 2 },
+                                    shadowOpacity: 0.1,
+                                    shadowRadius: 4,
+                                }
+                            ]}
+                        >
+                            <Image
+                                source={imageSource}
+                                style={{
+                                    width: "100%",
+                                    height: 160,
+                                    backgroundColor: '#f0f0f0',
+                                }}
+                                resizeMode="cover"
+                            />
+                            <Text style={[hangoutCardStyle.title, {
+                                fontSize: 20,
+                                fontWeight: "700",
+                                //color: "#1A3C22",
+                                marginLeft: 12,
+                                marginBottom: 6,
+                                lineHeight: 24,
+                            }]} numberOfLines={1}>
+                                {item.title}
+                            </Text>
+                            <Text style={[hangoutCardStyle.location, {
+                                fontSize: 15,
+                                color: "#666666",
+                                marginBottom: 4,
+                                marginLeft: 12,
+                                lineHeight: 18,
+                            }]} numberOfLines={1}>
+                                {item.location}
+                            </Text>
+                            <Text style={[hangoutCardStyle.time, {
+                                fontSize: 15,
+                                color: "#666666",
+                                marginLeft: 12
+                            }]} numberOfLines={1}>
+                                {formatHangoutDate(item.date)}
+                            </Text>
+                        </TouchableOpacity>
+                    );
+                }}
+            />
         </SafeAreaView>
     );
 }
