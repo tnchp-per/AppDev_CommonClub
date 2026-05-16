@@ -129,28 +129,31 @@ export default function Profile() {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>My Hangout</Text>
+        {/* --- 1. ดู Hangout ที่เราสร้าง (Created) --- */}
+        <Text style={styles.sectionTitle}>Manage My Events</Text>
         <TouchableOpacity
           style={styles.primaryBlockButton}
-          onPress={() => router.push('/profile/myHangout')}
+          onPress={() => router.push('/profile/myCreatedHangouts')}
         >
-          <Text style={styles.blockButtonText}>VIEW MY HANGOUT</Text>
+          <Text style={styles.blockButtonText}>MY CREATED HANGOUTS</Text>
         </TouchableOpacity>
 
-        {/* --- ปุ่ม My Request --- */}
-        <Text style={styles.sectionTitle}>My Request</Text>
+        {/* --- 2. ดู Hangout ที่เราไปจอย (Joined) --- */}
+        <Text style={styles.sectionTitle}>My Schedule</Text>
         <TouchableOpacity
           style={styles.secondaryBlockButton}
+          onPress={() => router.push('/profile/myJoinedHangouts')}
         >
-          <Text style={styles.blockButtonText}>VIEW MY REQUEST</Text>
+          <Text style={styles.blockButtonText}>JOINED HANGOUTS</Text>
         </TouchableOpacity>
 
-        {/* --- ปุ่ม Saved Activities --- */}
-        <Text style={styles.sectionTitle}>Saved Activities</Text>
+        {/* --- 3. ดูคนที่ Request จะมาจอยเรา (Requests) --- */}
+        <Text style={styles.sectionTitle}>Pending Approvals</Text>
         <TouchableOpacity
           style={styles.secondaryBlockButton}
+          onPress={() => router.push('/profile/joinRequests')}
         >
-          <Text style={styles.blockButtonText}>VIEW MY SAVED ACTIVITIES</Text>
+          <Text style={[styles.blockButtonText, { color: "#FAF9F1" }]}>VIEW JOIN REQUESTS</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.logoutButton} onPress={logout}>
