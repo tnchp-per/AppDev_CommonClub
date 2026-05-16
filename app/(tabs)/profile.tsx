@@ -70,7 +70,7 @@ export default function Profile() {
   if (loading && !userData) { // โชว์ loading เฉพาะตอนที่ยังไม่มีข้อมูลเดิม
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#FAF9F1" }}>
-        <ActivityIndicator size="large" color="#042917" />
+        <ActivityIndicator size="large" color="#FF6B6B" />
       </View>
     );
   }
@@ -142,19 +142,10 @@ export default function Profile() {
         {/* --- 2. ดู Hangout ที่เราไปจอย (Joined) --- */}
         <Text style={styles.sectionTitle}>My Schedule</Text>
         <TouchableOpacity
-          style={styles.secondaryBlockButton}
+          style={styles.primaryBlockButton}
           onPress={() => router.push('/profile/joinedHangout')}
         >
           <Text style={styles.blockButtonText}>JOINED HANGOUTS</Text>
-        </TouchableOpacity>
-
-        {/* --- 3. ดูคนที่ Request จะมาจอยเรา (Requests) --- */}
-        <Text style={styles.sectionTitle}>Pending Approvals</Text>
-        <TouchableOpacity
-          style={styles.secondaryBlockButton}
-          onPress={() => router.push('/profile/joinRequests')}
-        >
-          <Text style={[styles.blockButtonText, { color: "#FAF9F1" }]}>VIEW JOIN REQUESTS</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.logoutButton} onPress={logout}>
