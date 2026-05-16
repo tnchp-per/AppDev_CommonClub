@@ -142,7 +142,7 @@ export default function Profile() {
         <Text style={styles.sectionTitle}>My Schedule</Text>
         <TouchableOpacity
           style={styles.secondaryBlockButton}
-          onPress={() => router.push('/profile/myJoinedHangouts')}
+          onPress={() => router.push('/profile/joinedHangout')}
         >
           <Text style={styles.blockButtonText}>JOINED HANGOUTS</Text>
         </TouchableOpacity>

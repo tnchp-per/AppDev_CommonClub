@@ -16,6 +16,8 @@ import hangoutCardStyle from "../../components/HangoutCardStyle";
 import { useAuth } from "../../context/AuthContext";
 
 const { width: screenWidth } = Dimensions.get("window");
+
+// ฟังก์ชันแปลงวันที่
 const formatHangoutDate = (dateString: string) => {
     if (!dateString) return "Coming soon";
     const date = new Date(dateString);
@@ -26,10 +28,10 @@ const formatHangoutDate = (dateString: string) => {
     });
 };
 
-export default function MyCreatedHangout() {
+export default function MyJoinedHangout() {
     const { user } = useAuth();
     const router = useRouter();
-    const [createdEvents, setCreatedEvents] = useState<any[]>([]);
+    const [joinedEvents, setJoinedEvents] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -37,11 +39,11 @@ export default function MyCreatedHangout() {
             if (user?.id) {
                 try {
                     const data = await fetchDashboardData(user.id);
-                    // ดึงข้อมูล created หรือ filter จาก upcoming
-                    const myCreated = data.created || data.upcoming?.filter((ev: any) => ev.host === user.id) || [];
-                    setCreatedEvents(myCreated);
+                    // ✅ สำหรับ Joined เราจะใช้ข้อมูลจากก้อน 'upcoming' 
+                    // (ซึ่ง API มักจะส่งรายการที่เรากด Join แล้วมาให้ในนี้)
+                    setJoinedEvents(data.upcoming || []);
                 } catch (error) {
-                    console.error("Error:", error);
+                    console.error("Error loading joined events:", error);
                 } finally {
                     setLoading(false);
                 }
@@ -49,7 +51,6 @@ export default function MyCreatedHangout() {
         };
         loadData();
     }, [user?.id]);
-
 
     if (loading) {
         return (
@@ -59,12 +60,12 @@ export default function MyCreatedHangout() {
                         <Ionicons name="arrow-back" size={28} color="#042917" />
                     </TouchableOpacity>
                     <Text style={{ fontSize: 18, fontWeight: '700', color: '#042917', marginLeft: 15 }}>
-                        MY CREATED HANGOUTS
+                        JOINED HANGOUTS
                     </Text>
                 </View>
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginBottom: 100 }}>
                     <ActivityIndicator size="large" color="#FF6B6B" />
-                    <Text style={{ marginTop: 10, color: '#999' }}>Loading your events...</Text>
+                    <Text style={{ marginTop: 10, color: '#999' }}>Checking your schedule...</Text>
                 </View>
             </SafeAreaView>
         );
@@ -78,33 +79,33 @@ export default function MyCreatedHangout() {
                     <Ionicons name="arrow-back" size={28} color="#042917" />
                 </TouchableOpacity>
                 <Text style={{ fontSize: 18, fontWeight: '700', color: '#042917', marginLeft: 15 }}>
-                    MY CREATED HANGOUTS
+                    JOINED HANGOUTS
                 </Text>
             </View>
 
             <FlatList
-                data={createdEvents}
+                data={joinedEvents}
                 keyExtractor={(item) => item._id}
                 numColumns={4}
                 key={4}
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={[
                     { paddingTop: 20, paddingBottom: 20 },
-                    createdEvents.length > 0
+                    joinedEvents.length > 0
                         ? { paddingHorizontal: 55 }
                         : { flexGrow: 1, justifyContent: 'center', alignItems: 'center' }
                 ]}
                 ListEmptyComponent={
                     <View style={{ alignItems: 'center', marginTop: -80, width: screenWidth }}>
-                        <Ionicons name="create-outline" size={80} color="#CCC" style={{ opacity: 0.5 }} />
+                        <Ionicons name="calendar-outline" size={80} color="#CCC" style={{ opacity: 0.5 }} />
                         <Text style={{ color: "#999", marginTop: 10, fontSize: 16, fontWeight: '500' }}>
-                            You haven't created any events yet.
+                            No upcoming hangouts joined yet.
                         </Text>
                         <TouchableOpacity
                             style={{ marginTop: 20, backgroundColor: '#4D7260', paddingVertical: 12, paddingHorizontal: 25, borderRadius: 10 }}
-                            onPress={() => router.push('/create')}
+                            onPress={() => router.push('/(tabs)')} // กลับไปหน้า Discover
                         >
-                            <Text style={{ color: '#FFF', fontWeight: 'bold' }}>Create New Hangout</Text>
+                            <Text style={{ color: '#FFF', fontWeight: 'bold' }}>Explore More Events</Text>
                         </TouchableOpacity>
                     </View>
                 }
