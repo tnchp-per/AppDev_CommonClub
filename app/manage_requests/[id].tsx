@@ -14,6 +14,7 @@ export default function ManageRequests() {
 
   const isHost = hangout?.host?.toString() === user?._id?.toString();
 
+
   const BASE_URL = "http://localhost:5001/api/hangouts";
 
   useEffect(() => {
@@ -76,14 +77,16 @@ export default function ManageRequests() {
         {hangout?.pendingParticipants?.length === 0 ? (
           <Text style={style.sectionStyles.emptyText}>No new requests.</Text>
         ) : (
-          hangout?.pendingParticipants.map((user: any) => (
+          hangout?.pendingParticipants.map((user: any) => {
+            const imageSource = (typeof user.image === 'string' && user.image.startsWith('data:image'))
+                    ? { uri: user.image }
+                    : require("../../assets/images/default.png");
+            return (
             <View key={user._id} style={style.sectionStyles.card}>
               <View style={style.sectionStyles.userInfo}>
-                {typeof user.image === 'string' && user.image.startsWith('data:image') ? (
-                  <Image source={user.image} style={style.sectionStyles.avatar} />
-                ) : (
-                  <Image source={require('../../assets/images/default.png')} style={style.sectionStyles.avatar} />
-                )}
+                
+
+                  <Image source={imageSource} style={style.sectionStyles.avatar} />
                 <Text style={style.sectionStyles.userName}>{user.name}</Text>
               </View>
               <View style={style.sectionStyles.actions}>
@@ -95,26 +98,28 @@ export default function ManageRequests() {
                   </TouchableOpacity>
               </View>
             </View>
-          ))
-        )}
+          );
+        }))}
 
         {/* SECTION 2: ACCEPTED PARTICIPANTS */}
         <Text style={[style.sectionStyles.title, { marginTop: 30 }]}>Joined ({hangout?.acceptedParticipants?.length || 0})</Text>
         {hangout?.acceptedParticipants?.length === 0 ? (
           <Text style={style.sectionStyles.emptyText}>No one has joined yet.</Text>
         ) : (
-          hangout?.acceptedParticipants.map((user: any) => (
+          hangout?.acceptedParticipants.map((user: any) => {
+            const imageSource = (typeof user.image === 'string' && user.image.startsWith('data:image'))
+                    ? { uri: user.image }
+                    : require("../../assets/images/default.png");
+            return (
             <View key={user._id} style={style.sectionStyles.card}>
               <View style={style.sectionStyles.userInfo}>
-                {typeof user.image === 'string' && user.image.startsWith('data:image') ? (
-                  <Image source={user.image} style={style.sectionStyles.avatar} />
-                ) : (
-                  <Image source={require('../../assets/images/default.png')} style={style.sectionStyles.avatar} />
-                )}
+                <Image source={imageSource} style={style.sectionStyles.avatar} />
+
+
                 <Text style={style.sectionStyles.userName}>{user.name}</Text>
               </View>
-            </View>
-          ))
+            </View>)
+})
         )}
 
       </ScrollView>
