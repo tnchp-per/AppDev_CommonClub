@@ -1,6 +1,7 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Tabs, router } from "expo-router";
 import { Image, Platform, Text, TouchableOpacity, View } from "react-native";
+import style from "../../components/sideBarStyles";
 import { useAuth } from "../../context/AuthContext";
 
 function WebSidebar() {
@@ -8,22 +9,12 @@ function WebSidebar() {
   return (
     <View style={{ flexDirection: "row", flex: 1 }}>
       {/* Sidebar */}
-      <View
-        style={{
-          width: 280,
-          backgroundColor: "#FAF9F1",
-          paddingTop: 40,
-          paddingHorizontal: 20,
-          borderRightWidth: 1,
-          borderColor: "#E5E5E5",
-          justifyContent: "flex-start", // ให้เมนูเรียงจากบนลงล่าง
-        }}
-      >
+      <View style= {style.container}>
         <Image
           source={require("../../assets/images/logo_transparent.png")}
-          style={{ width: 50, height: 50, marginBottom: 10 }}
+          style={style.logo}
         />
-        <Text style={{ fontSize: 30, fontWeight: "700", marginBottom: 40 }}>
+        <Text style={style.heading}>
           CommonClub
         </Text>
 
@@ -37,18 +28,10 @@ function WebSidebar() {
 
         <TouchableOpacity
           onPress={logout}
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            paddingVertical: 12,
-            paddingHorizontal: 10,
-            borderRadius: 10,
-            marginBottom: 40, // เว้นระยะห่างจากขอบล่างจอ
-            backgroundColor: "#FFF5F5", // เพิ่มสีพื้นหลังอ่อนๆ ให้ปุ่มดูเด่น
-          }}
+          style={style.logoutBtn}
         >
           <Ionicons name="log-out-outline" size={20} color="#E06666" />
-          <Text style={{ marginLeft: 12, fontSize: 16, fontWeight: "600", color: "#E06666" }}>
+          <Text style={style.logoutText}>
             Logout
           </Text>
         </TouchableOpacity>
@@ -99,7 +82,7 @@ function SidebarButton({
       <Ionicons
         name={icon}
         size={20}
-      //color="#F5F5F5"
+        color="#042917"
       />
 
       <Text
@@ -107,7 +90,7 @@ function SidebarButton({
           marginLeft: 12,
           fontSize: 16,
           fontWeight: "500",
-          //color: "#F5F5F5"
+          color: "#042917"
         }}
       >
         {title}

@@ -54,14 +54,14 @@ export default function EditProfile() {
                 const res = await axios.get(`${BASE_URL}/${userId}`);
                 const data = res.data;
 
-                //console.log("Fresh data from server:", data);
-
                 if (data) {
                     setName(data.name || '');
                     setUsername(data.username || '');
                     setBio(data.bio || '');
-                    setInterests(data.interests || []);
                     setImage(data.image || null);
+                }
+                if (res.data.interests) {
+                    setInterests(res.data.interests);
                 }
             } catch (err) {
                 console.error("Could not fetch fresh user data", err);
