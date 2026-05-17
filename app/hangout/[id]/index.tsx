@@ -2,24 +2,24 @@ import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import styles from "../../../components/HangoutDetailStyles"; // Adjust path as needed
+import styles from "../../../components/HangoutDetailStyles";
 import { useAuth } from "../../../context/AuthContext";
 
 export default function HangoutDetails() {
   const { id } = useLocalSearchParams();
   const [hangout, setHangout] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth(); 
+  const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isHangoutImageValid = hangout?.image && (hangout.image.startsWith('http') || hangout.image.startsWith('data:image'));
-  const hangoutImageSource = isHangoutImageValid 
-  ? { uri: hangout.image } 
-  : require('../../../assets/images/logo.png'); 
+  const hangoutImageSource = isHangoutImageValid
+    ? { uri: hangout.image }
+    : require('../../../assets/images/logo.png');
   const isHostImageValid = hangout?.host?.image && (hangout.host.image.startsWith('http') || hangout.host.image.startsWith('data:image'));
   const hostImageSource = isHostImageValid
     ? { uri: hangout.host.image }
-    : require('../../../assets/images/default.png'); 
+    : require('../../../assets/images/default.png');
 
   const BASE_URL = "http://localhost:5001/api/hangouts";
 
@@ -56,10 +56,8 @@ export default function HangoutDetails() {
       setIsSubmitting(false);
     }
 
-    
-  };
 
-  
+  };
 
   const fetchHangoutDetails = async () => {
     try {
@@ -116,54 +114,54 @@ export default function HangoutDetails() {
       </View>
 
       <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-        
+
         <View>
-          <Image source={hangoutImageSource} style={styles.image} />  
+          <Image source={hangoutImageSource} style={styles.image} />
           {/* DYNAMIC TITLE */}
           <Text style={styles.mainTitle}>{hangout?.title}</Text>
-        
+
           <Text style={styles.dateTimeText}>
             {formattedDate} • {formattedTime}
           </Text>
-          
-      
+
+
           <View style={styles.locationRow}>
             <Ionicons name="location-sharp" size={16} color="#1A3C22" />
             <Text style={styles.locationText}>{hangout?.location}</Text>
           </View>
 
-          <TouchableOpacity 
-            style={styles.participantRow} 
+          <TouchableOpacity
+            style={styles.participantRow}
             onPress={() => router.push(`/hangout/${id}/participants`)}
           >
             <Text style={styles.participantText}>
               Participants: {hangout?.acceptedParticipants?.length || 0}/{hangout?.maxParticipants || 0}
             </Text>
-          </TouchableOpacity> 
+          </TouchableOpacity>
 
 
-          
+
 
           <Text style={styles.aboutHeader}>About this event</Text>
-          
+
           {/* DYNAMIC HOST */}
-          <TouchableOpacity 
-            style={styles.hostContainer} 
+          <TouchableOpacity
+            style={styles.hostContainer}
             onPress={() => router.push(`/profile/${hangout.host._id || hangout.host}`)}
           >
             {typeof hangout.host.image === 'string' && hangout.host.image.startsWith('data:image') ? (
-              <Image 
-                source={{ uri: hangout.host.image }} 
-                style={styles.hostAvatar} 
+              <Image
+                source={{ uri: hangout.host.image }}
+                style={styles.hostAvatar}
               />
             ) : (
-              <Image 
-                source={hostImageSource} 
-                style={styles.hostAvatar} 
+              <Image
+                source={hostImageSource}
+                style={styles.hostAvatar}
               />
             )}
             <View>
-              <Text style={styles.hostName}>{hangout.host.name }</Text>
+              <Text style={styles.hostName}>{hangout.host.name}</Text>
             </View>
           </TouchableOpacity>
 
@@ -172,56 +170,56 @@ export default function HangoutDetails() {
         </View>
       </ScrollView>
 
-        <View style={styles.actionContainer}>
-          {!user ? (
-            // 1. GUEST STATE: Not logged in
-            <TouchableOpacity 
-              style={[styles.Button, { backgroundColor: '#1A3C22' }]} 
-              onPress={() => router.push("/login")}
+      <View style={styles.actionContainer}>
+        {!user ? (
+          // 1. GUEST STATE: Not logged in
+          <TouchableOpacity
+            style={[styles.Button, { backgroundColor: '#1A3C22' }]}
+            onPress={() => router.push("/login")}
+          >
+            <Text style={styles.ButtonText}>LOG IN TO JOIN</Text>
+          </TouchableOpacity>
+        ) : isHost ? (
+          // 1. If user is the HOST
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 10, width: '100%' }}>
+            <TouchableOpacity
+              style={[styles.Button, { flex: 1, backgroundColor: '#1A3C22' }]}
+              onPress={() => router.push(`/manage_requests/${hangout._id}`)}
             >
-              <Text style={styles.ButtonText}>LOG IN TO JOIN</Text>
+              <Text style={styles.ButtonText}>REVIEW REQUESTS</Text>
             </TouchableOpacity>
-          ) : isHost ? (
-            // 1. If user is the HOST
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 10, width: '100%' }}>
-              <TouchableOpacity 
-                style={[styles.Button, { flex: 1, backgroundColor: '#1A3C22' }]} 
-                onPress={() => router.push(`/manage_requests/${hangout._id}`)}
-              >
-                <Text style={styles.ButtonText}>REVIEW REQUESTS</Text>
-              </TouchableOpacity>
 
-              <TouchableOpacity 
-                style={[styles.Button, { flex: 1, backgroundColor: '#1A3C22' }]}
-                onPress={() => router.push(`/hangout/${id}/edit`)}
-              >
-                <Text style={styles.ButtonText}>Edit</Text> 
-              </TouchableOpacity>
-          
-            </View>
-          ) : isAlreadyJoined ? (
-            // 2. If user is already a PARTICIPANT
-            <View style={[styles.Button, { backgroundColor: '#E0E0E0', width: '100%' }]}>
-              <Text style={[styles.ButtonText, { color: '#666' }]}>ALREADY JOINED</Text>
-            </View>
-          ) : isPending ? (
-            // 3. If user has a PENDING request
-            <View style={[styles.Button, { backgroundColor: '#E0E0E0', width: '100%' }]}>
-              <Text style={[styles.ButtonText, { color: '#666' }]}>REQUEST PENDING</Text>
-            </View>
-          ) : (
-            // 4. Default: Show JOIN button
-            <TouchableOpacity 
-              style={[styles.Button, { width: '100%' }, isSubmitting && { opacity: 0.6 }]} 
-              onPress={handleJoinRequest}
-              disabled={isSubmitting}
+            <TouchableOpacity
+              style={[styles.Button, { flex: 1, backgroundColor: '#1A3C22' }]}
+              onPress={() => router.push(`/hangout/${id}/edit`)}
             >
-              <Text style={styles.ButtonText}>
-                {isSubmitting ? "SENDING..." : "REQUEST TO JOIN"}
-              </Text>
+              <Text style={styles.ButtonText}>Edit</Text>
             </TouchableOpacity>
-          )}
-        </View>
-          </SafeAreaView>
+
+          </View>
+        ) : isAlreadyJoined ? (
+          // 2. If user is already a PARTICIPANT
+          <View style={[styles.Button, { backgroundColor: '#E0E0E0', width: '100%' }]}>
+            <Text style={[styles.ButtonText, { color: '#666' }]}>ALREADY JOINED</Text>
+          </View>
+        ) : isPending ? (
+          // 3. If user has a PENDING request
+          <View style={[styles.Button, { backgroundColor: '#E0E0E0', width: '100%' }]}>
+            <Text style={[styles.ButtonText, { color: '#666' }]}>REQUEST PENDING</Text>
+          </View>
+        ) : (
+          // 4. Default: Show JOIN button
+          <TouchableOpacity
+            style={[styles.Button, { width: '100%' }, isSubmitting && { opacity: 0.6 }]}
+            onPress={handleJoinRequest}
+            disabled={isSubmitting}
+          >
+            <Text style={styles.ButtonText}>
+              {isSubmitting ? "SENDING..." : "REQUEST TO JOIN"}
+            </Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    </SafeAreaView>
   );
 }

@@ -3,7 +3,7 @@ import { deleteHangout } from '@/api/hangoutApi';
 import { Ionicons } from "@expo/vector-icons";
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
-import * as ImagePicker from 'expo-image-picker'; // Make sure this is installed
+import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -18,7 +18,6 @@ export default function EditHangout() {
 
   const today = new Date().toISOString().split('T')[0];
 
-  // States matching CreateHangout structure
   const [selectedDay, setSelectedDay] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
@@ -40,7 +39,6 @@ export default function EditHangout() {
         const res = await axios.get(`${BASE_URL}/hangouts/${id}`);
         const data = res.data;
 
-        // Extract date and times from ISO strings
         const startDate = new Date(data.date);
         const endDate = new Date(data.endTime);
 
@@ -116,14 +114,14 @@ export default function EditHangout() {
 
   const handleDelete = async () => {
     const confirmed = window.confirm("Are you sure you want to delete this hangout? This will remove it for all participants.");
-    
+
     if (!confirmed) return;
 
     try {
       await deleteHangout(id);
       alert("Event deleted successfully.");
-      router.dismiss(2); 
-      
+      router.dismiss(2);
+
       if (typeof window !== 'undefined') {
         window.location.href = "http://localhost:8081/";
       }
@@ -177,7 +175,7 @@ export default function EditHangout() {
             [selectedDay]: {
               selected: true,
               disableTouchEvent: true,
-              selectedColor: '#1A3C24', 
+              selectedColor: '#1A3C24',
               selectedTextColor: '#FFFFFF'
             },
 

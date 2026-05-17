@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
-import { useFocusEffect, useRouter } from "expo-router"; // 1. เพิ่ม useFocusEffect
-import React, { useCallback, useState } from "react"; // 2. เพิ่ม useCallback
+import { useFocusEffect, useRouter } from "expo-router";
+import React, { useCallback, useState } from "react";
 import { ActivityIndicator, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import styles from "../../components/profileStyles";
 import { useAuth } from "../../context/AuthContext";
@@ -63,7 +63,7 @@ export default function Profile() {
     );
   }
 
-  if (loading && !userData) { 
+  if (loading && !userData) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#FAF9F1" }}>
         <ActivityIndicator size="large" color="#FF6B6B" />
@@ -90,7 +90,7 @@ export default function Profile() {
 
         <TouchableOpacity
           style={styles.editButton}
-          onPress={() => router.push('/profile/editProfile')} 
+          onPress={() => router.push('/profile/editProfile')}
         >
           <Text style={styles.editButtonText}>EDIT PROFILE</Text>
         </TouchableOpacity>
@@ -123,7 +123,7 @@ export default function Profile() {
       </View>
 
       <View style={styles.section}>
-        
+
         <Text style={styles.sectionTitle}>Manage My Events</Text>
         <TouchableOpacity
           style={styles.primaryBlockButton}

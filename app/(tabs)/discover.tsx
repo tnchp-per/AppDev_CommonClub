@@ -161,7 +161,6 @@ export default function Discovery() {
                         resizeMode="cover"
                       />
 
-                      {/* ✅ ใช้ Style ต้นฉบับเป๊ะๆ แต่ลดขนาดฟอนต์ให้เข้ากับหน้าจอ */}
                       <Text style={[hangoutCardStyle.title, {
                         fontSize: 20,
                         fontWeight: "700",
