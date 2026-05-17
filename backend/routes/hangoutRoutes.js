@@ -61,6 +61,12 @@ router.get("/dashboard/:userId", async (req, res) => {
             return isHost || isGuest;
         });
 
+        const joined = allHangouts.filter(h => {
+            const isGuest = h.acceptedParticipants && h.acceptedParticipants.some(id => id.toString() === userId);
+
+            return isGuest
+        });
+
         // Recommended: Events where you are NOT the host AND NOT a participant
         const recommended = allHangouts.filter(h => {
               const isHost = h.host && h.host.toString() === userId;
@@ -85,7 +91,7 @@ router.get("/dashboard/:userId", async (req, res) => {
 
         console.log(`User: ${userId} | Upcoming: ${upcoming.length} | Recs: ${recommended.length}`);
         
-        res.json({ upcoming, limitedRecommendations });
+        res.json({ upcoming, limitedRecommendations, joined });
 
     } catch (err) {
         console.error("Dashboard error:", err);

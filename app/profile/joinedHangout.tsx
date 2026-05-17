@@ -41,7 +41,7 @@ export default function MyJoinedHangout() {
                     const data = await fetchDashboardData(user.id);
                     // ✅ สำหรับ Joined เราจะใช้ข้อมูลจากก้อน 'upcoming' 
                     // (ซึ่ง API มักจะส่งรายการที่เรากด Join แล้วมาให้ในนี้)
-                    setJoinedEvents(data.upcoming || []);
+                    setJoinedEvents(data.joined || []);
                 } catch (error) {
                     console.error("Error loading joined events:", error);
                 } finally {
