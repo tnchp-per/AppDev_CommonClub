@@ -1,4 +1,4 @@
-# 🚀 Common Club App - Development Setup Guide
+# Common Club App - Development Setup Guide
 
 Welcome to the **Common Club** repository! Follow this guide to get the backend and mobile frontend running simultaneously on your local machine.
 
@@ -13,7 +13,7 @@ Make sure you have the following installed before running the project:
 - **Expo Go** app on your phone – available on the [App Store](https://apps.apple.com/app/expo-go/id982107779) or [Google Play](https://play.google.com/store/apps/details?id=host.exp.exponent)
 ---
  
-## ⚙️ Setup
+## Setup
  
 ### 1. Clone the repository
  
@@ -38,7 +38,7 @@ cd ..
  
 ---
  
-## 🔧 Update the IP Address
+## Update the IP Address
  
 Before running the app, you need to replace `localhost` with your machine's local IP address so your phone can connect to the backend.
  
@@ -55,11 +55,11 @@ Do a **Find & Replace** across the entire project:
 - Replace with: your IP address (e.g. `192.168.1.42`)
 In VS Code: `Cmd+Shift+H` (Mac) or `Ctrl+Shift+H` (Windows)
  
-> ⚠️ Your IP address may change when you reconnect to Wi-Fi. If the app can't connect, redo this step.
+> Your IP address may change when you reconnect to Wi-Fi. If the app can't connect, redo this step.
  
 ---
  
-## ▶️ Running the App
+## Running the App
  
 You need to run the **backend** and **frontend** at the same time. Use a split terminal for this.
  
@@ -80,14 +80,14 @@ npx expo start
  
 ---
  
-## 📱 Opening on Your Phone
+## Opening on Your Phone
  
 1. Make sure your phone is on the **same Wi-Fi network** as your computer
 2. Open the **Expo Go** app on your phone
 3. Scan the **QR code** shown in Terminal 2
 ---
  
-## 🛠️ Common Issues
+## Common Issues
  
 | Problem | Fix |
 |---|---|
