@@ -8,7 +8,7 @@ const BASE_URL = "http://localhost:5001/api/users";
 interface User {
   id: string;
   name: string;
-  username: string; 
+  username: string;
   email: string;
   image?: string;
   bio?: string;
@@ -51,11 +51,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const cleanEmail = email.trim();
       const cleanPassword = password.trim();
 
-      const response = await axios.post(`${BASE_URL}/login`, { 
-        email: cleanEmail, 
-        password: cleanPassword 
+      const response = await axios.post(`${BASE_URL}/login`, {
+        email: cleanEmail,
+        password: cleanPassword
       });
-      
+
       const data = response.data;
 
       if (data) {
@@ -97,19 +97,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const userToSave = {
           ...data,
           id: data._id || data.id,
-          username: data.username // มั่นใจว่ามี username กลับมา
+          username: data.username
         };
 
         await AsyncStorage.setItem('user', JSON.stringify(userToSave));
         setUser(userToSave);
         router.replace("/");
       } else {
-        // ถ้า Backend ส่ง Error มา (เช่น Username ซ้ำ) ให้โยนออกไป alert
         throw new Error(data.message || "Registration failed");
       }
     } catch (error: any) {
       console.error("Signup Error:", error);
-      throw error; // ส่ง Error กลับไปให้หน้า SignUp.tsx จัดการ alert
+      throw error;
     } finally {
       setIsLoading(false);
     }

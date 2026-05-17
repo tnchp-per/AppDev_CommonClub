@@ -7,7 +7,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FDFCF0",
   },
-  // Header with Back Arrow and Logo
   headerNav: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -19,13 +18,13 @@ const styles = StyleSheet.create({
   backButton: {
     position: 'absolute',
     left: 20,
-    top: Platform.OS === 'ios' ? 15 : 16 ,
+    top: Platform.OS === 'ios' ? 15 : 16,
     zIndex: 10,
   },
   headerTitle: {
-    fontSize: 16, 
-    fontWeight: 'bold', 
-    color: '#1A3C22', 
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1A3C22',
     letterSpacing: 1
   },
 
@@ -37,7 +36,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
-    fontFamily: "Georgia",  
+    fontFamily: "Georgia",
   },
   dateTimeText: {
     fontSize: 20,
@@ -64,17 +63,16 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
     textAlign: 'center',
   },
-  participantRow: { 
+  participantRow: {
     backgroundColor: '#1A3C22',
     padding: 8,
     borderRadius: 40,
     justifyContent: 'center',
     alignItems: 'center',
     width: 160,
-    margin:12
+    margin: 12
   },
 
-  // Host Section
   aboutHeader: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -107,10 +105,9 @@ const styles = StyleSheet.create({
     color: "#1A3C22",
     lineHeight: 20,
     marginLeft: 12,
-    
+
   },
 
-  // Footer
   footer: {
     padding: 20,
     paddingBottom: Platform.OS === 'ios' ? 30 : 20,
@@ -133,28 +130,28 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#FDFCF0",
   },
-  image: { 
-    width: width,        // Forces full screen width
+  image: {
+    width: width,
     height: 350,
     resizeMode: 'cover',
     marginTop: 0
- },
- actionContainer: {
-  padding: 20,
-  width: '100%',
-},
-hostContainer: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  gap: 12,
-  marginBottom: 20,
-},
-hostedByText: {
-  fontSize: 12,
-  color: '#1A3C22',
-  opacity: 0.6,
-},
-  
+  },
+  actionContainer: {
+    padding: 20,
+    width: '100%',
+  },
+  hostContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 20,
+  },
+  hostedByText: {
+    fontSize: 12,
+    color: '#1A3C22',
+    opacity: 0.6,
+  },
+
 }
 );
 

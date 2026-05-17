@@ -3,7 +3,7 @@ import { Platform, StyleSheet } from "react-native";
 export default StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#FAF9F1", // สีเบจเดียวกับ Profile
+        backgroundColor: "#FAF9F1",
     },
     scrollContent: {
         flexGrow: 1,
@@ -17,7 +17,7 @@ export default StyleSheet.create({
     homeButton: {
         position: 'absolute',
         left: 20,
-        top: Platform.OS === 'ios' ? 50 : 18 ,
+        top: Platform.OS === 'ios' ? 50 : 18,
         zIndex: 10,
     },
     welcomeText: {

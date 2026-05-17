@@ -8,16 +8,16 @@ const style = StyleSheet.create({
         paddingHorizontal: 20,
         borderRightWidth: 1,
         borderColor: "#E5E5E5",
-        justifyContent: "flex-start"       
+        justifyContent: "flex-start"
     },
-    logo: { 
-        width: 50, 
-        height: 50, 
-        marginBottom: 10 
+    logo: {
+        width: 50,
+        height: 50,
+        marginBottom: 10
     },
     heading: {
-        fontSize: 30, 
-        fontWeight: "700", 
+        fontSize: 30,
+        fontWeight: "700",
         marginBottom: 40,
         color: "#042917"
     },
@@ -27,9 +27,9 @@ const style = StyleSheet.create({
         paddingVertical: 12,
         paddingHorizontal: 10,
         borderRadius: 10,
-        marginBottom: 40, // เว้นระยะห่างจากขอบล่างจอ
-        backgroundColor: "#FFF5F5", // เพิ่มสีพื้นหลังอ่อนๆ ให้ปุ่มดูเด่น
-          
+        marginBottom: 40,
+        backgroundColor: "#FFF5F5",
+
     },
     logoutText: { marginLeft: 12, fontSize: 16, fontWeight: "600", color: "#E06666" }
 })

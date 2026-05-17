@@ -1,35 +1,34 @@
 import { Platform, StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-  container: { 
+  container: {
     flex: 1,
     backgroundColor: "#FAF9F1",
     paddingHorizontal: 20,
   },
-  header: { 
-    fontSize: 24, 
-    fontWeight: "bold", 
-    textAlign: "center", 
-    marginTop: Platform.OS === 'ios' ? 80: 30,
-    marginBottom: 30, 
-    letterSpacing: 1, 
+  header: {
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginTop: Platform.OS === 'ios' ? 80 : 30,
+    marginBottom: 30,
+    letterSpacing: 1,
     color: '#1A3C22',
-    //fontFamily: "Georgia",
   },
   inputGroup: { gap: 12 },
-  label: { 
-    fontSize: 13, 
-    fontWeight: "700", 
-    color: "#1A3C22", 
+  label: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#1A3C22",
     marginBottom: 4,
     marginTop: 10
   },
-  input: { 
-    borderWidth: 2, // Thicker chunky borders
-    borderColor: "#1A3C22", 
-    borderRadius: 12, 
-    padding: 15, 
-    backgroundColor: "white", 
+  input: {
+    borderWidth: 2,
+    borderColor: "#1A3C22",
+    borderRadius: 12,
+    padding: 15,
+    backgroundColor: "white",
     fontSize: 14,
     color: "#1A3C22"
   },
@@ -44,17 +43,17 @@ export const styles = StyleSheet.create({
     overflow: "hidden"
   },
   pickerStyle: { width: '100%', color: "#1A3C22" },
-  row: { 
-    flexDirection: "row", 
-    justifyContent: "space-between", 
-    marginVertical: 10 
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: 10
   },
-  halfBtn: { 
-    backgroundColor: "#8C9C8E", 
-    paddingVertical: 15, 
-    borderRadius: 12, 
-    width: "100%", 
-    alignItems: "center" 
+  halfBtn: {
+    backgroundColor: "#8C9C8E",
+    paddingVertical: 15,
+    borderRadius: 12,
+    width: "100%",
+    alignItems: "center"
   },
   btnText: { color: "#FAF9F1", fontWeight: "600", fontSize: 13 },
   dateTimeText: {
@@ -64,17 +63,17 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "500"
   },
-  submitBtn: { 
-    backgroundColor: "#1A3C22", 
-    padding: 20, 
-    borderRadius: 35, 
-    marginTop: 30, 
-    alignItems: "center" 
+  submitBtn: {
+    backgroundColor: "#1A3C22",
+    padding: 20,
+    borderRadius: 35,
+    marginTop: 30,
+    alignItems: "center"
   },
   imageUploadBox: {
     width: '100%',
     height: 180,
-    backgroundColor: '#FAF9F1', // Matches your theme
+    backgroundColor: '#FAF9F1',
     borderRadius: 12,
     borderWidth: 2,
     borderColor: '#1A3C22',
@@ -103,7 +102,7 @@ export const styles = StyleSheet.create({
 
   guestContainer: {
     flex: 1,
-    backgroundColor: '#FDFCF0', // Match your home background
+    backgroundColor: '#FDFCF0',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
@@ -114,7 +113,6 @@ export const styles = StyleSheet.create({
     borderRadius: 24,
     alignItems: 'center',
     width: '100%',
-    // Shadow for depth
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
@@ -133,7 +131,7 @@ export const styles = StyleSheet.create({
   guestTitle: {
     fontSize: 26,
     fontWeight: 'bold',
-    color: '#1A3C22', // Match your Calendar theme color
+    color: '#1A3C22',
     marginBottom: 10,
   },
   guestSubtitle: {
@@ -144,7 +142,7 @@ export const styles = StyleSheet.create({
     marginBottom: 30,
   },
   guestLoginBtn: {
-    backgroundColor: '#1A3C22', // Your primary action color
+    backgroundColor: '#1A3C22',
     paddingVertical: 16,
     paddingHorizontal: 30,
     borderRadius: 14,
@@ -174,13 +172,13 @@ export const styles = StyleSheet.create({
   backButton: {
     position: 'absolute',
     left: 20,
-    top: Platform.OS === 'ios' ? 10 : 16 ,
+    top: Platform.OS === 'ios' ? 10 : 16,
     zIndex: 10,
   },
   headerTitle: {
-    fontSize: 16, 
-    fontWeight: 'bold', 
-    color: '#1A3C22', 
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1A3C22',
     letterSpacing: 1
   }
 });

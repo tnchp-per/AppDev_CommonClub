@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     },
     editButton: {
         marginTop: 20,
-        backgroundColor: '#0D331C', // Darkest green
+        backgroundColor: '#0D331C',
         paddingHorizontal: 30,
         paddingVertical: 12,
         borderRadius: 25,
@@ -108,16 +108,15 @@ const styles = StyleSheet.create({
         color: '#A5A198',
         fontStyle: 'italic',
     },
-    // Action Block Buttons (Hangout, Request, Saved)
     primaryBlockButton: {
-        backgroundColor: '#4D7260', // Medium green for priority action
+        backgroundColor: '#4D7260',
         borderRadius: 25,
         paddingVertical: 14,
         alignItems: 'center',
         marginBottom: 20,
     },
     secondaryBlockButton: {
-        backgroundColor: '#A5A198', // Beige/Tan for secondary actions
+        backgroundColor: '#A5A198',
         borderRadius: 25,
         paddingVertical: 14,
         alignItems: 'center',
@@ -133,7 +132,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     logoutButtonText: {
-        color: '#E06666', // Muted red
+        color: '#E06666',
         fontSize: 14,
         fontWeight: 'bold',
         textDecorationLine: 'underline',
