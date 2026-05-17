@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
     profileHeader: { 
         alignItems: 'center', 
         padding: 30 , 
-        marginTop: 25 
+        marginTop: 30 
     },
     center: { 
         flex: 1, 

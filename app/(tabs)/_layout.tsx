@@ -44,7 +44,7 @@ function WebSidebar() {
             screenOptions={{
               headerShown: false,
               tabBarStyle: { display: "none" },
-              sceneStyle: { backgroundColor: "#F5F5F5" },
+              sceneStyle: { backgroundColor: "#FAF9F1" },
             }}
           >
             <Tabs.Screen name="index" />

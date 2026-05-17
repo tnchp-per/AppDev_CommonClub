@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     profileHeader: { 
         alignItems: 'center', 
         padding: 30 , 
-        marginTop: 25 
+        marginTop: Platform.OS === 'ios' ? 45 : 5 
     },
     center: { 
         flex: 1, 

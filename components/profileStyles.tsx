@@ -1,14 +1,15 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#FAF9F1',
         paddingHorizontal: 20,
+        
     },
     topHeader: {
-        marginTop: 60,
-        marginBottom: 20,
+        marginTop: Platform.OS === 'ios' ? 80: 30,
+        marginBottom: 40,
         alignItems: "center",
     },
     pageTitle: {
