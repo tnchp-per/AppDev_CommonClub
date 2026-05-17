@@ -13,9 +13,6 @@ export default function ManageRequests() {
   const [loading, setLoading] = useState(true);
 
   const isHost = hangout?.host?.toString() === user?._id?.toString();
-
-
-  //const BASE_URL = "http://192.168.1.61:5001/api/hangouts";
   const BASE_URL = "http://localhost:5001/api/hangouts";
 
   useEffect(() => {
@@ -62,7 +59,6 @@ export default function ManageRequests() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#FDFCF0' }}>
-      {/* Header */}
       <View style={style.headerStyles.header}>
         <TouchableOpacity onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={24} color="#1A3C22" />
@@ -73,7 +69,6 @@ export default function ManageRequests() {
 
       <ScrollView contentContainerStyle={{ padding: 20 }}>
         
-        {/* SECTION 1: PENDING REQUESTS */}
         <Text style={style.sectionStyles.title}>Pending ({hangout?.pendingParticipants?.length || 0})</Text>
         {hangout?.pendingParticipants?.length === 0 ? (
           <Text style={style.sectionStyles.emptyText}>No new requests.</Text>
@@ -102,7 +97,6 @@ export default function ManageRequests() {
           );
         }))}
 
-        {/* SECTION 2: ACCEPTED PARTICIPANTS */}
         <Text style={[style.sectionStyles.title, { marginTop: 30 }]}>Joined ({hangout?.acceptedParticipants?.length || 0})</Text>
         {hangout?.acceptedParticipants?.length === 0 ? (
           <Text style={style.sectionStyles.emptyText}>No one has joined yet.</Text>

@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
     },
     topHeader: {
         marginTop: Platform.OS === 'ios' ? 80: 30,
-        marginBottom: 40,
+        marginBottom: 20,
         alignItems: "center",
     },
     pageTitle: {

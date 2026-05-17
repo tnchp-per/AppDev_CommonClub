@@ -10,8 +10,6 @@ import { ActivityIndicator, Alert, Image, ScrollView, Text, TextInput, Touchable
 import { Calendar } from 'react-native-calendars';
 import { styles } from "../../../components/editHangoutStyles";
 
-
-//const BASE_URL = "http://192.168.1.61:5001/api";
 const BASE_URL = "http://localhost:5001/api";
 
 export default function EditHangout() {
@@ -117,7 +115,6 @@ export default function EditHangout() {
   };
 
   const handleDelete = async () => {
-    // 1. Confirm deletion (Works for both Web and Mobile)
     const confirmed = window.confirm("Are you sure you want to delete this hangout? This will remove it for all participants.");
     
     if (!confirmed) return;
@@ -125,10 +122,10 @@ export default function EditHangout() {
     try {
       await deleteHangout(id);
       alert("Event deleted successfully.");
-      router.dismiss(2); // Go back to the previous page (Discover)
+      router.dismiss(2); 
       
       if (typeof window !== 'undefined') {
-        window.location.href = "http://192.168.1.61:8081/";
+        window.location.href = "http://localhost:8081/";
       }
     } catch (err) {
       console.error(err);
@@ -180,7 +177,7 @@ export default function EditHangout() {
             [selectedDay]: {
               selected: true,
               disableTouchEvent: true,
-              selectedColor: '#1A3C24', // Your dark circle color
+              selectedColor: '#1A3C24', 
               selectedTextColor: '#FFFFFF'
             },
 

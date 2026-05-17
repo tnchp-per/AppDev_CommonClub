@@ -13,7 +13,7 @@ export default function PublicProfile() {
         const fetchUserData = async () => {
             try {
                 // Fetch the specific user's info from your backend
-                //const response = await fetch(`http://192.168.1.61:5001/api/users/${id}`);
+                //const response = await fetch(`http://localhost:5001/api/users/${id}`);
                 const response = await fetch(`http://localhost:5001/api/users/${id}`);
                 const data = await response.json();
                 setTargetUser(data);

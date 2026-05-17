@@ -6,14 +6,11 @@ import React, { useEffect, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
 
-//const BASE_URL = 'http://192.168.1.61:5001/api/users'
 const BASE_URL = 'http://localhost:5001/api/users'
 
 export default function EditProfile() {
     const { user, setUser } = useAuth();
     const router = useRouter();
-
-    // 1. Keep these! They handle the typing/editing
     const [name, setName] = useState(user?.name || '');
     const [username, setUsername] = useState(user?.username || '');
     const [bio, setBio] = useState(user?.bio || '');
@@ -35,12 +32,11 @@ export default function EditProfile() {
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [1, 1],
-            quality: 0.5, // ลดขนาดไฟล์ลงหน่อยเพื่อให้ส่ง Base64 ไวขึ้น
-            base64: true, // 👈 ต้องเปิดตัวนี้
+            quality: 0.5, 
+            base64: true,
         });
 
         if (!result.canceled) {
-            // เก็บเป็นรูป Base64 เพื่อให้บันทึกเข้า DB ได้จริง
             setImage(`data:image/jpeg;base64,${result.assets[0].base64}`);
         }
     };
@@ -69,7 +65,7 @@ export default function EditProfile() {
         };
 
         fetchFreshUser();
-    }, []); // รันครั้งเดียวตอนเปิดหน้า
+    }, []); 
 
     const addInterest = () => {
         if (interestInput.trim() && !interests.includes(interestInput.trim())) {
@@ -93,7 +89,7 @@ export default function EditProfile() {
                 username,
                 bio,
                 interests,
-                image // 👈 เพิ่มตัวนี้เข้าไปใน body
+                image 
             });
 
             // อัปเดต Context ด้วย
@@ -108,19 +104,15 @@ export default function EditProfile() {
         }
     };
 
-    // 1. เพิ่มฟังก์ชันนี้ก่อนถึงส่วน return
     const renderImage = () => {
-        // ถ้า image ไม่มีค่า, หรือเป็นค่าว่าง, หรือเป็นชื่อไฟล์ default.png
         if (!image || image === "" || image === "default.png") {
             return require("../../assets/images/default.png");
         }
 
-        // ถ้าเป็น Base64 หรือ URI จากเครื่อง
         return { uri: image };
     };
     return (
         <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 50 }}>
-            {/* Header */}
             <View style={styles.topHeader}>
                 <Text style={styles.pageTitle}>EDIT PROFILE</Text>
             </View>
@@ -129,7 +121,6 @@ export default function EditProfile() {
             <View style={{ alignItems: 'center', marginVertical: 20 }}>
                 <Image
                     source={
-                        // ถ้า image เป็น null, ค่าว่าง หรือ "default.png" ให้ใช้รูปในเครื่อง
                         (!image || image === "" || image === "default.png")
                             ? require("../../assets/images/default.png")
                             : { uri: image }
@@ -138,10 +129,10 @@ export default function EditProfile() {
                         width: 100,
                         height: 100,
                         borderRadius: 50,
-                        borderWidth: 1,           // 👈 เพิ่มเส้นขอบ
-                        borderColor: '#A5A198',   // 👈 สีที่คุณต้องการ
+                        borderWidth: 1,           
+                        borderColor: '#A5A198',   
                         backgroundColor: '#ffffff',
-                        marginBottom: 3    // สีพื้นหลังกันรูปโปร่งใสแล้วดูแปลก
+                        marginBottom: 3    
                     }}
                 />
 
@@ -150,7 +141,6 @@ export default function EditProfile() {
                 </TouchableOpacity>
             </View>
 
-            {/* Form Fields */}
             <View style={styles.form}>
                 <Text style={styles.label}>NAME</Text>
                 <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="Your Name" />
@@ -203,7 +193,6 @@ export default function EditProfile() {
                 </View>
             </View>
 
-            {/* Action Buttons - จัดให้อยู่ตรงกลาง */}
             <View style={styles.buttonWrapper}>
                 <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
                     <Text style={styles.saveButtonText}>SAVE CHANGES</Text>

@@ -3,26 +3,26 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import styles from "../../../components/HangoutDetailStyles"; // Adjust path as needed
-import { useAuth } from "../../../context/AuthContext"; // Path to your context
+import { useAuth } from "../../../context/AuthContext";
 
 export default function HangoutDetails() {
   const { id } = useLocalSearchParams();
   const [hangout, setHangout] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth(); // Get the logged-in user
+  const { user } = useAuth(); 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isHangoutImageValid = hangout?.image && (hangout.image.startsWith('http') || hangout.image.startsWith('data:image'));
   const hangoutImageSource = isHangoutImageValid 
   ? { uri: hangout.image } 
-  : require('../../../assets/images/logo.png'); // Local fallback
+  : require('../../../assets/images/logo.png'); 
   const isHostImageValid = hangout?.host?.image && (hangout.host.image.startsWith('http') || hangout.host.image.startsWith('data:image'));
   const hostImageSource = isHostImageValid
     ? { uri: hangout.host.image }
-    : require('../../../assets/images/default.png'); // Local fallback
+    : require('../../../assets/images/default.png'); 
 
-  //const BASE_URL = "http://192.168.1.61:5001/api/hangouts";
   const BASE_URL = "http://localhost:5001/api/hangouts";
+
   useEffect(() => {
     fetchHangoutDetails();
   }, [id]);
@@ -35,10 +35,10 @@ export default function HangoutDetails() {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch(`http://192.168.1.61:5001/api/hangouts/${id}/join`, {
+      const response = await fetch(`http://localhost:5001/api/hangouts/${id}/join`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.id || user._id }), // Handle different ID naming
+        body: JSON.stringify({ userId: user.id || user._id }),
       });
 
       const data = await response.json();

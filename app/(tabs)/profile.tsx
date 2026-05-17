@@ -12,11 +12,8 @@ export default function Profile() {
   const [userData, setUserData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
-  //const API_URL = "http://192.168.1.61:5001/api/users";
   const API_URL = "http://localhost:5001/api/users";
 
-  // 3. ใช้ useFocusEffect แทน useEffect เดิมบางส่วน 
-  // เพื่อให้ดึงข้อมูลใหม่ทุกครั้งที่หน้า Profile ถูก "Focus" (เช่น ตอนกด Back กลับมา)
   useFocusEffect(
     useCallback(() => {
       if (user?.id) {
@@ -32,7 +29,6 @@ export default function Profile() {
       const response = await axios.get(`${API_URL}/${user.id}`);
       setUserData(response.data);
     } catch (error) {
-      // ถ้าเพิ่งสมัครใหม่แล้วยังไม่มีข้อมูลใน DB ให้ใช้ค่าจาก Context แทน
       setUserData({
         name: user.name,
         username: "new_user",
@@ -67,7 +63,7 @@ export default function Profile() {
     );
   }
 
-  if (loading && !userData) { // โชว์ loading เฉพาะตอนที่ยังไม่มีข้อมูลเดิม
+  if (loading && !userData) { 
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#FAF9F1" }}>
         <ActivityIndicator size="large" color="#FF6B6B" />
@@ -92,16 +88,14 @@ export default function Profile() {
         <Text style={styles.username}>@{userData.username}</Text>
         <Text style={styles.bio}>{userData.bio}</Text>
 
-        {/* 4. ใส่ Link ไปหน้า Edit Profile */}
         <TouchableOpacity
           style={styles.editButton}
-          onPress={() => router.push('/profile/editProfile')} // ใช้ push เท่านั้น!
+          onPress={() => router.push('/profile/editProfile')} 
         >
           <Text style={styles.editButtonText}>EDIT PROFILE</Text>
         </TouchableOpacity>
       </View>
 
-      {/* ส่วน Stats */}
       <View style={styles.statsContainer}>
         <View style={styles.statCard}>
           <Text style={styles.statNumber}>{userData.joinedEvents?.length || 0}</Text>
@@ -113,7 +107,6 @@ export default function Profile() {
         </View>
       </View>
 
-      {/* ส่วน Interests */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Interest</Text>
         <View style={styles.interestsContainer}>
@@ -130,7 +123,7 @@ export default function Profile() {
       </View>
 
       <View style={styles.section}>
-        {/* --- 1. ดู Hangout ที่เราสร้าง (Created) --- */}
+        
         <Text style={styles.sectionTitle}>Manage My Events</Text>
         <TouchableOpacity
           style={styles.primaryBlockButton}
@@ -139,7 +132,6 @@ export default function Profile() {
           <Text style={styles.blockButtonText}>MY CREATED HANGOUTS</Text>
         </TouchableOpacity>
 
-        {/* --- 2. ดู Hangout ที่เราไปจอย (Joined) --- */}
         <Text style={styles.sectionTitle}>My Schedule</Text>
         <TouchableOpacity
           style={styles.primaryBlockButton}
