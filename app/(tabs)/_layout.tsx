@@ -23,8 +23,8 @@ function WebSidebar() {
         <SidebarButton title="Create Hangout" icon="add-circle-outline" route="/create" />
         <SidebarButton title="Profile" icon="person-outline" route="/profile" />
 
-        {/* --- เพิ่มปุ่ม LOGOUT ตรงนี้ --- */}
-        <View style={{ flex: 1 }} /> {/* ตัวดัน (Spacer) เพื่อให้ปุ่ม Logout ไปอยู่ล่างสุด */}
+       
+        <View style={{ flex: 1 }} /> 
 
         <TouchableOpacity
           onPress={logout}
