@@ -49,7 +49,7 @@ export default function Login() {
                 <TouchableOpacity onPress={() => router.replace('/')} style={styles.homeButton}>
                     < Ionicons name="home" size={28} color="#1A3C22" />
                 </TouchableOpacity>
-                {/* Logo / Illustration Area */}
+
                 <View style={styles.headerArea}>
                     <Image
                         source={require("../../assets/images/logo_transparent.png")}
@@ -60,7 +60,7 @@ export default function Login() {
                     <Text style={styles.subText}>Login to join our community</Text>
                 </View>
 
-                {/* Form Area */}
+
                 <View style={styles.formContainer}>
                     <View style={styles.inputWrapper}>
                         <Text style={styles.inputLabel}>EMAIL</Text>

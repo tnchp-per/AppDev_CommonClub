@@ -9,7 +9,7 @@ function WebSidebar() {
   return (
     <View style={{ flexDirection: "row", flex: 1 }}>
       {/* Sidebar */}
-      <View style= {style.container}>
+      <View style={style.container}>
         <Image
           source={require("../../assets/images/logo_transparent.png")}
           style={style.logo}
@@ -23,8 +23,8 @@ function WebSidebar() {
         <SidebarButton title="Create Hangout" icon="add-circle-outline" route="/create" />
         <SidebarButton title="Profile" icon="person-outline" route="/profile" />
 
-       
-        <View style={{ flex: 1 }} /> 
+
+        <View style={{ flex: 1 }} />
 
         <TouchableOpacity
           onPress={logout}
@@ -37,7 +37,6 @@ function WebSidebar() {
         </TouchableOpacity>
       </View>
 
-      {/* Content Section (โค้ดเดิมของคุณ) */}
       <View style={{ flex: 1, alignItems: "center" }}>
         <View style={{ width: "100%", maxWidth: 1200, flex: 1 }}>
           <Tabs

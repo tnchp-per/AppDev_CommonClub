@@ -2,8 +2,6 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
 
-// 1. REGISTER (CREATE a new user)
-// URL: POST /api/users/
 router.post("/", async (req, res) => {
   try {
     const newUser = new User(req.body);
@@ -14,12 +12,8 @@ router.post("/", async (req, res) => {
   }
 });
 
-// 2. GET ALL (Helpful for debugging)
-// URL: GET /api/users/
 router.get("/:id", async (req, res) => {
   try {
-    // .populate('createdEvents') tells Mongo to go find the actual 
-    // Hangout data associated with those IDs!
     const user = await User.findById(req.params.id).populate('createdEvents');
 
     if (!user) return res.status(404).json({ message: "User not found" });
@@ -46,9 +40,8 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// 3. LOGIN (The logic we just discussed)
-// URL: POST /api/users/login
-router.post("/login", async (req, res) => { // Changed 'app' to 'router' and path to '/login'
+
+router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email, password });
@@ -69,13 +62,10 @@ router.post("/login", async (req, res) => { // Changed 'app' to 'router' and pat
     res.status(500).json({ message: error.message });
   }
 });
-// 4. UPDATE (Edit user profile)
-// URL: PUT /api/users/:id
+
 router.put("/:id", async (req, res) => {
   try {
     const { name, username, bio, interests } = req.body;
-
-    // ค้นหาและอัปเดตข้อมูล
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
       {
@@ -83,10 +73,10 @@ router.put("/:id", async (req, res) => {
           name,
           username,
           bio,
-          interests // มั่นใจว่าสะกดตรงกับใน Schema นะครับ
+          interests
         }
       },
-      { new: true, runValidators: true } // new: true เพื่อให้มันคืนค่าที่อัปเดตแล้วกลับมา
+      { new: true, runValidators: true }
     );
 
     if (!updatedUser) {
@@ -95,7 +85,6 @@ router.put("/:id", async (req, res) => {
 
     res.json(updatedUser);
   } catch (error) {
-    // กรณี username ซ้ำ
     if (error.code === 11000) {
       return res.status(400).json({ message: "Username already exists!" });
     }
@@ -106,15 +95,13 @@ router.put("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const { name, email, password } = req.body;
-
-    // สร้าง User โดยใส่ค่าเริ่มต้นเผื่อไว้เลย
     const newUser = new User({
       name,
       email,
       password,
-      username: email.split('@')[0], // เอาหน้า email มาทำ username ชั่วคราว
+      username: email.split('@')[0],
       bio: "Hello! I'm new here.",
-      interests: [], // ใส่เป็น Array ว่างไว้ก่อน
+      interests: [],
       image: ""
     });
 

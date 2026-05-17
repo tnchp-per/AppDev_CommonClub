@@ -17,7 +17,6 @@ import { useAuth } from "../../context/AuthContext";
 
 const { width: screenWidth } = Dimensions.get("window");
 
-// ฟังก์ชันแปลงวันที่
 const formatHangoutDate = (dateString: string) => {
     if (!dateString) return "Coming soon";
     const date = new Date(dateString);

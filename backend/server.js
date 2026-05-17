@@ -16,7 +16,6 @@ const hangoutRoutes = require("./routes/hangoutRoutes");
 app.use("/api/users", userRoutes);
 app.use("/api/hangouts", hangoutRoutes);
 
-// MongoDB connection
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
@@ -26,9 +25,7 @@ mongoose
     console.log(error);
   });
 
-// Server
 const PORT = 5001;
-// Adding '0.0.0.0' tells the server to accept external connections
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on http://0.0.0.0:${PORT}`);
 });

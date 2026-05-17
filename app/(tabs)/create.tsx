@@ -1,4 +1,4 @@
-import { Picker } from "@react-native-picker/picker"; // FIXED IMPORT
+import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
@@ -239,7 +239,7 @@ export default function CreateHangout() {
           </Picker>
         </View>
 
-        {/* IMAGE UPLOAD SECTION */}
+
         <TouchableOpacity style={styles.imageUploadBox} onPress={pickImage}>
           {image ? (
             <Image source={{ uri: image }} style={styles.uploadedImage} />

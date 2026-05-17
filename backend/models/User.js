@@ -1,4 +1,4 @@
-const mongoose = require("mongoose"); // <--- Add this!
+const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
-  }, // In a real app, we encrypt this!
+  },
   username: {
     type: String,
     unique: true

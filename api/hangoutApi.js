@@ -11,15 +11,14 @@ export const fetchAllHangouts = async () => {
     return await response.json();
   } catch (error) {
     console.error("Error fetching hangouts:", error);
-    throw error; // Let the screen handle the error
+    throw error;
   }
 };
 
 export const fetchDashboardData = async (userId) => {
   try {
-    // We send the userId so the backend knows WHO is asking
     const response = await fetch(`${BASE_URL}/hangouts/dashboard/${userId}`);
-    return await response.json(); 
+    return await response.json();
   } catch (error) {
     console.error("Dashboard fetch error:", error);
     throw error;
@@ -36,14 +35,15 @@ export const createHangout = async (hangoutData) => {
       body: JSON.stringify(hangoutData),
     });
     if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || "Failed to create hangout");
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to create hangout");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error creating hangout:", error);
+    throw error;
   }
-  return await response.json();
-} catch (error) {
-  console.error("Error creating hangout:", error);
-  throw error; // Let the screen handle the error
-}};
+};
 
 export const deleteHangout = async (id) => {
   const response = await fetch(`${BASE_URL}/hangouts/${id}`, {

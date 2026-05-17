@@ -4,49 +4,44 @@ const Default_logo = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAB4AAAAQ4CAIA
 const hangoutSchema = new mongoose.Schema({
   title: { type: String, required: true },
   location: { type: String, required: true },
-  description: { type: String},
-  
-  // --- NEW FIELDS ADDED HERE ---
-  category: { 
-    type: String, 
-    required: true,
-    //enum: ["Social", "Sports", "Study", "Food"] // Optional: limits to these choices
-  },
-  date: { 
-    type: Date, 
-    required: true 
-  },
-  endTime: { 
-    type: Date, 
-    required: true 
-  }, 
-  duration: { type: String }, 
+  description: { type: String },
 
-  maxParticipants: { 
-    type: Number, 
-    default: 5 
+  category: {
+    type: String,
+    required: true,
+
   },
-  image: { 
-    type: String, 
+  date: {
+    type: Date,
+    required: true
+  },
+  endTime: {
+    type: Date,
+    required: true
+  },
+  duration: { type: String },
+
+  maxParticipants: {
+    type: Number,
+    default: 5
+  },
+  image: {
+    type: String,
     default: ""
   },
-  host: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: "User", 
-    required: true 
+  host: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true
   },
-  acceptedParticipants: [{ 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: "User" 
+  acceptedParticipants: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
   }],
-  pendingParticipants: [{ 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: "User" 
+  pendingParticipants: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
   }],
-  //participants: [{ 
-   // type: mongoose.Schema.Types.ObjectId, 
-   // ref: "User" 
-  //}]
 }, { timestamps: true });
 
 module.exports = mongoose.model("Hangout", hangoutSchema);

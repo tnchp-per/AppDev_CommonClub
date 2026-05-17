@@ -139,12 +139,8 @@ export default function HangoutDetails() {
             </Text>
           </TouchableOpacity>
 
-
-
-
           <Text style={styles.aboutHeader}>About this event</Text>
 
-          {/* DYNAMIC HOST */}
           <TouchableOpacity
             style={styles.hostContainer}
             onPress={() => router.push(`/profile/${hangout.host._id || hangout.host}`)}
@@ -165,14 +161,12 @@ export default function HangoutDetails() {
             </View>
           </TouchableOpacity>
 
-          {/* DYNAMIC DESCRIPTION */}
           <Text style={styles.descriptionText}>{hangout?.description}</Text>
         </View>
       </ScrollView>
 
       <View style={styles.actionContainer}>
         {!user ? (
-          // 1. GUEST STATE: Not logged in
           <TouchableOpacity
             style={[styles.Button, { backgroundColor: '#1A3C22' }]}
             onPress={() => router.push("/login")}
@@ -180,7 +174,7 @@ export default function HangoutDetails() {
             <Text style={styles.ButtonText}>LOG IN TO JOIN</Text>
           </TouchableOpacity>
         ) : isHost ? (
-          // 1. If user is the HOST
+
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 10, width: '100%' }}>
             <TouchableOpacity
               style={[styles.Button, { flex: 1, backgroundColor: '#1A3C22' }]}
@@ -198,17 +192,14 @@ export default function HangoutDetails() {
 
           </View>
         ) : isAlreadyJoined ? (
-          // 2. If user is already a PARTICIPANT
           <View style={[styles.Button, { backgroundColor: '#E0E0E0', width: '100%' }]}>
             <Text style={[styles.ButtonText, { color: '#666' }]}>ALREADY JOINED</Text>
           </View>
         ) : isPending ? (
-          // 3. If user has a PENDING request
           <View style={[styles.Button, { backgroundColor: '#E0E0E0', width: '100%' }]}>
             <Text style={[styles.ButtonText, { color: '#666' }]}>REQUEST PENDING</Text>
           </View>
         ) : (
-          // 4. Default: Show JOIN button
           <TouchableOpacity
             style={[styles.Button, { width: '100%' }, isSubmitting && { opacity: 0.6 }]}
             onPress={handleJoinRequest}

@@ -6,7 +6,6 @@ import { styles } from "../../components/homeStyles";
 import HorizontalSection from "../../components/HorizontalSection";
 import { useAuth } from "../../context/AuthContext";
 
-// 1. Define the Hangout interface
 interface Hangout {
   _id: string;
   title: string;
@@ -19,22 +18,21 @@ interface Hangout {
 }
 
 export default function HomeScreen() {
-  const { user } = useAuth(); 
+  const { user } = useAuth();
   const router = useRouter();
-  
+
   const [upcoming, setUpcoming] = useState<Hangout[]>([]);
   const [recommended, setRecommended] = useState<Hangout[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // 2. Logic to load data based on Auth status
   const loadData = async () => {
     try {
-      setIsLoading(true); // Ensure loading shows
+      setIsLoading(true);
       setError(null);
 
-      console.log("Current User ID:", user?.id); // Debug check
+      console.log("Current User ID:", user?.id);
 
       if (user?.id) {
         const data = await fetchDashboardData(user.id);
@@ -42,14 +40,13 @@ export default function HomeScreen() {
         setRecommended(data.limitedRecommendations || []);
 
       } else {
-        const allEvents = await fetchAllHangouts(); 
+        const allEvents = await fetchAllHangouts();
         console.log("Fetched all events:", allEvents?.length);
-        
-        setUpcoming([]); 
+
+        setUpcoming([]);
         setRecommended(allEvents || []);
       }
     } catch (err: any) {
-      // CHANGE THIS: Let's see what the actual error is!
       setError(`Connection Error: ${err.message}`);
       console.error("Home Load Error Detail:", err);
     } finally {
@@ -78,27 +75,25 @@ export default function HomeScreen() {
   }
 
   return (
-    <SafeAreaView style={{ flex:1, backgroundColor: "#FDFCF0" }}>
-      <ScrollView 
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#FDFCF0" }}>
+      <ScrollView
         contentContainerStyle={[styles.container, { paddingBottom: 15 }]}
         showsVerticalScrollIndicator={true}
         refreshControl={
           <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
         }
       >
-        {/* Error Banner */}
         {error && (
           <View style={[styles.card, { backgroundColor: '#FFE5E5', marginBottom: 15 }]}>
             <Text style={{ color: '#D8000C', textAlign: 'center' }}>{error}</Text>
           </View>
         )}
 
-        {/* Dynamic Header */}
         <View style={{ marginBottom: 20, marginLeft: 10 }}>
           <Text style={styles.header}>
             {user ? `Welcome Back, ${user.name}!` : "Explore the Club!"}
           </Text>
-          
+
           {!user && (
             <TouchableOpacity onPress={() => router.push("/login")}>
               <Text style={{ color: "#FF6B6B", fontWeight: "600", fontSize: 16, marginTop: 4 }}>
@@ -108,24 +103,21 @@ export default function HomeScreen() {
           )}
         </View>
 
-        {/* SECTION 1: UPCOMING (Only show for logged in users with events) */}
         {user && upcoming.length > 0 && (
           <>
-            <HorizontalSection 
-              title="Your Upcoming Events" 
-              data={upcoming} 
+            <HorizontalSection
+              title="Your Upcoming Events"
+              data={upcoming}
             />
             <View style={{ height: 25 }} />
           </>
         )}
 
-        {/* SECTION 2: DISCOVER/RECOMMENDED (Visible to everyone) */}
-        <HorizontalSection 
-          title={user ? "Recommended for You" : "All Hangouts"} 
-          data={recommended} 
+        <HorizontalSection
+          title={user ? "Recommended for You" : "All Hangouts"}
+          data={recommended}
         />
 
-        {/* Empty State for Guests or New Users */}
         {upcoming.length === 0 && recommended.length === 0 && !error && (
           <View style={{ marginTop: 60, alignItems: 'center' }}>
             <Text style={{ color: "#999", textAlign: "center" }}>
@@ -136,9 +128,8 @@ export default function HomeScreen() {
         )}
       </ScrollView>
 
-      {/* Floating Action Button: Only for logged-in users */}
       {user && (
-        <TouchableOpacity 
+        <TouchableOpacity
           style={{
             position: 'absolute',
             right: 20,

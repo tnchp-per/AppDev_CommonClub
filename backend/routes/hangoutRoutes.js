@@ -1,104 +1,101 @@
 const express = require("express");
 const router = express.Router();
 
-const Hangout = require("../models/hangout"); // Matched to your Hangout.js file
-const User = require("../models/User");       // Added User model for the accept logic
+const Hangout = require("../models/hangout");
+const User = require("../models/User");
 
-const mongoose = require('mongoose'); // Add this at the top of your routes file
+const mongoose = require('mongoose');
 
 const interestToCategoryMap = {
-    "sports": "sports",
-    "gym": "sports",
-    "running": "sports",
-    "soccer": "sports",
-    "badminton": "sports",
-    "pilates":"sports",
-    "yoga":"sports",
-    "fitness":"sports",
-    "football":"sports",
-    
-    "cooking": "food",
-    "cafe": "food",
-    "baking": "food",
-    "cafe hopping":"food",
-    "fine-dining":"food",
-    "buffet":"food",
+  "sports": "sports",
+  "gym": "sports",
+  "running": "sports",
+  "soccer": "sports",
+  "badminton": "sports",
+  "pilates": "sports",
+  "yoga": "sports",
+  "fitness": "sports",
+  "football": "sports",
 
-    "concert": "music",
-    "guitar": "music",
-    "singing": "music",
-    "bass": "music",
-    
-    "clubbing":"social",
+  "cooking": "food",
+  "cafe": "food",
+  "baking": "food",
+  "cafe hopping": "food",
+  "fine-dining": "food",
+  "buffet": "food",
 
-    "travel":"adventure",
-    "car":"adventure",
+  "concert": "music",
+  "guitar": "music",
+  "singing": "music",
+  "bass": "music",
 
-    "working":"study",
+  "clubbing": "social",
+
+  "travel": "adventure",
+  "car": "adventure",
+
+  "working": "study",
 };
 
 
 
-// GET all hangouts
 router.get("/dashboard/:userId", async (req, res) => {
-    try {
-        const userId = req.params.userId;
-        const userProfile = await User.findById(userId).lean();
-        
-        const userInterests = userProfile?.interests || [];
-        const userMasterCategories = userInterests.map(interest => {
-            const normalized = interest.toLowerCase().trim();
-            return interestToCategoryMap[normalized] || normalized; // fallback to the original if not found
-        });
-        
-        const allHangouts = await Hangout.find().lean(); // Use .lean() for easier comparison
+  try {
+    const userId = req.params.userId;
+    const userProfile = await User.findById(userId).lean();
 
-        // Fix: Check host OR acceptedParticipants
-        const upcoming = allHangouts.filter(h => {
-            const isHost = h.host && h.host.toString() === userId;
-            const isGuest = h.acceptedParticipants && h.acceptedParticipants.some(id => id.toString() === userId);
-            
-            return isHost || isGuest;
-        });
+    const userInterests = userProfile?.interests || [];
+    const userMasterCategories = userInterests.map(interest => {
+      const normalized = interest.toLowerCase().trim();
+      return interestToCategoryMap[normalized] || normalized;
+    });
 
-        const joined = allHangouts.filter(h => {
-            const isGuest = h.acceptedParticipants && h.acceptedParticipants.some(id => id.toString() === userId);
+    const allHangouts = await Hangout.find().lean();
 
-            return isGuest
-        });
+    const upcoming = allHangouts.filter(h => {
+      const isHost = h.host && h.host.toString() === userId;
+      const isGuest = h.acceptedParticipants && h.acceptedParticipants.some(id => id.toString() === userId);
 
-        // Recommended: Events where you are NOT the host AND NOT a participant
-        const recommended = allHangouts.filter(h => {
-              const isHost = h.host && h.host.toString() === userId;
-              const isGuest = h.acceptedParticipants && h.acceptedParticipants.some(id => id.toString() === userId);
-              
-              const hangoutCategory = h.category?.toLowerCase().trim();
-            
-              const matchesInterests = userMasterCategories.includes(hangoutCategory);
-            
-            return !isHost && !isGuest && matchesInterests;
-        });
+      return isHost || isGuest;
+    });
 
-        const finalRecommendations = recommended.length > 0 
-            ? recommended 
-            : allHangouts.filter(h => {
-                const isHost = h.host && h.host.toString() === userId;
-                const isGuest = h.acceptedParticipants && h.acceptedParticipants.some(id => id.toString() === userId);
-                return !isHost && !isGuest;
-            });
-        
-          const limitedRecommendations = finalRecommendations.slice(0, 7);
+    const joined = allHangouts.filter(h => {
+      const isGuest = h.acceptedParticipants && h.acceptedParticipants.some(id => id.toString() === userId);
 
-        console.log(`User: ${userId} | Upcoming: ${upcoming.length} | Recs: ${recommended.length}`);
-        
-        res.json({ upcoming, limitedRecommendations, joined });
+      return isGuest
+    });
 
-    } catch (err) {
-        console.error("Dashboard error:", err);
-        res.status(500).json({ message: err.message });
-    }
+    const recommended = allHangouts.filter(h => {
+      const isHost = h.host && h.host.toString() === userId;
+      const isGuest = h.acceptedParticipants && h.acceptedParticipants.some(id => id.toString() === userId);
+
+      const hangoutCategory = h.category?.toLowerCase().trim();
+
+      const matchesInterests = userMasterCategories.includes(hangoutCategory);
+
+      return !isHost && !isGuest && matchesInterests;
+    });
+
+    const finalRecommendations = recommended.length > 0
+      ? recommended
+      : allHangouts.filter(h => {
+        const isHost = h.host && h.host.toString() === userId;
+        const isGuest = h.acceptedParticipants && h.acceptedParticipants.some(id => id.toString() === userId);
+        return !isHost && !isGuest;
+      });
+
+    const limitedRecommendations = finalRecommendations.slice(0, 7);
+
+    console.log(`User: ${userId} | Upcoming: ${upcoming.length} | Recs: ${recommended.length}`);
+
+    res.json({ upcoming, limitedRecommendations, joined });
+
+  } catch (err) {
+    console.error("Dashboard error:", err);
+    res.status(500).json({ message: err.message });
+  }
 });
-// CREATE new hangout
+
 router.post("/", async (req, res) => {
   try {
     const newHangout = new Hangout(req.body);
@@ -114,30 +111,24 @@ router.post("/", async (req, res) => {
   }
 });
 
-// 1. REQUEST TO JOIN A HANGOUT
 router.post("/:id/join", async (req, res) => {
   try {
     const { userId } = req.body;
     const hangoutId = req.params.id;
-
-    // 1. Find the hangout
     const hangout = await Hangout.findById(hangoutId);
 
     if (!hangout) {
       return res.status(404).json({ message: "Hangout not found" });
     }
 
-    // 2. Check if user is already the host
     if (hangout.host.toString() === userId) {
       return res.status(400).json({ message: "You are the host of this event" });
     }
 
-    // 3. Check if user is already an accepted participant
     if (hangout.acceptedParticipants.includes(userId)) {
       return res.status(400).json({ message: "You have already joined this event" });
     }
 
-    // 4. Add to pendingParticipants using $addToSet (prevents duplicates)
     await Hangout.findByIdAndUpdate(hangoutId, {
       $addToSet: { pendingParticipants: userId }
     });
@@ -149,16 +140,14 @@ router.post("/:id/join", async (req, res) => {
   }
 });
 
-// 2. HOST ACCEPTS OR REJECTS A REQUEST
 router.put("/:hangoutId/manage-request", async (req, res) => {
   try {
     const { hangoutId } = req.params;
-    const { userId, action, hostId } = req.body; 
+    const { userId, action, hostId } = req.body;
 
     const hangout = await Hangout.findById(hangoutId);
     if (!hangout) return res.status(404).json({ message: "Hangout not found" });
 
-    // Security: Only the host can manage requests
     if (hangout.host.toString() !== hostId) {
       return res.status(403).json({ message: "Only the host can manage requests." });
     }
@@ -171,7 +160,6 @@ router.put("/:hangoutId/manage-request", async (req, res) => {
       hangout.pendingParticipants.pull(userId);
       hangout.acceptedParticipants.push(userId);
 
-      // Add to User's joined list
       await User.findByIdAndUpdate(userId, {
         $addToSet: { joinedEvents: hangoutId }
       });
@@ -186,7 +174,6 @@ router.put("/:hangoutId/manage-request", async (req, res) => {
   }
 });
 
-// Get Dashboard Data (Upcoming + Recommended)
 router.post("/", async (req, res) => {
   try {
     const newHangout = new Hangout(req.body);
@@ -198,19 +185,19 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-    try {
-        const allHangouts = await Hangout.find().sort({ date: 1 });
-        res.json(allHangouts); // This sends an ARRAY directly to the frontend
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
+  try {
+    const allHangouts = await Hangout.find().sort({ date: 1 });
+    res.json(allHangouts);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 });
 
 
 router.get("/:id", async (req, res) => {
   try {
     const hangout = await Hangout.findById(req.params.id)
-      .populate("host", "name image bio username interest") // This pulls host details instead of just their ID
+      .populate("host", "name image bio username interest")
       .populate("acceptedParticipants", "name image")
       .populate("pendingParticipants", "name image");
 
@@ -229,20 +216,16 @@ router.delete('/:id', async (req, res) => {
   try {
     const hangoutId = req.params.id;
 
-    // 1. Find the hangout to make sure it exists
     const hangout = await Hangout.findById(hangoutId);
     if (!hangout) {
       return res.status(404).json({ message: "Hangout not found" });
     }
 
-    // 2. Remove this Hangout ID from all Users' hosted and joined arrays
-    // $pull removes the specific ID from the arrays
     await User.updateMany(
       { $or: [{ joinedEvents: hangoutId }, { createdEvents: hangoutId }] },
       { $pull: { joinedEvents: hangoutId, createdEvents: hangoutId } }
     );
 
-    // 3. Delete the hangout itself
     await Hangout.findByIdAndDelete(hangoutId);
 
     res.status(200).json({ message: "Deleted successfully" });
@@ -256,7 +239,7 @@ router.put("/:id", async (req, res) => {
   try {
     const updatedHangout = await Hangout.findByIdAndUpdate(
       req.params.id,
-      { $set: req.body }, // Updates whatever you send (title, desc, etc.)
+      { $set: req.body },
       { new: true }
     );
     res.json(updatedHangout);
