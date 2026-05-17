@@ -32,7 +32,7 @@ export default function EditProfile() {
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [1, 1],
-            quality: 0.5, 
+            quality: 0.5,
             base64: true,
         });
 
@@ -65,11 +65,10 @@ export default function EditProfile() {
         };
 
         fetchFreshUser();
-    }, []); 
+    }, []);
 
     const addInterest = () => {
         if (interestInput.trim() && !interests.includes(interestInput.trim())) {
-            // This adds to the existing list (Yoga, Coffee + New)
             setInterests([...interests, interestInput.trim()]);
             setInterestInput('');
         }
@@ -89,10 +88,9 @@ export default function EditProfile() {
                 username,
                 bio,
                 interests,
-                image 
+                image
             });
 
-            // อัปเดต Context ด้วย
             setUser({ ...user, name, username, bio, interests, image });
             alert("Update successful!");
             router.replace("/(tabs)/profile");
@@ -129,10 +127,10 @@ export default function EditProfile() {
                         width: 100,
                         height: 100,
                         borderRadius: 50,
-                        borderWidth: 1,           
-                        borderColor: '#A5A198',   
+                        borderWidth: 1,
+                        borderColor: '#A5A198',
                         backgroundColor: '#ffffff',
-                        marginBottom: 3    
+                        marginBottom: 3
                     }}
                 />
 

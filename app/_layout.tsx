@@ -18,13 +18,10 @@ function RootLayoutNav() {
 
     const inAuthGroup = segments[0] === '(auth)';
 
-    // ถ้า Login แล้วแต่ยังค้างหน้า Login ให้ส่งไปหน้าหลัก
     if (user && inAuthGroup) {
       router.replace('/(tabs)');
     }
 
-    // สังเกตว่าเราจะไม่เขียนเงื่อนไข "if (!user) { router.replace... }" แล้ว
-    // เพื่อปล่อยให้หน้า Profile/Create แสดง UI ของตัวเองออกมา
   }, [user, isLoading, segments, isReady]);
 
   if (isLoading || !isReady) {
@@ -44,7 +41,6 @@ function RootLayoutNav() {
 }
 
 export const unstable_settings = {
-  // ให้แอปเริ่มต้นที่กลุ่ม tabs (หน้า Home)
   initialRouteName: '(tabs)',
 };
 

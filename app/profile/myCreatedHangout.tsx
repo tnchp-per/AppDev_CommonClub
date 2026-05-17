@@ -37,7 +37,6 @@ export default function MyCreatedHangout() {
             if (user?.id) {
                 try {
                     const data = await fetchDashboardData(user.id);
-                    // ดึงข้อมูล created หรือ filter จาก upcoming
                     const myCreated = data.created || data.upcoming?.filter((ev: any) => ev.host === user.id) || [];
                     setCreatedEvents(myCreated);
                 } catch (error) {
