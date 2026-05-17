@@ -9,7 +9,7 @@ import { styles } from "../../components/createHangoutStyles";
 import { useAuth } from "../../context/AuthContext";
 
 export default function CreateHangout() {
-  const getToday = () => new Date().toLocaleDateString('en-CA');  
+  const getToday = () => new Date().toLocaleDateString('en-CA');
   const router = useRouter();
   const [selectedDay, setSelectedDay] = useState(getToday());
   const [startTime, setStartTime] = useState('09:00');
@@ -37,9 +37,8 @@ export default function CreateHangout() {
   };
 
   const handleSubmit = async () => {
-    let error = ""; // Local variable for immediate checking
+    let error = "";
 
-    // Validation Logic
     if (!formData.title.trim()) {
       error = 'Please enter an event name';
     } else if (!formData.location || formData.location === "-") {
@@ -50,7 +49,6 @@ export default function CreateHangout() {
       error = 'Date must be in the future';
     }
 
-    // Update the UI state so the user sees the message
     setInvalidMsg(error);
 
     const [startHours, startMins] = startTime.split(':').map(Number);
@@ -66,7 +64,7 @@ export default function CreateHangout() {
         const finalData = {
           ...formData,
           description: formData.description || "",
-          host: user._id || user.id, // Adjust based on your user object structure
+          host: user._id || user.id,
           date: startISO,
           endTime: endISO,
           maxParticipants: parseInt(formData.maxParticipants) || 5,
@@ -75,7 +73,6 @@ export default function CreateHangout() {
 
         await createHangout(finalData);
 
-        // Reset everything on success
         setFormData({ title: "", description: "-", location: "", category: "Social", maxParticipants: "5", image: "" });
         setImage(null);
         alert("Hangout Created!");
@@ -96,13 +93,12 @@ export default function CreateHangout() {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [16, 9], // Perfect for hangout banners
-      quality: 0.3,    // Keep this low for Base64!
-      base64: true,   // This is the magic line
+      aspect: [16, 9],
+      quality: 0.3,
+      base64: true,
     });
 
     if (!result.canceled) {
-      // We create a Data URI string: "data:image/jpeg;base64,/9j/4AAQSk..."
       const base64Image = `data:image/jpeg;base64,${result.assets[0].base64}`;
       setImage(base64Image);
     }
@@ -174,7 +170,7 @@ export default function CreateHangout() {
             [selectedDay]: {
               selected: true,
               disableTouchEvent: true,
-              selectedColor: '#1A3C24', // Your dark circle color
+              selectedColor: '#1A3C24',
               selectedTextColor: '#FFFFFF'
             },
           }}

@@ -20,8 +20,8 @@ export default function SignUp() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [loading, setLoading] = useState(false);
-    const [showPassword, setShowPassword] = useState(false); // ควบคุมช่อง Password
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false); // ควบคุมช่อง Confirm
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const handleSignUp = async () => {
         if (!name || !username || !email || !password) {
@@ -54,7 +54,6 @@ export default function SignUp() {
                     { paddingBottom: 40 }, { paddingTop: 40 }
                 ]}
             >
-                {/* --- 1. ส่วน Header (Logo และ Text) --- */}
                 <View style={styles.headerArea}>
                     <Image
                         source={require("../../assets/images/logo_transparent.png")}
@@ -64,7 +63,6 @@ export default function SignUp() {
                     <Text style={styles.subText}>Join Common Club today</Text>
                 </View>
 
-                {/* --- 2. ส่วน Form Inputs --- */}
                 <View style={styles.formContainer}>
                     <View style={styles.inputWrapper}>
                         <Text style={styles.inputLabel}>FULL NAME</Text>
@@ -139,7 +137,6 @@ export default function SignUp() {
                         </View>
                     </View>
 
-                    {/* --- 3. ปุ่มกด --- */}
                     <TouchableOpacity style={styles.loginButton} onPress={handleSignUp} disabled={loading}>
                         {loading ? <ActivityIndicator color="#FAF9F1" /> : <Text style={styles.loginButtonText}>SIGN UP</Text>}
                     </TouchableOpacity>

@@ -19,7 +19,7 @@ export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
-    const { login } = useAuth(); // ดึงฟังก์ชัน login มาจาก Context
+    const { login } = useAuth();
 
     const [showPassword, setShowPassword] = useState(false);
 
@@ -45,7 +45,7 @@ export default function Login() {
             style={styles.container}
         >
             <ScrollView contentContainerStyle={styles.scrollContent}>
-                
+
                 <TouchableOpacity onPress={() => router.replace('/')} style={styles.homeButton}>
                     < Ionicons name="home" size={28} color="#1A3C22" />
                 </TouchableOpacity>
@@ -121,7 +121,7 @@ export default function Login() {
 
                     <View style={styles.footer}>
                         <Text style={styles.footerText}>Don't have an account? </Text>
-                        <TouchableOpacity onPress={() => router.push("/(auth)/signup")}> 
+                        <TouchableOpacity onPress={() => router.push("/(auth)/signup")}>
                             <Text style={styles.signupText}>SIGN UP</Text>
                         </TouchableOpacity>
                     </View>
