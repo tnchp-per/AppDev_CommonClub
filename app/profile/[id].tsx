@@ -38,7 +38,7 @@ export default function PublicProfile() {
 
             <View style={styles.profileHeader}>
                 {typeof targetUser.image === 'string' && targetUser.image.startsWith('data:image') ? (
-                    <Image source={targetUser.image} style={styles.avatar} />
+                    <Image source={{ uri: targetUser.image}} style={styles.avatar} />
                 ) : (
                     <Image source={require('../../assets/images/default.png')} style={styles.avatar} />
                 )}
